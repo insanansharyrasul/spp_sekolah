@@ -6,11 +6,11 @@
 using namespace std;
 
 void showMenu() {
-    cout << "=== Tuition Fee Payment System ===" << endl;
-    cout << "1. Pay Tuition Fee" << endl;
-    cout << "2. Check Payment Status" << endl;
+    cout << "=== PEMBAYARAN SPP ===" << endl;
+    cout << "1. Bayar SPP" << endl;
+    cout << "2. Cek Pembayaran" << endl;
     cout << "3. Exit" << endl;
-    cout << "Enter your choice: ";
+    cout << "Masukkan pilihanmu: ";
 }
 
 void handleUserChoice(int choice) {
@@ -25,7 +25,7 @@ void handleUserChoice(int choice) {
             cout << "Exiting..." << endl;
             break;
         default:
-            cout << "Invalid choice. Please try again." << endl;
+            cout << "Pilihan tidak ada, silahkan ulang lagi." << endl;
             break;
     }
 }
