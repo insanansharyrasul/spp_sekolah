@@ -2,6 +2,7 @@
 #define PAYMENT_H
 
 void pay_tuition_fee();
-void check_payment_status();
+void show_payment_list();
+void search_payment_status();
 
 #endif

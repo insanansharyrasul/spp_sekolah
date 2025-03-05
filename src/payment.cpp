@@ -1,10 +1,11 @@
 #include "payment.h"
-#include "siswa.h"
 
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <string>
+
+#include "siswa.h"
 
 using namespace std;
 
@@ -29,13 +30,7 @@ void pay_tuition_fee() {
     }
 }
 
-void check_payment_status() {
-    Siswa siswa;
-
-    cout << "Masukkan nama siswa: ";
-    cin >> siswa.nama;
-
-    cout << "Pembayaran untuk " << siswa.nama << ": Dibayar" << endl;
+void show_payment_list() {
     ifstream inFile(DATA_PATH);
     string line;
 
@@ -47,5 +42,37 @@ void check_payment_status() {
         inFile.close();
     } else {
         cout << "Gagal membaca data" << endl;
+    }
+}
+
+void search_payment_status() {
+    Siswa siswa;
+    cout << "Masukkan nama siswa: ";
+    cin >> siswa.nama;
+
+    ifstream inFile(DATA_PATH);
+    string line;
+    bool found = false;
+    if (inFile.is_open()) {
+        while (getline(inFile, line)) {
+            istringstream iss(line);
+            string name;
+            double amount;
+            iss >> name >> amount;
+            if (name == siswa.nama) {
+                cout << "Pembayaran untuk " << siswa.nama << ": Dibayar" << endl;
+                cout << line << endl;
+                found = true;
+                inFile.close();
+                break;
+            }
+        }
+
+        if (!found) {
+            inFile.close();
+            cout << "Pembayaran untuk " << siswa.nama << ": Belum Dibayar" << endl;
+        }
+    } else {
+        cout << "Gagal membaca data." << endl;
     }
 }
