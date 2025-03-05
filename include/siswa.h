@@ -2,10 +2,9 @@
 #define SISWA_H
 #include <string>
 
-class Siswa {
-    public:
-        std::string nama;
-        double spp;
+struct Siswa {
+    std::string nama;
+    double spp;
 };
 
 #endif
