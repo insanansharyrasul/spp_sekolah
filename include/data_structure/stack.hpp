@@ -2,7 +2,7 @@
 #define STACK_H
 #include <iostream>
 
-#include "siswa.h"
+#include "data.hpp"
 
 class Node {
    public:

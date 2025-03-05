@@ -1,8 +1,8 @@
-#include "menu.h"
+#include "menu.hpp"
 
 #include <iostream>
 
-#include "payment.h"
+#include "payment.hpp"
 
 using namespace std;
 

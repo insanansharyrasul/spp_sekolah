@@ -1,11 +1,11 @@
-#include "payment.h"
 
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <string>
 
-#include "siswa.h"
+#include "data.hpp"
+#include "payment.hpp"
 
 using namespace std;
 

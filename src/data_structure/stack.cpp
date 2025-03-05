@@ -1,5 +1,5 @@
-#include <siswa.h>
-#include <stack.h>
+#include <data.hpp>
+#include <stack.hpp>
 
 #include <iostream>
 using namespace std;
