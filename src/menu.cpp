@@ -1,11 +1,11 @@
 #include "menu.h"
+#include "payment.h"
 
 #include <iostream>
 
-#include "payment.h"
 using namespace std;
 
-void showMenu() {
+void show_menu() {
     cout << "=== PEMBAYARAN SPP ===" << endl;
     cout << "1. Bayar SPP" << endl;
     cout << "2. Cek Pembayaran" << endl;
@@ -13,13 +13,13 @@ void showMenu() {
     cout << "Masukkan pilihanmu: ";
 }
 
-void handleUserChoice(int choice) {
+void handle_user_choice(int choice) {
     switch (choice) {
         case 1:
-            payTuitionFee();
+            pay_tuition_fee();
             break;
         case 2:
-            checkPaymentStatus();
+            check_payment_status();
             break;
         case 3:
             cout << "Exiting..." << endl;

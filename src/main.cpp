@@ -7,9 +7,9 @@ int main() {
     int choice;
 
     do {
-        showMenu();
+        show_menu();
         cin >> choice;
-        handleUserChoice(choice);
+        handle_user_choice(choice);
     } while (choice != 3);
 
     return 0;

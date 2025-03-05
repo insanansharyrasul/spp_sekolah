@@ -1,16 +1,16 @@
 #include "payment.h"
+#include "siswa.h"
 
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <string>
 
-#include "siswa.h"
 using namespace std;
 
 const string DATA_PATH = "../data/payment.txt";
 
-void payTuitionFee() {
+void pay_tuition_fee() {
     Siswa siswa;
 
     cout << "Masukkan nama siswa: ";
@@ -29,13 +29,13 @@ void payTuitionFee() {
     }
 }
 
-void checkPaymentStatus() {
+void check_payment_status() {
     Siswa siswa;
 
     cout << "Masukkan nama siswa: ";
     cin >> siswa.nama;
 
-    cout << "Pembayaran untuk" << siswa.nama << ": Dibayar" << endl;
+    cout << "Pembayaran untuk " << siswa.nama << ": Dibayar" << endl;
     ifstream inFile(DATA_PATH);
     string line;
 
