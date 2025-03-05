@@ -6,11 +6,21 @@ using namespace std;
 int main() {
     int choice;
 
+    bool cont = true;
+
     do {
         show_menu();
         cin >> choice;
-        handle_user_choice(choice);
-    } while (choice != 3);
+
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore();
+            cout << "Input tidak valid, silahkan ulang lagi." << endl;
+            continue;
+        }
+
+        cont = handle_user_choice(choice);
+    } while (cont);
 
     return 0;
 }
