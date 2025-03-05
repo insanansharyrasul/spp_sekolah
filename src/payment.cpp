@@ -1,27 +1,28 @@
 #include "payment.h"
 
-#include <iomanip>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <string>
+
+#include "siswa.h"
 using namespace std;
 
 const string DATA_PATH = "../data/payment.txt";
 
 void payTuitionFee() {
-    string studentName;
-    double amount;
+    Siswa siswa;
 
     cout << "Masukkan nama siswa: ";
-    cin >> studentName;
+    cin >> siswa.nama;
     cout << "Masukkan jumlah: ";
-    cin >> amount;
+    cin >> siswa.spp;
 
     ofstream outFile;
     outFile.open(DATA_PATH, ios::app);
     if (outFile.is_open()) {
-        cout << "Pembayaran dari Rp." << amount << " untuk " << studentName << " telah diproses." << endl;
-        outFile << studentName << " " << fixed << setprecision(2) << amount << endl;
+        cout << "Pembayaran dari Rp." << siswa.spp << " untuk " << siswa.nama << " telah diproses." << endl;
+        outFile << siswa.nama << " " << fixed << setprecision(2) << siswa.spp << endl;
         outFile.close();
     } else {
         cout << "Gagal menyimpan data." << endl;
@@ -29,12 +30,12 @@ void payTuitionFee() {
 }
 
 void checkPaymentStatus() {
-    string studentName;
+    Siswa siswa;
 
     cout << "Masukkan nama siswa: ";
-    cin >> studentName;
+    cin >> siswa.nama;
 
-    cout << "Pembayaran untuk" << studentName << ": Dibayar" << endl;
+    cout << "Pembayaran untuk" << siswa.nama << ": Dibayar" << endl;
     ifstream inFile(DATA_PATH);
     string line;
 
