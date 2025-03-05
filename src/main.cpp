@@ -1,4 +1,5 @@
 #include <iostream>
+using namespace std;
 
 #include "menu.h"
 
@@ -7,7 +8,7 @@ int main() {
 
     do {
         showMenu();
-        std::cin >> choice;
+        cin >> choice;
         handleUserChoice(choice);
     } while (choice != 3);
 
