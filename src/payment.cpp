@@ -30,7 +30,7 @@ void pay_tuition_fee() {
         pause_input();
         outFile.close();
     } else {
-        cout << "Gagal menyimpan data." << endl;
+        cout << RED << "Gagal menyimpan data." << endl;
     }
 }
 
@@ -47,7 +47,7 @@ void show_payment_list() {
         pause_input();
         inFile.close();
     } else {
-        cout << "Gagal membaca data" << endl;
+        cout << RED << "Gagal membaca data" << endl;
         pause_input();
     }
 }
@@ -82,7 +82,7 @@ void search_payment_status() {
             pause_input();
         }
     } else {
-        cout << "Gagal membaca data." << endl;
+        cout << RED << "Gagal membaca data." << endl;
         pause_input();
     }
 }
