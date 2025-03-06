@@ -9,6 +9,4 @@ struct Siswa {
     time_t timestamp;
 };
 
-struct 
-
 #endif

@@ -1,11 +1,14 @@
 
+#include "payment.hpp"
+#include "menu.hpp"
+#include "data.hpp"
+
+#include <limits>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <string>
 
-#include "data.hpp"
-#include "payment.hpp"
 
 using namespace std;
 
@@ -24,6 +27,7 @@ void pay_tuition_fee() {
     if (outFile.is_open()) {
         cout << "Pembayaran dari Rp." << siswa.spp << " untuk " << siswa.nama << " telah diproses." << endl;
         outFile << siswa.nama << " " << fixed << setprecision(2) << siswa.spp << endl;
+        pause_input();
         outFile.close();
     } else {
         cout << "Gagal menyimpan data." << endl;
@@ -39,9 +43,12 @@ void show_payment_list() {
         while (getline(inFile, line)) {
             cout << fixed << setprecision(2) << line << endl;
         }
+        cout << "==========================" << endl;
+        pause_input();
         inFile.close();
     } else {
         cout << "Gagal membaca data" << endl;
+        pause_input();
     }
 }
 
@@ -63,6 +70,7 @@ void search_payment_status() {
                 cout << "Pembayaran untuk " << siswa.nama << ": Dibayar" << endl;
                 cout << line << endl;
                 found = true;
+                pause_input();
                 inFile.close();
                 break;
             }
@@ -71,8 +79,10 @@ void search_payment_status() {
         if (!found) {
             inFile.close();
             cout << "Pembayaran untuk " << siswa.nama << ": Belum Dibayar" << endl;
+            pause_input();
         }
     } else {
         cout << "Gagal membaca data." << endl;
+        pause_input();
     }
 }

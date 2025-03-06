@@ -13,9 +13,9 @@ int main() {
         cin >> choice;
 
         if (cin.fail()) {
-            cin.clear();
-            cin.ignore();
             cout << "Input tidak valid, silahkan ulang lagi." << endl;
+            cin.clear();
+            pause_input();
             continue;
         }
 
