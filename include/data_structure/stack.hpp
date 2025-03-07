@@ -1,26 +1,27 @@
 #ifndef STACK_H
 #define STACK_H
-#include <iostream>
 
-#include "data.hpp"
-
+template <typename T> 
 class Node {
    public:
-    Siswa siswa;
+    T data;
     Node* next;
-    Node(Siswa siswa);
+    Node(T);
 };
 
+template <typename T>
 class Stack {
    private:
-    Node* top;
+    Node<T>* top;
     int size;
 
    public:
     Stack();
-    void push(Siswa data);
+    void push(T);
     void pop();
     void display();
     int getSize();
 };
+
+#include "stack.ipp"
 #endif

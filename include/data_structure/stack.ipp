@@ -1,21 +1,22 @@
-#include <data.hpp>
-#include <stack.hpp>
-
 #include <iostream>
+#include "stack.hpp"
 using namespace std;
 
-Node::Node(Siswa siswa) {
-    this->siswa = siswa;
+template <typename T>
+Node<T>::Node(T data) {
+    this->data = data;
     this->next = nullptr;
 }
 
-Stack::Stack() {
+template <typename T>
+Stack<T>::Stack() {
     this->top = nullptr;
     this->size = 0;
 }
 
-void Stack::push(Siswa data) {
-    Node* newNode = new Node(data);
+template <typename T>
+void Stack<T>::push(T data) {
+    Node<T>* newNode = new Node<T>(data);
     if (this->top == nullptr) {
         this->top = newNode;
     } else {
@@ -25,26 +26,29 @@ void Stack::push(Siswa data) {
     this->size++;
 }
 
-void Stack::pop() {
+template <typename T>
+void Stack<T>::pop() {
     if (this->top == nullptr) {
         cout << "Stack is empty" << endl;
     } else {
-        Node* temp = this->top;
+        Node<T>* temp = this->top;
         this->top = this->top->next;
         delete temp;
         this->size--;
     }
 }
 
-void Stack::display() {
-    Node* temp = this->top;
+template <typename T>
+void Stack<T>::display() {
+    Node<T>* temp = this->top;
     while (temp != nullptr) {
-        cout << temp->siswa.nama << " ";
+        cout << temp->data << " ";
         temp = temp->next;
     }
     cout << endl;
 }
 
-int Stack::getSize() {
+template <typename T>
+int Stack<T>::getSize() {
     return this->size;
 }
