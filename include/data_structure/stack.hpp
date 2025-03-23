@@ -21,6 +21,7 @@ class Stack {
     void pop();
     void display();
     int getSize();
+    ~Stack();
 };
 
 #include "stack.ipp"
