@@ -4,7 +4,7 @@
 Siswa::Siswa(int id_siswa, std::string nama, int tahunmasuk, int id_kelas, bool jenis_kelamin, std::string alamat, std::string no_telp, std::string email) {
     this->id_siswa = id_siswa;
     this->nama = nama;
-    this->tahunmasuk = tahunmasuk;
+    this->tahun_masuk = tahunmasuk;
     this->id_kelas = id_kelas;
     this->jenis_kelamin = jenis_kelamin;
     this->alamat = alamat;
@@ -17,7 +17,7 @@ Siswa::Siswa(int id_siswa, std::string nama, int tahunmasuk, int id_kelas, bool 
 void Siswa::print_data_siswa() {
     std::cout << "ID: " << id_siswa << std::endl;
     std::cout << "Nama: " << nama << std::endl;
-    std::cout << "Tahun Masuk: " << tahunmasuk << std::endl;
+    std::cout << "Tahun Masuk: " << tahun_masuk << std::endl;
     std::cout << "ID Kelas: " << id_kelas << std::endl;
     std::cout << "Jenis Kelamin: " << jenis_kelamin << std::endl;
     std::cout << "Alamat: " << alamat << std::endl;
@@ -31,7 +31,7 @@ void Siswa::print_data_siswa() {
     }
 };
 
-AdminTU::AdminTU(int id, std::string nama, std::string username, std::string password, std::string jabatan, std::string no_telp, std::string email, std::string alamat, std::string tanggalbergabung, time_t timestamp) {
+AdminTU::AdminTU(int id, std::string nama, std::string username, std::string password, std::string jabatan, std::string no_telp, std::string email, std::string alamat, std::string tanggal_bergabung, time_t timestamp) {
     this->id_admin = id;
     this->nama = nama;
     this->username = username;
@@ -40,7 +40,7 @@ AdminTU::AdminTU(int id, std::string nama, std::string username, std::string pas
     this->no_telp = no_telp;
     this->email = email;
     this->alamat = alamat;
-    this->tanggal_bergabung = tanggalbergabung;
+    this->tanggal_bergabung = tanggal_bergabung;
     this->timestamp = timestamp;
 }
 

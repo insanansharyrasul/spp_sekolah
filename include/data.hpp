@@ -7,7 +7,7 @@ class Siswa {
    public:
     int id_siswa;
     std::string nama;
-    int tahunmasuk;
+    int tahun_masuk;
     int id_kelas;
     bool jenis_kelamin;
     std::string alamat;

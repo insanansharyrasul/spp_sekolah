@@ -1,4 +1,3 @@
-
 #include "payment.hpp"
 
 #include <fstream>
@@ -16,6 +15,22 @@ const string SPP_DATA_PATH = "../data/pembayaran_spp.txt";
 
 void pay_tuition_fee() {
     PembayaranSPP spp(0, 0, 0, "0");
+
+    ifstream inFile(SPP_DATA_PATH);
+    string line;
+    int last_id_tagihan = 0;
+
+    if (inFile.is_open()) {
+        while (getline(inFile, line)) {
+            istringstream iss(line);
+            int id_tagihan;
+            iss >> id_tagihan;
+            last_id_tagihan = id_tagihan;
+        }
+        inFile.close();
+    }
+
+    spp.id_tagihan = last_id_tagihan + 1;
 
     cout << "Masukkan id siswa: ";
     cin >> spp.id_siswa;
