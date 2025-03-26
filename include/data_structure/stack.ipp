@@ -52,3 +52,12 @@ template <typename T>
 int Stack<T>::getSize() {
     return this->size;
 }
+
+template <typename T>
+Stack<T>::~Stack() {
+    while (this->top != nullptr) {
+        Node<T>* temp = this->top;
+        this->top = this->top->next;
+        delete temp;
+    }
+}
