@@ -62,11 +62,11 @@ class Kelas {
 
 class PembayaranSPP {
     public:
-    PembayaranSPP(int, int, double, std::string);
+    PembayaranSPP(int, int, double, const time_t);
     int id_siswa;
     int id_tagihan;
     double nominal;
-    std::string tanggalbayar;
+    time_t timestamp;
     void print_data_pembayaran_spp();
 };
 
