@@ -59,7 +59,7 @@ void new_siswa() {
     struct tm* timeinfo = localtime(&current_time);
     int current_year = timeinfo->tm_year + 1900;
 
-    int new_id = hash_id(highest_id + 1);
+    int new_id = hash_id(highest_id % 10 + 1);
     
     // Parameter siswa:
     // id_siswa, nama, tahun_masuk, id_kelas
