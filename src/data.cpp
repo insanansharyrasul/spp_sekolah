@@ -100,11 +100,11 @@ void Kelas::print_data_kelas() {
     std::cout << "ID Wali Kelas: " << id_wali << std::endl;
 }
 
-PembayaranSPP::PembayaranSPP(int id_siswa, int id_tagihan, double nominal, std::string tanggalbayar) {
+PembayaranSPP::PembayaranSPP(int id_siswa, int id_tagihan, double nominal, const time_t timestamp) {
     this->id_tagihan = id_tagihan;
     this->id_siswa = id_siswa;
     this->nominal = nominal;
-    this->tanggalbayar = tanggalbayar;
+    this->timestamp = timestamp;
 }
 
 void PembayaranSPP::print_data_pembayaran_spp() {
@@ -112,5 +112,5 @@ void PembayaranSPP::print_data_pembayaran_spp() {
     std::cout << "ID Siswa: " << id_siswa << std::endl;
     std::cout << "ID Tagihan: " << id_tagihan << std::endl;
     std::cout << "Nominal: " << nominal << std::endl;
-    std::cout << "Tanggal Bayar: " << tanggalbayar << std::endl;
+    std::cout << "Tanggal Bayar: " << timestamp << std::endl;
 };
