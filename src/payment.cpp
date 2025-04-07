@@ -12,10 +12,16 @@
 using namespace std;
 
 const string SPP_DATA_PATH = "../data/pembayaran_spp.txt";
+const string SISWA_DATA_PATH = "../data/siswa.txt";
 const time_t current_time = time(0);
 
-void pay_tuition_fee() {
-    PembayaranSPP spp(0, 0, 0, current_time);
+void pay_tuition_fee(int id_siswa) {
+    // The parameter is :
+    // id_siswa
+    // id_tagihan
+    // nominal
+    // timestamp
+    PembayaranSPP spp(id_siswa, 0, 0, current_time);
 
     ifstream inFile(SPP_DATA_PATH);
     string line;
@@ -33,8 +39,6 @@ void pay_tuition_fee() {
 
     spp.id_tagihan = last_id_tagihan + 1;
 
-    cout << "Masukkan id siswa: ";
-    cin >> spp.id_siswa;
     cout << "Masukkan nominal: ";
     cin >> spp.nominal;
 
@@ -69,14 +73,38 @@ void show_payment_list() {
     }
 }
 
-void search_payment_status() {
-    PembayaranSPP spp(0, 0, 0, current_time);
-    Siswa siswa(0, "", 0, 0, false, "", "", "");
-    cout << "Masukkan id siswa: ";
-    cin >> spp.id_siswa;
+void search_payment_status(int id_siswa) {
+    PembayaranSPP spp(id_siswa, 0, 0, current_time);
+    Siswa siswa(id_siswa, "", 0, 0, false, "", "", "");
+    string student_name = "UNKNOWN";
 
     ifstream inFile(SPP_DATA_PATH);
+    ifstream siswaFile(SISWA_DATA_PATH);
     string line;
+
+    if (siswaFile.is_open()) {
+        while (getline(siswaFile, line)) {
+            istringstream iss(line);
+            int current_id;
+            string name;
+
+            iss >> current_id;
+
+            if (current_id == id_siswa) {
+                iss >> ws;
+
+                getline(iss, name);
+                student_name = name;
+                break;
+            }
+        }
+        siswaFile.close();
+    } else {
+        cout << RED << "Gagal membaca data siswa." << endl;
+        pause_input();
+        return;
+    }
+
     bool found = false;
     if (inFile.is_open()) {
         while (getline(inFile, line)) {
@@ -87,9 +115,9 @@ void search_payment_status() {
             time_t timestamp;
             iss >> id_tagihan >> id_siswa >> amount >> timestamp;
             if (id_siswa == spp.id_siswa) {
-                cout << "Pembayaran untuk " << siswa.nama << ": Dibayar" << endl;
+                cout << "Pembayaran untuk " << student_name << ": Dibayar" << endl;
                 cout << "Pada tanggal: " << ctime(&timestamp) << endl;
-                cout << line << endl;
+                // cout << line << endl;
                 found = true;
                 pause_input();
                 inFile.close();

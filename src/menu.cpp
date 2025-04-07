@@ -1,10 +1,11 @@
 #include "menu.hpp"
+#include "siswa.hpp"
+#include "admin.hpp"
 
 #include <iostream>
 #include <limits>
 
 #include "payment.hpp"
-
 
 using namespace std;
 
@@ -40,13 +41,13 @@ void show_menu() {
 bool handle_user_choice(int choice) {
     switch (choice) {
         case 1:
-            pay_tuition_fee();
-            break;
+            // pay_tuition_fee();
+            // break;
         case 2:
             show_payment_list();
             break;
         case 3:
-            search_payment_status();
+            // search_payment_status();
             break;
         case 4:
             cout << "Exiting..." << endl;
@@ -58,4 +59,19 @@ bool handle_user_choice(int choice) {
             break;
     }
     return true;
+}
+
+void show_account() {
+    clrscr();
+    cout << YELLOW << "███████╗██████╗ ██████╗  ██████╗███████╗███╗   ██╗████████╗███████╗██████╗ " << endl;
+    cout << YELLOW << "██╔════ ██╔══██╗██╔══██╗██╔════╝██╔════╝████╗  ██║╚══██╔══╝██╔════╝██╔══██╗" << endl;
+    cout << YELLOW << "███████ ██████╔╝██████╔╝██║     █████╗  ██╔██╗ ██║   ██║   █████╗  ██████╔╝" << endl;
+    cout << YELLOW << "╚════██ ██╔═══╝ ██╔═══╝ ██║     ██╔══╝  ██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗" << endl;
+    cout << YELLOW << "███████ ██║     ██║     ╚██████╗███████╗██║ ╚████║   ██║   ███████╗██║  ██║" << endl;
+    cout << YELLOW << "╚══════╝╚═╝     ╚═╝     ╚═════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ " << endl;
+    cout << CYAN << "Selamat datang di SPP-Center, sebagai apakah anda ingin mendaftar?" << endl;
+    cout << CYAN << "1. Admin" << endl;
+    cout << CYAN << "2. Siswa" << endl;
+    cout << CYAN << "3. Exit" << endl;
+    cout << CYAN << "Masukkan pilihanmu: ";
 }

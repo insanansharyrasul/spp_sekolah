@@ -1,5 +1,5 @@
-#ifndef SISWA_H
-#define SISWA_H
+#ifndef DATA_H
+#define DATA_H
 #include <ctime>
 #include <string>
 

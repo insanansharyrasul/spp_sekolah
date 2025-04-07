@@ -18,5 +18,15 @@ void pause_input();
 void show_menu();
 bool handle_user_choice(int);
 void show_user();
+void clrscr();
+void show_account();
+bool handle_account_choice(int);
+
+enum AccountType {
+    ADMIN = 1,
+    SISWA = 2,
+    EXIT = 3,
+    GUEST = 4,
+};
 
 #endif
