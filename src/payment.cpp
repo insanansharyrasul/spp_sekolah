@@ -1,5 +1,6 @@
 #include "payment.hpp"
 
+#include <file_path.hpp>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -8,7 +9,6 @@
 
 #include "data.hpp"
 #include "menu.hpp"
-#include <file_path.hpp>
 
 using namespace std;
 
@@ -56,11 +56,39 @@ void show_payment_list() {
     string line;
 
     if (inFile.is_open()) {
-        cout << "=== STATUS PEMBAYARAN ===" << endl;
+        clrscr();
+
+        // setw() is used to set the width of the next output field
+        // left, right, and internal are used to set the alignment of the output
+        cout << "│" << setw(10) << left << " ID SPP" << "│"
+             << setw(10) << left << " Siswa ID" << "│"
+             << setw(15) << left << " Nominal (Rp)" << "│"
+             << setw(30) << left << " Tanggal Pembayaran" << "│" << endl;
+
+        cout << "│" << setw(10) << left << " " << "│"
+             << setw(10) << left << " " << "│"
+             << setw(15) << right << " " << "│"
+             << setw(30) << left << " " << "│" << endl;
+
         while (getline(inFile, line)) {
-            cout << fixed << setprecision(2) << line << endl;
+            istringstream iss(line);
+            int id_tagihan, id_siswa;
+            double amount;
+            time_t timestamp;
+
+            iss >> id_tagihan >> id_siswa >> amount >> timestamp;
+
+            char date_buffer[30];
+            strftime(date_buffer, sizeof(date_buffer), " %d-%m-%Y %H:%M:%S",
+                     localtime(&timestamp));
+
+            // Amount is aligned to the right because of financial convention
+            cout << "│" << " " << setw(9) << left << id_tagihan << "│"
+                 << " " << setw(9) << left << id_siswa << "│"
+                 << setw(14) << right << fixed << setprecision(2) << amount << " │"
+                 << setw(30) << left << date_buffer << "│" << endl;
         }
-        cout << "==========================" << endl;
+
         pause_input();
         inFile.close();
     } else {
