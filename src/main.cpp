@@ -23,15 +23,24 @@ int main() {
         VerificationStatus status = NEED_CONFIRMATION;
         switch (choice) {
             case 1: {
-                show_menu_admin();
+                while (status == VERIFIED || status == NEED_CONFIRMATION) {
+                    show_menu_admin();
+                    int choice_admin;
+                    cin >> choice_admin;
+                    VerificationStatus session = handle_admin_choice(choice_admin);
+                    if (session == BACK) {
+                        break;
+                    }
+                }
                 break;
             }
             case 2: {
                 bool verification_failed = false;
+                string student_name = "";
                 while ((status == VERIFIED || status == NEED_CONFIRMATION) && !verification_failed) {
                     int id_siswa = -1;
                     if (status == NEED_CONFIRMATION) {
-                        id_siswa = verify_siswa();
+                        id_siswa = verify_siswa(student_name);
                         if (id_siswa != -1) {
                             status = VERIFIED;
                         } else {
@@ -45,10 +54,10 @@ int main() {
                         break;
                     }
 
-                    show_menu_siswa();
-                    int output;
-                    cin >> output;
-                    VerificationStatus session = handle_siswa_choice(output, id_siswa);
+                    show_menu_siswa(student_name);
+                    int choice_siswa;
+                    cin >> choice_siswa;
+                    VerificationStatus session = handle_siswa_choice(choice_siswa, id_siswa);
                     if (session == BACK) {
                         break;
                     }

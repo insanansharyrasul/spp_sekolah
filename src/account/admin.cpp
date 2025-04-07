@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
 
+#include <payment.hpp>
+
 #include "menu.hpp"
 
 void show_menu_admin() {
@@ -11,18 +13,22 @@ void show_menu_admin() {
     cout << YELLOW << "╚════██ ██╔═══╝ ██╔═══╝ ██║     ██╔══╝  ██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗" << endl;
     cout << YELLOW << "███████ ██║     ██║     ╚██████╗███████╗██║ ╚████║   ██║   ███████╗██║  ██║" << endl;
     cout << YELLOW << "╚══════╝╚═╝     ╚═╝     ╚═════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ " << endl;
-    cout << CYAN << "Halo Admin, apakah ada yang ingin anda lakukan?" << endl;
-    cout << CYAN << "1. Lihat Seluruh Pembayaran" << endl;
-    cout << CYAN << "2. Daftarkan Siswa Baru" << endl;
-    cout << CYAN << "3. Atur Jadwal Pembayaran" << endl;
-    cout << CYAN << "4. Jawab Pertanyaan Siswa" << endl;
-    cout << CYAN << "5. Exit" << endl;
-    cout << CYAN << "Masukkan pilihanmu: ";
+    cout << WHITE << "Halo ";
+    cout << RED << "Admin ";
+    cout << WHITE << "apakah ada yang ingin anda lakukan?" << endl;
+    cout << WHITE << "1. Lihat Seluruh Pembayaran" << endl;
+    cout << WHITE << "2. Daftarkan Siswa Baru" << endl;
+    cout << WHITE << "3. Atur Jadwal Pembayaran" << endl;
+    cout << WHITE << "4. Jawab Pertanyaan Siswa" << endl;
+    cout << WHITE << "5. Kembali ke menu" << endl;
+    cout << WHITE << "6. Exit" << endl;
+    cout << WHITE << "Masukkan pilihanmu: ";
 }
 
-bool handle_admin_choice(int choice) {
+VerificationStatus handle_admin_choice(int choice) {
     switch (choice) {
         case 1:
+            show_payment_list();
             break;
         case 2:
             break;
@@ -31,13 +37,18 @@ bool handle_admin_choice(int choice) {
         case 4:
             break;
         case 5:
-            cout << "Exiting..." << endl;
-            return false;
+            cout << "Kembali ke menu utama..." << endl;
+            pause_input();
+            clrscr();
+            return BACK;
             break;
+        case 6:
+            cout << "Exiting..." << endl;
+            exit(0);
         default:
             cout << "Pilihan tidak ada, silahkan ulang lagi." << endl;
             cin.get();
             break;
     }
-    return true;
+    return VERIFIED;
 }

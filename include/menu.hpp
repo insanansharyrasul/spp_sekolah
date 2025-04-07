@@ -29,4 +29,11 @@ enum AccountType {
     GUEST = 4,
 };
 
+enum VerificationStatus {
+    NEED_CONFIRMATION = -1,
+    NOT_VERIFIED = 0,
+    VERIFIED = 1,
+    BACK = 2,
+};
+
 #endif

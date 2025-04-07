@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 #include <limits>
@@ -7,24 +9,51 @@ using namespace std;
 #include "menu.hpp"
 #include "siswa.hpp"
 
-int verify_siswa() {
+int verify_siswa(string& student_name) {
     clrscr();
     cout << "Silahkan masukkan ID Anda: ";
     int id;
     cin >> id;
 
-    if (id == 123) {
-        cout << "Siswa terverifikasi." << endl;
-        pause_input();
-        return id;
+    const string SISWA_DATA_PATH = "../data/siswa.txt";
+    
+    ifstream siswaFile(SISWA_DATA_PATH);
+    string line;
+    bool found = false;
+
+    if (siswaFile.is_open()) {
+        while (getline(siswaFile, line)) {
+            istringstream iss(line);
+            int current_id;
+            
+            iss >> current_id;
+            
+            if (current_id == id) {
+                iss >> ws;
+                getline(iss, student_name); 
+                found = true;
+                break;
+            }
+        }
+        siswaFile.close();
+        
+        if (found) {
+            cout << "Siswa " << student_name << " berhasil terverifikasi." << endl;
+            pause_input();
+            return id;
+        } else {
+            cout << "ID Siswa tidak ditemukan dalam sistem." << endl;
+            pause_input();
+            return -1;
+        }
     } else {
-        cout << "Siswa tidak terverifikasi." << endl;
+        cout << RED << "Gagal membaca data siswa." << endl;
         pause_input();
         return -1;
     }
 }
 
-void show_menu_siswa() {
+void show_menu_siswa(string student_name) {
     clrscr();
     cout << YELLOW << "███████╗██████╗ ██████╗  ██████╗███████╗███╗   ██╗████████╗███████╗██████╗ " << endl;
     cout << YELLOW << "██╔════ ██╔══██╗██╔══██╗██╔════╝██╔════╝████╗  ██║╚══██╔══╝██╔════╝██╔══██╗" << endl;
@@ -32,16 +61,16 @@ void show_menu_siswa() {
     cout << YELLOW << "╚════██ ██╔═══╝ ██╔═══╝ ██║     ██╔══╝  ██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗" << endl;
     cout << YELLOW << "███████ ██║     ██║     ╚██████╗███████╗██║ ╚████║   ██║   ███████╗██║  ██║" << endl;
     cout << YELLOW << "╚══════╝╚═╝     ╚═╝     ╚═════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ " << endl;
-    cout << CYAN << "Halo ";
-    cout << CYAN << "XXX ";
-    cout << CYAN << "Apakah ada yang ingin anda lakukan?" << endl;
-    cout << CYAN << "1. Lihat detail SPP saya" << endl;
-    cout << CYAN << "2. Bayar SPP" << endl;
-    cout << CYAN << "3. Bertanya kepada admin" << endl;
-    cout << CYAN << "4. Lihat Sertifikat" << endl;
-    cout << CYAN << "5. Kembali ke menu utama" << endl;
-    cout << CYAN << "6. Exit" << endl;
-    cout << CYAN << "Masukkan pilihanmu: ";
+    cout << WHITE << "Halo ";
+    cout << BLUE << student_name;
+    cout << WHITE << "Apakah ada yang ingin anda lakukan?" << endl;
+    cout << WHITE << "1. Lihat detail SPP saya" << endl;
+    cout << WHITE << "2. Bayar SPP" << endl;
+    cout << WHITE << "3. Bertanya kepada admin" << endl;
+    cout << WHITE << "4. Lihat Sertifikat" << endl;
+    cout << WHITE << "5. Kembali ke menu utama" << endl;
+    cout << WHITE << "6. Exit" << endl;
+    cout << WHITE << "Masukkan pilihanmu: ";
 }
 
 VerificationStatus handle_siswa_choice(int choice, int id_siswa) {

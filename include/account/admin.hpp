@@ -1,7 +1,8 @@
 #ifndef ADMIN_HPP
 #define ADMIN_HPP
+#include "menu.hpp"
 
 void show_menu_admin();
-bool handle_admin_choice(int);
+VerificationStatus handle_admin_choice(int);
 
 #endif
