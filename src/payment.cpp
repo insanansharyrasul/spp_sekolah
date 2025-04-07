@@ -8,11 +8,10 @@
 
 #include "data.hpp"
 #include "menu.hpp"
+#include <file_path.hpp>
 
 using namespace std;
 
-const string SPP_DATA_PATH = "../data/pembayaran_spp.txt";
-const string SISWA_DATA_PATH = "../data/siswa_data.txt";
 const time_t current_time = time(0);
 
 void pay_tuition_fee(int id_siswa) {

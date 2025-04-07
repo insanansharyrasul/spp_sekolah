@@ -5,9 +5,9 @@
 #include <menu.hpp>
 #include <string>
 #include <sstream>
+#include <file_path.hpp>
 
 using namespace std;
-const string SISWA_DATA_PATH = "../data/siswa_data.txt";
 
 const time_t current_time = time(0);
 struct tm* timeinfo = localtime(&current_time);

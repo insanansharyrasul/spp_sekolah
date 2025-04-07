@@ -22,13 +22,6 @@ void clrscr();
 void show_account();
 bool handle_account_choice(int);
 
-enum AccountType {
-    ADMIN = 1,
-    SISWA = 2,
-    EXIT = 3,
-    GUEST = 4,
-};
-
 enum VerificationStatus {
     NEED_CONFIRMATION = -1,
     NOT_VERIFIED = 0,
