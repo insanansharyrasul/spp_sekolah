@@ -12,15 +12,12 @@
 using namespace std;
 
 const string SPP_DATA_PATH = "../data/pembayaran_spp.txt";
-const string SISWA_DATA_PATH = "../data/siswa.txt";
+const string SISWA_DATA_PATH = "../data/siswa_data.txt";
 const time_t current_time = time(0);
 
 void pay_tuition_fee(int id_siswa) {
-    // The parameter is :
-    // id_siswa
-    // id_tagihan
-    // nominal
-    // timestamp
+    // The parameter is:
+    // id_siswa , id_tagihan , nominal , timestamp
     PembayaranSPP spp(id_siswa, 0, 0, current_time);
 
     ifstream inFile(SPP_DATA_PATH);
@@ -75,7 +72,6 @@ void show_payment_list() {
 
 void search_payment_status(int id_siswa) {
     PembayaranSPP spp(id_siswa, 0, 0, current_time);
-    Siswa siswa(id_siswa, "", 0, 0, false, "", "", "");
     string student_name = "UNKNOWN";
 
     ifstream inFile(SPP_DATA_PATH);
@@ -127,7 +123,7 @@ void search_payment_status(int id_siswa) {
 
         if (!found) {
             inFile.close();
-            cout << "Pembayaran untuk " << siswa.nama << ": Belum Dibayar" << endl;
+            cout << "Pembayaran untuk " << student_name << ": Belum Dibayar" << endl;
             pause_input();
         }
     } else {

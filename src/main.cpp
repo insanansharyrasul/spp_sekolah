@@ -37,8 +37,8 @@ int main() {
             case 2: {
                 bool verification_failed = false;
                 string student_name = "";
+                int id_siswa = -1;
                 while ((status == VERIFIED || status == NEED_CONFIRMATION) && !verification_failed) {
-                    int id_siswa = -1;
                     if (status == NEED_CONFIRMATION) {
                         id_siswa = verify_siswa(student_name);
                         if (id_siswa != -1) {

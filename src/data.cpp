@@ -1,17 +1,11 @@
 #include <data.hpp>
 #include <iostream>
 
-Siswa::Siswa(int id_siswa, std::string nama, int tahunmasuk, int id_kelas, bool jenis_kelamin, std::string alamat, std::string no_telp, std::string email) {
+Siswa::Siswa(int id_siswa, std::string nama, int tahun_masuk, int id_kelas) {
     this->id_siswa = id_siswa;
     this->nama = nama;
-    this->tahun_masuk = tahunmasuk;
+    this->tahun_masuk = tahun_masuk;
     this->id_kelas = id_kelas;
-    this->jenis_kelamin = jenis_kelamin;
-    this->alamat = alamat;
-    this->no_telp = no_telp;
-    this->email = email;
-    this->nama_wali = nama_wali;
-    this->statuspembayaranSPP = statuspembayaranSPP;
 }
 
 void Siswa::print_data_siswa() {
@@ -19,16 +13,6 @@ void Siswa::print_data_siswa() {
     std::cout << "Nama: " << nama << std::endl;
     std::cout << "Tahun Masuk: " << tahun_masuk << std::endl;
     std::cout << "ID Kelas: " << id_kelas << std::endl;
-    std::cout << "Jenis Kelamin: " << jenis_kelamin << std::endl;
-    std::cout << "Alamat: " << alamat << std::endl;
-    std::cout << "No. Telp: " << no_telp << std::endl;
-    std::cout << "Email: " << email << std::endl;
-    std::cout << "Nama Wali: " << nama_wali << std::endl;
-    if (statuspembayaranSPP == true) {
-        std::cout << "Status Pembayaran SPP: Lunas" << std::endl;
-    } else {
-        std::cout << "Status Pembayaran SPP: Belum Lunas" << std::endl;
-    }
 };
 
 AdminTU::AdminTU(int id, std::string nama, std::string username, std::string password, std::string jabatan, std::string no_telp, std::string email, std::string alamat, std::string tanggal_bergabung, time_t timestamp) {

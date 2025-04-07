@@ -9,13 +9,7 @@ class Siswa {
     std::string nama;
     int tahun_masuk;
     int id_kelas;
-    bool jenis_kelamin;
-    std::string alamat;
-    std::string no_telp;
-    std::string email;
-    std::string nama_wali;
-    bool statuspembayaranSPP;
-    Siswa(int, std::string, int, int, bool, std::string, std::string, std::string);
+    Siswa(int, std::string, int, int);
     void print_data_siswa();
 };
 

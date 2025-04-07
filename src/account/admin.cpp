@@ -4,6 +4,7 @@ using namespace std;
 #include <payment.hpp>
 
 #include "menu.hpp"
+#include <management.hpp>
 
 void show_menu_admin() {
     clrscr();
@@ -31,6 +32,7 @@ VerificationStatus handle_admin_choice(int choice) {
             show_payment_list();
             break;
         case 2:
+            new_siswa();
             break;
         case 3:
             break;

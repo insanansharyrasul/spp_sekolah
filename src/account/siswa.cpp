@@ -15,7 +15,7 @@ int verify_siswa(string& student_name) {
     int id;
     cin >> id;
 
-    const string SISWA_DATA_PATH = "../data/siswa.txt";
+    const string SISWA_DATA_PATH = "../data/siswa_data.txt";
     
     ifstream siswaFile(SISWA_DATA_PATH);
     string line;
@@ -25,12 +25,13 @@ int verify_siswa(string& student_name) {
         while (getline(siswaFile, line)) {
             istringstream iss(line);
             int current_id;
+            int year, class_id; 
             
-            iss >> current_id;
+            iss >> current_id >> year >> class_id;
             
             if (current_id == id) {
                 iss >> ws;
-                getline(iss, student_name); 
+                getline(iss, student_name);
                 found = true;
                 break;
             }
@@ -63,7 +64,7 @@ void show_menu_siswa(string student_name) {
     cout << YELLOW << "╚══════╝╚═╝     ╚═╝     ╚═════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ " << endl;
     cout << WHITE << "Halo ";
     cout << BLUE << student_name;
-    cout << WHITE << "Apakah ada yang ingin anda lakukan?" << endl;
+    cout << WHITE << " Apakah ada yang ingin anda lakukan?" << endl;
     cout << WHITE << "1. Lihat detail SPP saya" << endl;
     cout << WHITE << "2. Bayar SPP" << endl;
     cout << WHITE << "3. Bertanya kepada admin" << endl;
