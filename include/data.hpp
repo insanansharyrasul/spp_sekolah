@@ -1,5 +1,4 @@
-#ifndef DATA_H
-#define DATA_H
+#pragma once
 #include <ctime>
 #include <string>
 
@@ -63,5 +62,3 @@ class PembayaranSPP {
     time_t timestamp;
     void print_data_pembayaran_spp();
 };
-
-#endif

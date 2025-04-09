@@ -1,5 +1,4 @@
-#ifndef STACK_H
-#define STACK_H
+#pragma once
 
 template <typename T> 
 class Node {
@@ -25,4 +24,3 @@ class Stack {
 };
 
 #include "stack.ipp"
-#endif

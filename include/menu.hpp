@@ -1,5 +1,4 @@
-#ifndef MENU_H
-#define MENU_H
+#pragma once
 
 #define RESET "\033[0m"
 #define BLACK "\033[0;1m"
@@ -28,5 +27,3 @@ enum VerificationStatus {
     VERIFIED = 1,
     BACK = 2,
 };
-
-#endif

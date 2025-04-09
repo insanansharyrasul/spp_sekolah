@@ -5,6 +5,7 @@ using namespace std;
 
 #include "menu.hpp"
 #include <management.hpp>
+#include <sorting.hpp>
 
 void show_menu_admin() {
     clrscr();
@@ -14,12 +15,12 @@ void show_menu_admin() {
     cout << YELLOW << "╚════██ ██╔═══╝ ██╔═══╝ ██║     ██╔══╝  ██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗" << endl;
     cout << YELLOW << "███████ ██║     ██║     ╚██████╗███████╗██║ ╚████║   ██║   ███████╗██║  ██║" << endl;
     cout << YELLOW << "╚══════╝╚═╝     ╚═╝     ╚═════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ " << endl;
-    cout << WHITE << "Halo ";
-    cout << RED << "Admin ";
+    cout << WHITE << "Halo " << RED << "Admin ";
     cout << WHITE << "apakah ada yang ingin anda lakukan?" << endl;
     cout << WHITE << "1. Lihat Seluruh Pembayaran" << endl;
     cout << WHITE << "2. Daftarkan Siswa Baru" << endl;
-    cout << WHITE << "3. Atur Jadwal Pembayaran" << endl;
+    // cout << WHITE << "3. Atur Jadwal Pembayaran" << endl;
+    cout << WHITE << "3. Lihat semua siswa" << endl;
     cout << WHITE << "4. Jawab Pertanyaan Siswa" << endl;
     cout << WHITE << "5. Kembali ke menu" << endl;
     cout << WHITE << "6. Exit" << endl;
@@ -35,6 +36,8 @@ VerificationStatus handle_admin_choice(int choice) {
             new_siswa();
             break;
         case 3:
+            print_students();
+            pause_input();
             break;
         case 4:
             break;
