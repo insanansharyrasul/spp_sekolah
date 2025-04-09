@@ -2,63 +2,30 @@
 #include <ctime>
 #include <string>
 
-class Siswa {
-   public:
+struct Siswa {
     int id_siswa;
     std::string nama;
     int tahun_masuk;
     int id_kelas;
-    Siswa(int, std::string, int, int);
-    void print_data_siswa();
+
+    Siswa(int id_siswa = 0, const std::string& name = "", int year = 0, int class_id = 0) {
+        this->id_siswa = id_siswa;
+        this->nama = name;
+        this->tahun_masuk = year;
+        this->id_kelas = class_id;
+    }
 };
 
-class AdminTU {
-   public:
-    int id_admin;
-    std::string nama;
-    std::string username;
-    std::string password;
-    std::string jabatan;
-    std::string no_telp;
-    std::string email;
-    std::string alamat;
-    std::string tanggal_bergabung;
-    time_t timestamp;
-    AdminTU(int, std::string, std::string, std::string, std::string, std::string, std::string, std::string, std::string, time_t);
-    void print_data_admin();
-};
-
-class TagihanSPP {
-   public:
-    int id;
-    int id_siswa;
-    int id_kelas;
-    int tahun_ajaran;
-    int bulan;
-    int nominal;
-    bool status_pembayaran;
-    TagihanSPP(int, int, int, int, int, int, bool);
-    void print_data_tagihan_spp();
-};
-
-class Kelas {
-    int id_kelas;
-    std::string nama;
-    int tingkat;
-    std::string jurusan;
-    int kapasitas;
-    int jumlah_siswa;
-    int id_wali;
-    Kelas(int, std::string, int, std::string, int, int);
-    void print_data_kelas();
-};
-
-class PembayaranSPP {
-    public:
-    PembayaranSPP(int, int, double, const time_t);
+struct PembayaranSPP {
     int id_siswa;
     int id_tagihan;
     double nominal;
     time_t timestamp;
-    void print_data_pembayaran_spp();
+
+    PembayaranSPP(int id_siswa = 0, int id_tagihan = 0, double nominal = 0, time_t timestamp = time(0)) {
+        this->id_tagihan = id_tagihan;
+        this->id_siswa = id_siswa;
+        this->nominal = nominal;
+        this->timestamp = timestamp;
+    }
 };

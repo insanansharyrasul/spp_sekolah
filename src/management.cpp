@@ -6,15 +6,14 @@
 #include <string>
 #include <sstream>
 #include <file_path.hpp>
+#include <time_set.hpp>
 
 using namespace std;
 
-const time_t current_time = time(0);
-struct tm* timeinfo = localtime(&current_time);
-int current_year_hash = ((timeinfo->tm_year + 1900) % 100) * 1000;
-const int SEKOLAH_ID = 91100000;  // 5 zeros
 
 int hash_id(int id) {
+    time_init();
+    int current_year_hash = ((timeinfo->tm_year + 1900) % 100) * 1000;
     return SEKOLAH_ID + current_year_hash + id;
 }
 
@@ -31,19 +30,21 @@ void new_siswa() {
 
     if (inFile.is_open()) {
         while (getline(inFile, line)) {
-            istringstream iss(line);
-            int id;
-            int year, class_id;
-            string name;
-            
-            iss >> id >> year >> class_id;
-            
+            stringstream ss(line);
+            string token;
+
+            getline(ss, token, ',');
+            int id = stoi(token);
+            getline(ss, token, ',');
+            int year = stoi(token);
+            getline(ss, token, ',');     
+            int class_id = stoi(token);
+            getline(ss, token, ',');
+            string name = token;
+
             if (id > highest_id) {
                 highest_id = id;
             }
-            
-            iss >> ws;
-            getline(iss, name);
             
             if (name == new_name) {
                 student_exists = true;
@@ -56,13 +57,10 @@ void new_siswa() {
         inFile.close();
     }
     
-    struct tm* timeinfo = localtime(&current_time);
     int current_year = timeinfo->tm_year + 1900;
 
     int new_id = hash_id(highest_id % 10 + 1);
     
-    // Parameter siswa:
-    // id_siswa, nama, tahun_masuk, id_kelas
     Siswa siswa(new_id, new_name, current_year, 0);
     
     cout << "Masukkan ID Kelas: ";
@@ -70,7 +68,7 @@ void new_siswa() {
 
     ofstream outFile(SISWA_DATA_PATH, ios::app);
     if (outFile.is_open()) {
-        outFile << siswa.id_siswa << " " << siswa.tahun_masuk << " " << siswa.id_kelas << " " << siswa.nama << endl;
+        outFile << siswa.id_siswa << "," << siswa.tahun_masuk << "," << siswa.id_kelas << "," << siswa.nama << endl;
         outFile.close();
         cout << GREEN << "Data Siswa berhasil disimpan dengan ID: " << new_id << endl;
         pause_input();
