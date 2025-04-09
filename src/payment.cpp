@@ -143,13 +143,13 @@ void search_payment_status(int id_siswa) {
             stringstream ss(line);
             string token;
 
-            getline(ss, token, ' ');
+            getline(ss, token, ',');
             int id_tagihan = stoi(token);
-            getline(ss, token, ' ');
+            getline(ss, token, ',');
             int id_siswa = stoi(token);
-            getline(ss, token, ' ');
+            getline(ss, token, ',');
             double amount = stod(token);
-            getline(ss, token, ' ');
+            getline(ss, token, ',');
             time_t timestamp = stol(token);
 
             char date_buffer[30];
