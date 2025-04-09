@@ -1,5 +1,5 @@
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 using namespace std;
 
@@ -8,6 +8,7 @@ using namespace std;
 
 #include "menu.hpp"
 #include "siswa.hpp"
+#include <file_path.hpp>
 
 int verify_siswa(string& student_name) {
     clrscr();
@@ -15,28 +16,31 @@ int verify_siswa(string& student_name) {
     int id;
     cin >> id;
 
-    const string SISWA_DATA_PATH = "../data/siswa.txt";
-    
     ifstream siswaFile(SISWA_DATA_PATH);
     string line;
     bool found = false;
 
     if (siswaFile.is_open()) {
         while (getline(siswaFile, line)) {
-            istringstream iss(line);
-            int current_id;
-            
-            iss >> current_id;
-            
+            stringstream ss(line);
+            string token;
+
+            getline(ss, token, ',');
+            int current_id = stoi(token);
+            getline(ss, token, ',');
+            int year = stoi(token);
+            getline(ss, token, ',');
+            int class_id = stoi(token);
+
             if (current_id == id) {
-                iss >> ws;
-                getline(iss, student_name); 
+                getline(ss, token, ',');
+                student_name = token;
                 found = true;
                 break;
             }
         }
         siswaFile.close();
-        
+
         if (found) {
             cout << "Siswa " << student_name << " berhasil terverifikasi." << endl;
             pause_input();
@@ -63,7 +67,7 @@ void show_menu_siswa(string student_name) {
     cout << YELLOW << "╚══════╝╚═╝     ╚═╝     ╚═════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ " << endl;
     cout << WHITE << "Halo ";
     cout << BLUE << student_name;
-    cout << WHITE << "Apakah ada yang ingin anda lakukan?" << endl;
+    cout << WHITE << " Apakah ada yang ingin anda lakukan?" << endl;
     cout << WHITE << "1. Lihat detail SPP saya" << endl;
     cout << WHITE << "2. Bayar SPP" << endl;
     cout << WHITE << "3. Bertanya kepada admin" << endl;
