@@ -1,68 +1,31 @@
-#include "sorting.hpp"
+#include <sorting.hpp>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
 #include <iostream>
 #include <file_path.hpp>
+#include <file_utils.hpp>
+#include <data.hpp>
 #include <iomanip>
+#include <vector>
 using namespace std;
 
-vector<pair<int, string>> load_students() {
-    vector<pair<int, string>> students;
-    ifstream siswaFile(SISWA_DATA_PATH);
-    string line;
-    if (siswaFile.is_open()) {
-        while (getline(siswaFile, line)) {
-            istringstream iss(line);
-            int id;
-            string name;
-            if (iss >> id) {
-                iss >> ws;
-                getline(iss, name);
-                students.push_back({id, name});
-            }
-        }
-        siswaFile.close();
-    } else {
-        cout << "Gagal membuka file siswa." << endl;
-    }
-    return students;
-}
-
-void save_students(const vector<pair<int, string>>& students) {
-    ofstream siswaFile(SISWA_DATA_PATH, ios::trunc);
-    if (siswaFile.is_open()) {
-        for (const auto& student : students) {
-            siswaFile << student.first << " " << student.second << endl;
-        }
-        siswaFile.close();
-    } else {
-        cout << "Gagal menulis ke file siswa." << endl;
-    }
-}
-
 void sort_students_by_name() {
-    auto students = load_students();
-    sort(students.begin(), students.end(), [](const pair<int, string>& a, const pair<int, string>& b) {
-        return a.second < b.second;
+    vector<Student> students = load_students_vector();
+    sort(students.begin(), students.end(), [](const Student& a, const Student& b) {
+        return a.nama < b.nama;
     });
-    save_students(students);
-    cout << "Siswa berhasil diurutkan berdasarkan nama." << endl;
+    for (const Student& student : students) {
+        cout << setw(8) << left << student.id_student << setw(12) << left << student.nama << endl;
+    }
 }
 
 void sort_students_by_id() {
-    auto students = load_students();
-    sort(students.begin(), students.end(), [](const pair<int, string>& a, const pair<int, string>& b) {
-        return a.first < b.first;
+    vector<Student> students = load_students_vector();
+    sort(students.begin(), students.end(), [](Student& a, Student& b) {
+        return a.id_student < b.id_student;
     });
-    save_students(students);
-    cout << "Siswa berhasil diurutkan berdasarkan ID." << endl;
-}
-
-void print_students() {
-    vector<pair<int, string>> students = load_students();
-    cout << "ID Siswa\tNama Siswa" << endl;
-    for (const auto& student : students) {
-        cout << setw(8) << left << student.first  << setw(12) << left << student.second << endl;
+    for (const Student& student : students) {
+        cout << setw(8) << left << student.id_student << setw(12) << left << student.nama << endl;
     }
 }

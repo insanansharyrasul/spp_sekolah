@@ -17,8 +17,8 @@ int hash_id(int id) {
     return SEKOLAH_ID + current_year_hash + id;
 }
 
-void new_siswa() {
-    ifstream inFile(SISWA_DATA_PATH);
+void new_student() {
+    ifstream inFile(STUDENT_DATA_PATH);
     int highest_id = 0;
     bool student_exists = false;
     string line;
@@ -61,14 +61,14 @@ void new_siswa() {
 
     int new_id = hash_id(highest_id % 10 + 1);
     
-    Siswa siswa(new_id, new_name, current_year, 0);
+    Student student(new_id, new_name, current_year, 0);
     
     cout << "Masukkan ID Kelas: ";
-    cin >> siswa.id_kelas;
+    cin >> student.id_kelas;
 
-    ofstream outFile(SISWA_DATA_PATH, ios::app);
+    ofstream outFile(STUDENT_DATA_PATH, ios::app);
     if (outFile.is_open()) {
-        outFile << siswa.id_siswa << "," << siswa.tahun_masuk << "," << siswa.id_kelas << "," << siswa.nama << endl;
+        outFile << student.id_student << "," << student.year_registered << "," << student.id_kelas << "," << student.nama << endl;
         outFile.close();
         cout << GREEN << "Data Siswa berhasil disimpan dengan ID: " << new_id << endl;
         pause_input();

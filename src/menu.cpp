@@ -1,11 +1,9 @@
-#include "menu.hpp"
-#include "siswa.hpp"
-#include "admin.hpp"
-
+#include <menu.hpp>
+#include <siswa.hpp>
+#include <admin.hpp>
 #include <iostream>
 #include <limits>
-
-#include "payment.hpp"
+#include <payment.hpp>
 
 using namespace std;
 
