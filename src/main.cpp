@@ -1,11 +1,9 @@
 #include <iostream>
-using namespace std;
-
 #include <admin.hpp>
 #include <limits>
 #include <siswa.hpp>
-
-#include "menu.hpp"
+#include <menu.hpp>
+using namespace std;
 
 int main() {
     int choice;
@@ -37,11 +35,11 @@ int main() {
             case 2: {
                 bool verification_failed = false;
                 string student_name = "";
-                int id_siswa = -1;
+                int id_student = -1;
                 while ((status == VERIFIED || status == NEED_CONFIRMATION) && !verification_failed) {
                     if (status == NEED_CONFIRMATION) {
-                        id_siswa = verify_siswa(student_name);
-                        if (id_siswa != -1) {
+                        id_student = verify_siswa(student_name);
+                        if (id_student != -1) {
                             status = VERIFIED;
                         } else {
                             status = NOT_VERIFIED;
@@ -57,7 +55,7 @@ int main() {
                     show_menu_siswa(student_name);
                     int choice_siswa;
                     cin >> choice_siswa;
-                    VerificationStatus session = handle_siswa_choice(choice_siswa, id_siswa);
+                    VerificationStatus session = handle_siswa_choice(choice_siswa, id_student);
                     if (session == BACK) {
                         break;
                     }
