@@ -53,10 +53,9 @@ void validate_certificate() {
     size_t certificate_key;
     cout << "Masukkan kunci sertifikat: ";
     cin >> certificate_key;
-    unordered_map<size_t, string> certificate_data = load_certificate_map();
 
-    auto it = certificate_data.find(certificate_key);
-    if (it != certificate_data.end()) {
+    auto it = CERTIFICATE_DATA.find(certificate_key);
+    if (it != CERTIFICATE_DATA.end()) {
         cout << "Sertifikat ditemukan" << endl;
         cout << "Signature: " << it->first << endl;
         split_by_comma(xorEncryptDecrypt(it->second), spp);
@@ -73,25 +72,33 @@ void validate_certificate() {
 
 void write_certificate() {
     PembayaranSPP spp;
-    unordered_map<int, PembayaranSPP> payments = load_spp_map();
     cout << "Masukkan ID SPP: ";
     cin >> spp.id_tagihan;
 
-    if (payments.find(spp.id_tagihan) == payments.end()) {
+    bool found = false;
+    for (PembayaranSPP i : SPP_DATA) {
+        if (i.id_tagihan == spp.id_tagihan) {
+            spp = i;
+            found = true;
+            break;
+        } 
+    }
+
+    if (!found) {
         cout << RED << "ID SPP tidak ditemukan." << endl;
         pause_input();
         return;
-    }
+    } 
 
     cout << "Membuat sertifikat untuk ID SPP: " << spp.id_tagihan << endl;
-    cout << "Siswa ID: " << payments[spp.id_tagihan].id_student << endl;
-    cout << "Nominal: Rp." << fixed << setprecision(2) << payments[spp.id_tagihan].nominal << endl;
-    cout << "Tanggal Pembayaran: " << ctime(&payments[spp.id_tagihan].timestamp) << endl;
+    cout << "Siswa ID: " << spp.id_student << endl;
+    cout << "Nominal: Rp." << fixed << setprecision(2) << spp.nominal << endl;
+    cout << "Tanggal Pembayaran: " << ctime(&spp.timestamp) << endl;
 
-    string data = to_string(payments[spp.id_tagihan].id_tagihan) + "," +
-                  to_string(payments[spp.id_tagihan].id_student) + "," +
-                  to_string(payments[spp.id_tagihan].nominal) + "," +
-                  to_string(payments[spp.id_tagihan].timestamp);
+    string data = to_string(spp.id_tagihan) + "," +
+                  to_string(spp.id_student) + "," +
+                  to_string(spp.nominal) + "," +
+                  to_string(spp.timestamp);
 
     size_t signature = generate_signature(data);
     string encrypted_data = xorEncryptDecrypt(data);
