@@ -30,8 +30,8 @@ unordered_map<size_t, string> load_certificate_map() {
     return certificate_data;
 }
 
-unordered_map<int, PembayaranSPP> load_spp_map() {
-    unordered_map<int, PembayaranSPP> payments;
+vector<PembayaranSPP> load_spp_vector() {
+    vector<PembayaranSPP> payments;
     ifstream inFile(SPP_DATA_PATH);
 
     if (inFile.is_open()) {
@@ -50,7 +50,7 @@ unordered_map<int, PembayaranSPP> load_spp_map() {
             getline(ss, token, ',');
             spp.timestamp = stol(token);
 
-            payments[spp.id_tagihan] = spp;
+            payments.push_back(spp);
         }
         inFile.close();
     } else {
@@ -92,3 +92,7 @@ vector<Student> load_students_vector() {
     siswaFile.close();
     return students;
 }
+
+vector<PembayaranSPP> SPP_DATA = load_spp_vector();
+unordered_map<size_t, string> CERTIFICATE_DATA = load_certificate_map();
+vector<Student> STUDENT_DATA = load_students_vector();
