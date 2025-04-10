@@ -1,11 +1,12 @@
 #include <iostream>
-using namespace std;
-
 #include <payment.hpp>
-
-#include "menu.hpp"
+#include <menu.hpp>
 #include <management.hpp>
 #include <sorting.hpp>
+#include <certificate.hpp>
+using namespace std;
+
+
 
 void show_menu_admin() {
     clrscr();
@@ -21,9 +22,10 @@ void show_menu_admin() {
     cout << WHITE << "2. Daftarkan Siswa Baru" << endl;
     // cout << WHITE << "3. Atur Jadwal Pembayaran" << endl;
     cout << WHITE << "3. Lihat semua siswa" << endl;
-    cout << WHITE << "4. Jawab Pertanyaan Siswa" << endl;
-    cout << WHITE << "5. Kembali ke menu" << endl;
-    cout << WHITE << "6. Exit" << endl;
+    cout << WHITE << "4. Tulis Sertifikat" << endl;
+    cout << WHITE << "5. Jawab Pertanyaan Siswa" << endl;
+    cout << WHITE << "6. Kembali ke menu" << endl;
+    cout << WHITE << "7. Exit" << endl;
     cout << WHITE << "Masukkan pilihanmu: ";
 }
 
@@ -33,21 +35,25 @@ VerificationStatus handle_admin_choice(int choice) {
             show_payment_list();
             break;
         case 2:
-            new_siswa();
+            new_student();
             break;
         case 3:
-            print_students();
+            clrscr();
+            sort_students_by_name();
             pause_input();
             break;
         case 4:
+            write_certificate();
             break;
         case 5:
+            break;
+        case 6:
             cout << "Kembali ke menu utama..." << endl;
             pause_input();
             clrscr();
             return BACK;
             break;
-        case 6:
+        case 7:
             cout << "Exiting..." << endl;
             exit(0);
         default:

@@ -1,14 +1,13 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-using namespace std;
-
 #include <limits>
 #include <payment.hpp>
-
-#include "menu.hpp"
-#include "siswa.hpp"
+#include <menu.hpp>
+#include <siswa.hpp>
 #include <file_path.hpp>
+#include <certificate.hpp>
+using namespace std;
 
 int verify_siswa(string& student_name) {
     clrscr();
@@ -16,7 +15,7 @@ int verify_siswa(string& student_name) {
     int id;
     cin >> id;
 
-    ifstream siswaFile(SISWA_DATA_PATH);
+    ifstream siswaFile(STUDENT_DATA_PATH);
     string line;
     bool found = false;
 
@@ -77,20 +76,20 @@ void show_menu_siswa(string student_name) {
     cout << WHITE << "Masukkan pilihanmu: ";
 }
 
-VerificationStatus handle_siswa_choice(int choice, int id_siswa) {
+VerificationStatus handle_siswa_choice(int choice, int id_student) {
     switch (choice) {
         case 1:
-            search_payment_status(id_siswa);
+            search_payment_status(id_student);
             break;
         case 2:
             // show_payment_list();
-            pay_tuition_fee(id_siswa);
+            pay_tuition_fee(id_student);
             break;
         case 3:
             // search_payment_status();
             break;
         case 4:
-            // search_payment_status();
+            validate_certificate();
             break;
         case 5:
             cout << "Going back to main menu..." << endl;
