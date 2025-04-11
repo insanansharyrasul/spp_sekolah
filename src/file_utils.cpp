@@ -78,9 +78,9 @@ unordered_map<int, Student> load_students_map() {
             getline(ss, token, ',');
             student.year_registered = stoi(token);
             getline(ss, token, ',');
-            student.id_kelas = stoi(token);
+            student.id_class = stoi(token);
             getline(ss, token, ',');
-            student.nama = token;
+            student.name = token;
 
             students[student.id_student] = student;
         }
@@ -114,8 +114,8 @@ void append_student(Student student) {
     if (outFile.is_open()) {
         outFile << student.id_student << ","
                 << student.year_registered << ","
-                << student.id_kelas << ","
-                << student.nama << endl;
+                << student.id_class << ","
+                << student.name << endl;
         outFile.close();
     } else {
         cout << RED << "Gagal menyimpan data." << endl;
