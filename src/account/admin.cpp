@@ -32,15 +32,13 @@ void show_menu_admin() {
 VerificationStatus handle_admin_choice(int choice) {
     switch (choice) {
         case 1:
-            show_payment_list();
+            display_sorted_payment();
+            // show_payment_list();
             break;
         case 2:
             new_student();
             break;
         case 3:
-            clrscr();
-            sort_students_by_name();
-            pause_input();
             break;
         case 4:
             write_certificate();
