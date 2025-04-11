@@ -18,7 +18,7 @@ struct Student {
 
 struct PembayaranSPP {
     int id_student;
-    int id_tagihan;
+    std::string id_tagihan;
     double nominal;
     time_t timestamp;
 

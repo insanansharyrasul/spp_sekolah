@@ -6,6 +6,7 @@
 #include <menu.hpp>
 #include <iostream>
 #include <unordered_map>
+#include <iomanip>
 using namespace std;
 
 unordered_map<size_t, string> load_certificate_map() {
@@ -30,8 +31,8 @@ unordered_map<size_t, string> load_certificate_map() {
     return certificate_data;
 }
 
-vector<PembayaranSPP> load_spp_vector() {
-    vector<PembayaranSPP> payments;
+unordered_map<string, PembayaranSPP> load_spp_map() {
+    unordered_map<string, PembayaranSPP> payments;
     ifstream inFile(SPP_DATA_PATH);
 
     if (inFile.is_open()) {
@@ -42,7 +43,7 @@ vector<PembayaranSPP> load_spp_vector() {
             string token;
 
             getline(ss, token, ',');
-            spp.id_tagihan = stoi(token);
+            spp.id_tagihan = token;
             getline(ss, token, ',');
             spp.id_student = stoi(token);
             getline(ss, token, ',');
@@ -50,7 +51,7 @@ vector<PembayaranSPP> load_spp_vector() {
             getline(ss, token, ',');
             spp.timestamp = stol(token);
 
-            payments.push_back(spp);
+            payments[spp.id_tagihan] = spp;
         }
         inFile.close();
     } else {
@@ -60,9 +61,9 @@ vector<PembayaranSPP> load_spp_vector() {
     return payments;
 };
 
-vector<Student> load_students_vector() {
+unordered_map<int, Student> load_students_map() {
     Student student;
-    vector<Student> students;
+    unordered_map<int, Student> students;
     ifstream siswaFile(STUDENT_DATA_PATH);
     string line;
 
@@ -81,7 +82,7 @@ vector<Student> load_students_vector() {
             getline(ss, token, ',');
             student.nama = token;
 
-            students.push_back(student);
+            students[student.id_student] = student;
         }
     } else {
         cout << RED << "Gagal membaca data siswa." << endl;
@@ -93,6 +94,45 @@ vector<Student> load_students_vector() {
     return students;
 }
 
-vector<PembayaranSPP> SPP_DATA = load_spp_vector();
+void append_spp(PembayaranSPP spp) {
+    time_t current_time = time(0);
+    ofstream outFile(SPP_DATA_PATH, ios::app);
+    if (outFile.is_open()) {
+        outFile << fixed << setprecision(2)
+                << spp.id_tagihan << ","
+                << spp.id_student << "," 
+                << spp.nominal << "," 
+                << current_time << endl;
+        outFile.close();
+    } else {
+        cout << RED << "Gagal menyimpan data." << endl;
+    }
+}
+
+void append_student(Student student) {
+    ofstream outFile(STUDENT_DATA_PATH, ios::app);
+    if (outFile.is_open()) {
+        outFile << student.id_student << ","
+                << student.year_registered << ","
+                << student.id_kelas << ","
+                << student.nama << endl;
+        outFile.close();
+    } else {
+        cout << RED << "Gagal menyimpan data." << endl;
+    }
+}
+
+void append_certificate(size_t hash_key, string data) {
+    ofstream outFile(CERTIFICATE_PATH, ios::app);
+    if (outFile.is_open()) {
+        outFile << hash_key
+                << "," << data << endl;
+        outFile.close();
+    } else {
+        cout << RED << "Gagal menyimpan sertifikat." << endl;
+    }
+}
+
+unordered_map<string, PembayaranSPP> SPP_DATA = load_spp_map();
 unordered_map<size_t, string> CERTIFICATE_DATA = load_certificate_map();
-vector<Student> STUDENT_DATA = load_students_vector();
+unordered_map<int, Student> STUDENT_DATA = load_students_map();

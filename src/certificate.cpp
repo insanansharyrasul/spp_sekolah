@@ -76,13 +76,12 @@ void write_certificate() {
     cin >> spp.id_tagihan;
 
     bool found = false;
-    for (PembayaranSPP i : SPP_DATA) {
-        if (i.id_tagihan == spp.id_tagihan) {
-            spp = i;
-            found = true;
-            break;
-        } 
+    auto it = SPP_DATA.find(spp.id_tagihan);
+    if (it != SPP_DATA.end()) {
+        spp = it->second;
+        found = true;
     }
+
 
     if (!found) {
         cout << RED << "ID SPP tidak ditemukan." << endl;
@@ -95,7 +94,7 @@ void write_certificate() {
     cout << "Nominal: Rp." << fixed << setprecision(2) << spp.nominal << endl;
     cout << "Tanggal Pembayaran: " << ctime(&spp.timestamp) << endl;
 
-    string data = to_string(spp.id_tagihan) + "," +
+    string data = spp.id_tagihan + "," +
                   to_string(spp.id_student) + "," +
                   to_string(spp.nominal) + "," +
                   to_string(spp.timestamp);

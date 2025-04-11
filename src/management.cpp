@@ -18,6 +18,7 @@ int hash_id(int id) {
 }
 
 void new_student() {
+    time_init();
     ifstream inFile(STUDENT_DATA_PATH);
     int highest_id = 0;
     bool student_exists = false;
