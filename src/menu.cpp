@@ -4,6 +4,7 @@
 #include <iostream>
 #include <limits>
 #include <payment.hpp>
+#include <color.hpp>
 
 using namespace std;
 

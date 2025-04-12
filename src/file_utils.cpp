@@ -7,6 +7,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <iomanip>
+#include <color.hpp>
 using namespace std;
 
 unordered_map<size_t, string> load_certificate_map() {

@@ -8,6 +8,7 @@
 #include <file_path.hpp>
 #include <certificate.hpp>
 #include <file_utils.hpp>
+#include <color.hpp>
 using namespace std;
 
 int verify_siswa(string& student_name) {
