@@ -2,8 +2,9 @@
 #include <iostream>
 #include <utils/ui_helpers.hpp>
 
-StudentController::StudentController(StudentRepository& repo) : studentRepo(repo) {
-}
+StudentController::StudentController(StudentService& studentService,
+                                     PaymentService& paymentService) : studentRepo(studentService),
+                                                                      paymentService(paymentService) {}
 
 void StudentController::showDashboard(int studentId) {
     while (true) {

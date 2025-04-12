@@ -5,12 +5,12 @@
 class AdminController {
    private:
     StudentService& studentService;
-    // PaymentService& paymentService;
+    PaymentService& paymentService;
     // CertificateService& certService;
 
    public:
-    AdminController(StudentService& studentService
-                    // PaymentService& paymentService,
+    AdminController(StudentService& studentService,
+                    PaymentService& paymentService
                     // CertificateService& certService
                    );
 

@@ -1,6 +1,10 @@
 #include <iostream>
 #include <limits>
 #include <utils/ui_helpers.hpp>
+#include <vector>
+#include <functional>
+#include <models/student.hpp> 
+#include <models/payment.hpp> 
 
 namespace UI {
 // ANSI color code definitions
@@ -35,4 +39,29 @@ void display_footer() {
     std::cout << std::endl
               << Color::CYAN << "=====================" << Color::RESET << std::endl;
 }
+
+void draw_table_separator(const std::vector<int>& column_widths) {
+    for (const auto& width : column_widths) {
+        std::cout << "+";
+        for (int i = 0; i < width + 2; ++i) {
+            std::cout << "-";
+        }
+    }
+    std::cout << "+" << std::endl;
+}
+
+void draw_table_header(const std::vector<std::string>& headers, const std::vector<int>& column_widths) {
+    draw_table_separator(column_widths);
+    std::cout << "|";
+    for (size_t i = 0; i < headers.size(); ++i) {
+        std::cout << " " << headers[i];
+        for (int j = headers[i].length(); j < column_widths[i]; ++j) {
+            std::cout << " ";
+        }
+        std::cout << " |";
+    }
+    std::cout << std::endl;
+    draw_table_separator(column_widths);
+}
+
 }  // namespace UI

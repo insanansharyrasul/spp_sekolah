@@ -1,14 +1,12 @@
-#include <payment_service.hpp>
-#include <student_repository.hpp>
+#include <services/payment_service.hpp>
+#include <services/student_service.hpp>
 class StudentController {
    private:
-    StudentRepository& studentRepo;
-    // PaymentService& paymentService;
+    StudentService& studentRepo;
+    PaymentService& paymentService;
 
    public:
-    StudentController(StudentRepository& repo
-                      //  PaymentService& service
-    );
+    StudentController(StudentService& studentService, PaymentService& paymentService);
 
     // UI handling methods
     void showDashboard(int studentId);

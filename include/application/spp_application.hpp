@@ -10,7 +10,7 @@ class UserSession {
         bool isStudent;
         int currentStudentId;
     
-    UserSession() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1)  {}
+    UserSession();
 };
 
 class SppApplication {
@@ -21,11 +21,11 @@ class SppApplication {
 
     // Repositories
     StudentRepository studentRepo;
-    // PaymentRepository paymentRepo;
+    PaymentRepository paymentRepo;
 
     // Services
     StudentService studentService;
-    // PaymentService paymentService;
+    PaymentService paymentService;
     // CertificateService certService;
 
     // Controllers

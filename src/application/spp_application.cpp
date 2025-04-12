@@ -2,14 +2,15 @@
 #include <iostream>
 #include <utils/ui_helpers.hpp>
 
+UserSession::UserSession() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1) {}
+
 SppApplication::SppApplication()
     : studentRepo("../data/students.txt"),
-      //   paymentRepo("../data/payments.txt"),
-      //   paymentService(paymentRepo, studentRepo),
-      //   certService(paymentRepo),
+      paymentRepo("../data/payments.txt"),
+      paymentService(paymentRepo, studentRepo),
       studentService(studentRepo),
-      adminController(studentService),
-      studentController(studentRepo) {}
+      adminController(studentService, paymentService),
+      studentController(studentService, paymentService) {}
 
 void SppApplication::initialize() {
     UI::clrscr();
@@ -21,11 +22,7 @@ void SppApplication::initialize() {
     std::cout << "Memuat data..." << std::endl;
 
     std::cout << UI::Color::GREEN << "Data berhasil dimuat!" << UI::Color::RESET << std::endl;
-
-    std::cout << std::endl
-              << "Tekan Enter untuk melanjutkan...";
-    std::cin.ignore();
-    std::cin.get();
+    UI::pause_input();
 }
 
 void SppApplication::run() {
@@ -37,10 +34,10 @@ void SppApplication::run() {
 
         if (session.isAdmin) {
             adminController.showDashboard();
-            session.isAuthenticated = false;  
+            session.isAuthenticated = false;
         } else if (session.isStudent) {
             studentController.showDashboard(session.currentStudentId);
-            session.isAuthenticated = false;  
+            session.isAuthenticated = false;
         }
     }
 }

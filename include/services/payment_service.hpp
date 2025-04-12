@@ -24,4 +24,5 @@ class PaymentService {
     // Reporting functionality
     double calculateTotalPayments(int year, int month);
     std::vector<Payment> getOverduePayments();
+    std::vector<Payment> getAllPayments();
 };
