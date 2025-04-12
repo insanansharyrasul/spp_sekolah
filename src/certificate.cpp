@@ -9,6 +9,7 @@
 #include <file_utils.hpp>
 #include <file_path.hpp>
 #include <data.hpp>
+#include <color.hpp>
 using namespace std;
 
 namespace {

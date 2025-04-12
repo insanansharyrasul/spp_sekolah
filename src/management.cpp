@@ -9,6 +9,7 @@
 #include <time_set.hpp>
 #include <file_utils.hpp>
 #include <file_utils.hpp>
+#include <color.hpp>
 
 using namespace std;
 

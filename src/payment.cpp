@@ -11,6 +11,7 @@
 #include <string>
 #include <time_set.hpp>
 #include <vector>
+#include <color.hpp>
 
 using namespace std;
 
