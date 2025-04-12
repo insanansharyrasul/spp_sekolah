@@ -8,6 +8,7 @@
 #include <file_path.hpp>
 #include <time_set.hpp>
 #include <file_utils.hpp>
+#include <file_utils.hpp>
 
 using namespace std;
 
@@ -27,7 +28,15 @@ void new_student() {
         }
     }
 
+    for (const auto& pair : STUDENT_DATA) {
+        if (pair.first > highest_id) {
+            highest_id = pair.first;
+        }
+    }
+
     bool student_exists = false;
+    int current_year = timeinfo->tm_year + 1900;
+    int new_id = hash_id(highest_id % 10 + 1);
     int current_year = timeinfo->tm_year + 1900;
     int new_id = hash_id(highest_id % 10 + 1);
     string new_name;
@@ -39,6 +48,7 @@ void new_student() {
     Student student(new_id, new_name, current_year, 0);
     
     cout << "Masukkan ID Kelas: ";
+    cin >> student.id_class;
     cin >> student.id_class;
 
     STUDENT_DATA[new_id] = student;
