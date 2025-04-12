@@ -37,15 +37,14 @@ void SppApplication::run() {
 
         if (session.isAdmin) {
             adminController.showDashboard();
-            session.isAuthenticated = false;  // Log out after exiting dashboard
-        } else {
+            session.isAuthenticated = false;  
+        } else if (session.isStudent) {
             studentController.showDashboard(session.currentStudentId);
-            session.isAuthenticated = false;  // Log out after exiting dashboard
+            session.isAuthenticated = false;  
         }
     }
 }
 
-// Add this private method to your SppApplication class
 void SppApplication::showLoginMenu() {
     UI::clrscr();
     std::cout << UI::Color::CYAN << "=== LOGIN ===" << UI::Color::RESET << std::endl
@@ -104,9 +103,11 @@ void SppApplication::showLoginMenu() {
             if (student) {
                 session.isAuthenticated = true;
                 session.isAdmin = false;
+                session.isStudent = true;
                 session.currentStudentId = studentId;
                 std::cout << UI::Color::GREEN << "Login berhasil! Welcome, "
                           << student->getName() << "!" << UI::Color::RESET << std::endl;
+                UI::pause_input();
             } else {
                 std::cout << UI::Color::RED << "Login gagal! Student tidak ditemukan."
                           << UI::Color::RESET << std::endl;

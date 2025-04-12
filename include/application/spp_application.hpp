@@ -7,9 +7,10 @@ class UserSession {
     public:
         bool isAuthenticated;
         bool isAdmin;
+        bool isStudent;
         int currentStudentId;
     
-    UserSession() : isAuthenticated(false), isAdmin(false), currentStudentId(-1) {}
+    UserSession() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1)  {}
 };
 
 class SppApplication {

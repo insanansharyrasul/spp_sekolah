@@ -11,7 +11,6 @@ class StudentController {
     );
 
     // UI handling methods
-    void setCurrentStudentId(int studentId);
     void showDashboard(int studentId);
     void viewProfile(int studentId);
     void viewPayments(int studentId);

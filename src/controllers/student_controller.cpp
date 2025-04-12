@@ -6,29 +6,31 @@ StudentController::StudentController(StudentRepository& repo) : studentRepo(repo
 }
 
 void StudentController::showDashboard(int studentId) {
-    UI::clrscr();
-    std::cout << UI::Color::CYAN << "=== STUDENT DASHBOARD ===" << UI::Color::RESET << std::endl
-              << std::endl;
-    std::cout << "1. View My Profile" << std::endl;
-    std::cout << "2. View My Payments" << std::endl;
-    std::cout << "0. Logout" << std::endl;
+    while (true) {
+        UI::clrscr();
+        std::cout << UI::Color::CYAN << "=== STUDENT DASHBOARD ===" << UI::Color::RESET << std::endl
+                  << std::endl;
+        std::cout << "1. View My Profile" << std::endl;
+        std::cout << "2. View My Payments" << std::endl;
+        std::cout << "0. Logout" << std::endl;
 
-    int choice;
-    std::cout << "\nPilihan: ";
-    std::cin >> choice;
+        int choice;
+        std::cout << "\nPilihan: ";
+        std::cin >> choice;
 
-    switch (choice) {
-        case 0:
-            return;  // Return to main menu/logout
-        case 1:
-            viewProfile(studentId);
-            break;
-        case 2:
-            viewPayments(studentId);
-            break;
-        default:
-            std::cout << UI::Color::RED << "Pilihan tidak valid!" << UI::Color::RESET << std::endl;
-            UI::pause_input();
+        switch (choice) {
+            case 1:
+                viewProfile(studentId);
+                break;
+            case 2:
+                viewPayments(studentId);
+                break;
+            case 0:
+                return;  // Return to main menu/logout
+            default:
+                std::cout << UI::Color::RED << "Pilihan tidak valid!" << UI::Color::RESET << std::endl;
+                UI::pause_input();
+        }
     }
 }
 
