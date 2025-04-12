@@ -1,178 +1,107 @@
+#include <certificate.hpp>
+#include <data.hpp>
 #include <file_path.hpp>
+#include <file_utils.hpp>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <menu.hpp>
 #include <sstream>
 #include <string>
 #include <time_set.hpp>
-#include <data.hpp>
-#include <menu.hpp>
 #include <vector>
-#include <certificate.hpp>
-
 
 using namespace std;
 
 void pay_tuition_fee(int id_student) {
+    clrscr();
     time_init();
     PembayaranSPP spp;
     spp.id_student = id_student;
 
-    ifstream inFile(SPP_DATA_PATH);
-    string line;
-    int last_id_tagihan = 0;
-
-    if (inFile.is_open()) {
-        while (getline(inFile, line)) {
-            stringstream ss(line);
-            string token;
-            getline(ss, token, ',');
-            int id_tagihan = stoi(token);
-            last_id_tagihan = id_tagihan;
-        }
-        inFile.close();
+    char date_part[7];
+    strftime(date_part, sizeof(date_part), "%Y%m", timeinfo);
+    spp.id_tagihan = std::string(date_part) + "-" + std::to_string(id_student);
+    
+    int suffix = 1;
+    string base_id = spp.id_tagihan;
+    while (SPP_DATA.find(spp.id_tagihan) != SPP_DATA.end()) {
+        spp.id_tagihan = base_id + "-" + std::to_string(suffix++);
     }
-
-    spp.id_tagihan = last_id_tagihan + 1;
 
     cout << "Masukkan nominal: ";
     cin >> spp.nominal;
 
-    ofstream outFile;
-    outFile.open(SPP_DATA_PATH, ios::app);
-
-    char date_buffer[30];
-    strftime(date_buffer, sizeof(date_buffer), " %d-%m-%Y %H:%M:%S",
-             localtime_r(&current_time, timeinfo));
-
-    if (outFile.is_open()) {
-        cout << "Pembayaran sebesar Rp." << spp.nominal << " untuk " << spp.id_student << " telah diproses." << endl;
-        cout << "Pembayaran dilakukan pada: " << date_buffer << endl;
-        outFile << spp.id_tagihan << "," << spp.id_student << "," << fixed << setprecision(2) << spp.nominal << "," << current_time << endl;
-        pause_input();
-        outFile.close();
-    } else {
-        cout << RED << "Gagal menyimpan data." << endl;
-    }
-}
-
-void show_payment_list() {
-    time_init();
-    ifstream inFile(SPP_DATA_PATH);
-    string line;
-
-    if (inFile.is_open()) {
-        clrscr();
-
-        cout << "│" << setw(10) << left << " ID SPP" << "│"
-             << setw(10) << left << " Siswa ID" << "│"
-             << setw(15) << left << " Nominal (Rp)" << "│"
-             << setw(30) << left << " Tanggal Pembayaran" << "│" << endl;
-
-        cout << "│" << setw(10) << left << " " << "│"
-             << setw(10) << left << " " << "│"
-             << setw(15) << right << " " << "│"
-             << setw(30) << left << " " << "│" << endl;
-
-        while (getline(inFile, line)) {
-            stringstream ss(line);
-            string token;
-
-            getline(ss, token, ',');
-            int id_tagihan = stoi(token);
-            getline(ss, token, ',');
-            int id_student = stoi(token);
-            getline(ss, token, ',');
-            double amount = stod(token);
-            getline(ss, token, ',');
-            time_t timestamp = stol(token);
-            char date_buffer[30];
-            strftime(date_buffer, sizeof(date_buffer), " %d-%m-%Y %H:%M:%S",
-                     localtime_r(&timestamp, timeinfo));
-
-            cout << "│" << " " << setw(9) << left << id_tagihan << "│"
-                 << " " << setw(9) << left << id_student << "│"
-                 << setw(14) << right << fixed << setprecision(2) << amount << " │"
-                 << setw(30) << left << date_buffer << "│" << endl;
-        }
-
-        pause_input();
-        inFile.close();
-    } else {
-        cout << RED << "Gagal membaca data" << endl;
-        pause_input();
-    }
+    append_spp(spp);
+    SPP_DATA[spp.id_tagihan] = spp;
+    cout << "Pembayaran sebesar Rp." << spp.nominal << " untuk " << spp.id_student << " telah diproses." << endl;
+    cout << "Pembayaran dilakukan pada: " << ctime(&current_time) << endl;
+    pause_input();
 }
 
 void search_payment_status(int id_student) {
-    time_init();
+    clrscr();
+    int year, month, day;
     PembayaranSPP spp;
-    spp.id_student = id_student;
-    string student_name = "UNKNOWN";
+    Student student;
 
-    ifstream inFile(SPP_DATA_PATH);
-    ifstream siswaFile(STUDENT_DATA_PATH);
-    string line;
+    cout << "Masukkan tahun tagihan (YYYY): ";
+    cin >> year;
+    cout << endl;
+    cout << "Masukkan bulan tagihan (1-12): ";
+    cin >> month;
+    cout << endl;
+    cout << "Masukkan tanggal tagihan(1-31): ";
+    cin >> day;
 
-    if (siswaFile.is_open()) {
-        while (getline(siswaFile, line)) {
-            stringstream ss(line);
-            string token;
-            string name;
+    string id_tagihan = to_string(year) +
+                        (month < 10 ? "0" : "") +
+                        to_string(month) +
+                        to_string(id_student);
 
-            getline(ss, token, ',');
-            int current_id = stoi(token);
-
-            if (current_id == id_student) {
-                getline(ss, token, ',');
-                student_name = token;
-                break;
-            }
-        }
-        siswaFile.close();
+    auto it_spp = SPP_DATA.find(id_tagihan);
+    if (it_spp != SPP_DATA.end()) {
+        spp = it_spp->second;
     } else {
-        cout << RED << "Gagal membaca data siswa." << endl;
+        cout << RED << "Pembayaran tidak ditemukan." << endl;
         pause_input();
         return;
     }
 
-    bool found = false;
-    if (inFile.is_open()) {
-        while (getline(inFile, line)) {
-            stringstream ss(line);
-            string token;
-
-            getline(ss, token, ',');
-            int id_tagihan = stoi(token);
-            getline(ss, token, ',');
-            int id_student = stoi(token);
-            getline(ss, token, ',');
-            double amount = stod(token);
-            getline(ss, token, ',');
-            time_t timestamp = stol(token);
-
-            char date_buffer[30];
-            strftime(date_buffer, sizeof(date_buffer), " %d-%m-%Y %H:%M:%S",
-                     localtime_r(&timestamp, timeinfo));
-
-            if (id_student == spp.id_student) {
-                cout << "Pembayaran untuk " << student_name << ": Dibayar" << endl;
-                cout << "Pada tanggal: " << date_buffer << endl;
-                found = true;
-                pause_input();
-                inFile.close();
-                break;
-            }
-        }
-
-        if (!found) {
-            inFile.close();
-            cout << "Pembayaran untuk " << student_name << ": Belum Dibayar" << endl;
-            pause_input();
-        }
+    auto it_student = STUDENT_DATA.find(id_student);
+    if (it_student != STUDENT_DATA.end()) {
+        student = it_student->second;
     } else {
-        cout << RED << "Gagal membaca data." << endl;
+        cout << RED << "Siswa tidak ditemukan." << endl;
         pause_input();
+        return;
     }
+
+    clrscr();
+    cout << "Pembayaran untuk siswa ID " << id_student << endl;
+    cout << "----------------------------------------" << endl;
+    cout << "Nama Siswa:" << student.name << endl;
+    cout << "ID Tagihan: " << spp.id_tagihan << endl;
+    cout << "Nominal: Rp." << spp.nominal << endl;
+    cout << "Tanggal: " << ctime(&current_time) << endl;
+    cout << "----------------------------------------" << endl;
+    pause_input();
+}
+
+void set_tuition() {
+    clrscr();
+    cout << "Masukkan nominal SPP: ";
+    int nominal;
+    cin >> nominal;
+
+    ofstream file(SPP_DATA_PATH);
+    if (file.is_open()) {
+        file << nominal;
+        file.close();
+        cout << "Nominal SPP berhasil disimpan." << endl;
+    } else {
+        cout << RED << "Gagal menyimpan data SPP." << endl;
+    }
+    pause_input();
 }

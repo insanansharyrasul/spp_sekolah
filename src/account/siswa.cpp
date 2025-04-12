@@ -7,6 +7,7 @@
 #include <siswa.hpp>
 #include <file_path.hpp>
 #include <certificate.hpp>
+#include <file_utils.hpp>
 using namespace std;
 
 int verify_siswa(string& student_name) {
@@ -15,42 +16,14 @@ int verify_siswa(string& student_name) {
     int id;
     cin >> id;
 
-    ifstream siswaFile(STUDENT_DATA_PATH);
-    string line;
-    bool found = false;
-
-    if (siswaFile.is_open()) {
-        while (getline(siswaFile, line)) {
-            stringstream ss(line);
-            string token;
-
-            getline(ss, token, ',');
-            int current_id = stoi(token);
-            getline(ss, token, ',');
-            int year = stoi(token);
-            getline(ss, token, ',');
-            int class_id = stoi(token);
-
-            if (current_id == id) {
-                getline(ss, token, ',');
-                student_name = token;
-                found = true;
-                break;
-            }
-        }
-        siswaFile.close();
-
-        if (found) {
-            cout << "Siswa " << student_name << " berhasil terverifikasi." << endl;
-            pause_input();
-            return id;
-        } else {
-            cout << "ID Siswa tidak ditemukan dalam sistem." << endl;
-            pause_input();
-            return -1;
-        }
+    auto it = STUDENT_DATA.find(id);
+    if (it != STUDENT_DATA.end()) {
+        student_name = it->second.name;
+        cout << "Siswa " << student_name << " berhasil terverifikasi." << endl;
+        pause_input();
+        return id;
     } else {
-        cout << RED << "Gagal membaca data siswa." << endl;
+        cout << "ID Siswa tidak ditemukan dalam sistem." << endl;
         pause_input();
         return -1;
     }
