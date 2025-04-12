@@ -1,5 +1,5 @@
 #include <iostream>
-#include "stack.hpp"
+#include <stack.hpp>
 using namespace std;
 
 template <typename T>

@@ -36,7 +36,7 @@ struct PembayaranSPP {
     bool is_overdue() const {
         return deadline > 0 && time(0) > deadline;
     }
-    
+
     int days_remaining() const {
         if (deadline == 0) return 0;
         return (deadline - time(0)) / 86400;

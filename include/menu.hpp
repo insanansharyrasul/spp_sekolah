@@ -1,5 +1,5 @@
 #pragma once
- 
+
 void pause_input();
 void show_menu();
 bool handle_user_choice(int);

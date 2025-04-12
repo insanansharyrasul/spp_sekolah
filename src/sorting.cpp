@@ -19,25 +19,26 @@ void display_sorted_payment() {
     }
 
     sort(payments.begin(), payments.end(), [](const PembayaranSPP& a, const PembayaranSPP& b) {
-        return a.timestamp > b.timestamp; 
+        return a.timestamp > b.timestamp;
     });
-    
+
     string sort_method = "Tanggal (Terbaru)";
     bool continue_sorting = true;
-    
+
     while (continue_sorting) {
         clrscr();
-        cout << "DATA PEMBAYARAN - Diurutkan berdasarkan: " << sort_method << endl << endl;
-        
-        cout << "+" << string(10, '-') << "+" << string(10, '-') << "+" 
+        cout << "DATA PEMBAYARAN - Diurutkan berdasarkan: " << sort_method << endl
+             << endl;
+
+        cout << "+" << string(10, '-') << "+" << string(10, '-') << "+"
              << string(15, '-') << "+" << string(30, '-') << "+" << endl;
-             
+
         cout << "│" << setw(10) << left << " ID SPP" << "│"
              << setw(10) << left << " Siswa ID" << "│"
              << setw(15) << left << " Nominal (Rp)" << "│"
              << setw(30) << left << " Tanggal Pembayaran" << "│" << endl;
-             
-        cout << "+" << string(10, '-') << "+" << string(10, '-') << "+" 
+
+        cout << "+" << string(10, '-') << "+" << string(10, '-') << "+"
              << string(15, '-') << "+" << string(30, '-') << "+" << endl;
 
         for (const PembayaranSPP& payment : payments) {
@@ -51,10 +52,10 @@ void display_sorted_payment() {
                  << setw(14) << right << fixed << setprecision(2) << payment.nominal << " │"
                  << " " << setw(29) << left << date_str << "│" << endl;
         }
-        
-        cout << "+" << string(10, '-') << "+" << string(10, '-') << "+" 
+
+        cout << "+" << string(10, '-') << "+" << string(10, '-') << "+"
              << string(15, '-') << "+" << string(30, '-') << "+" << endl;
-        
+
         cout << "\n=== OPSI PENGURUTAN ===" << endl;
         cout << "1. Berdasarkan ID SPP" << endl;
         cout << "2. Berdasarkan ID Siswa" << endl;
@@ -64,7 +65,7 @@ void display_sorted_payment() {
         cout << "6. Berdasarkan Nominal (Terkecil)" << endl;
         cout << "7. Kembali ke Menu Utama" << endl;
         cout << "\nPilihan Anda: ";
-        
+
         int option;
         cin >> option;
 

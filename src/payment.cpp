@@ -1,4 +1,5 @@
 #include <certificate.hpp>
+#include <color.hpp>
 #include <data.hpp>
 #include <file_path.hpp>
 #include <file_utils.hpp>
@@ -11,7 +12,6 @@
 #include <string>
 #include <time_set.hpp>
 #include <vector>
-#include <color.hpp>
 
 using namespace std;
 
@@ -24,7 +24,7 @@ void pay_tuition_fee(int id_student) {
     char date_part[7];
     strftime(date_part, sizeof(date_part), "%Y%m", timeinfo);
     spp.id_tagihan = std::string(date_part) + "-" + std::to_string(id_student);
-    
+
     int suffix = 1;
     string base_id = spp.id_tagihan;
     while (SPP_DATA.find(spp.id_tagihan) != SPP_DATA.end()) {

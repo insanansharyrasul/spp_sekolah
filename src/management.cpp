@@ -1,18 +1,16 @@
+#include <color.hpp>
 #include <data.hpp>
+#include <file_path.hpp>
+#include <file_utils.hpp>
 #include <fstream>
 #include <iostream>
 #include <management.hpp>
 #include <menu.hpp>
-#include <string>
 #include <sstream>
-#include <file_path.hpp>
+#include <string>
 #include <time_set.hpp>
-#include <file_utils.hpp>
-#include <file_utils.hpp>
-#include <color.hpp>
 
 using namespace std;
-
 
 int hash_id(int id) {
     time_init();
@@ -39,13 +37,13 @@ void new_student() {
     int current_year = timeinfo->tm_year + 1900;
     int new_id = hash_id(highest_id % 10 + 1);
     string new_name;
-    
+
     cout << "Masukkan Nama Siswa: ";
     cin.ignore();
     getline(cin, new_name);
-    
+
     Student student(new_id, new_name, current_year, 0);
-    
+
     cout << "Masukkan ID Kelas: ";
     cin >> student.id_class;
 

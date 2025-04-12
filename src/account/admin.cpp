@@ -1,13 +1,11 @@
-#include <iostream>
-#include <payment.hpp>
-#include <menu.hpp>
-#include <management.hpp>
-#include <sorting.hpp>
 #include <certificate.hpp>
 #include <color.hpp>
+#include <iostream>
+#include <management.hpp>
+#include <menu.hpp>
+#include <payment.hpp>
+#include <sorting.hpp>
 using namespace std;
-
-
 
 void show_menu_admin() {
     clrscr();

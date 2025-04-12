@@ -12,10 +12,9 @@ inline void time_init() {
     current_time = time(0);
     timeinfo = &timeinfo_data;
 
-    #if defined(_WIN32)
-        localtime_s(timeinfo, &current_time);
-    #else 
-        localtime_r(&current_time, timeinfo);
-    #endif
-
+#if defined(_WIN32)
+    localtime_s(timeinfo, &current_time);
+#else
+    localtime_r(&current_time, timeinfo);
+#endif
 }

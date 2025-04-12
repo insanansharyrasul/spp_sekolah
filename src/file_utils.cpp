@@ -1,13 +1,13 @@
+#include <color.hpp>
 #include <file_path.hpp>
 #include <file_utils.hpp>
 #include <fstream>
-#include <vector>
-#include <sstream>
-#include <menu.hpp>
-#include <iostream>
-#include <unordered_map>
 #include <iomanip>
-#include <color.hpp>
+#include <iostream>
+#include <menu.hpp>
+#include <sstream>
+#include <unordered_map>
+#include <vector>
 using namespace std;
 
 unordered_map<size_t, string> load_certificate_map() {
@@ -101,8 +101,8 @@ void append_spp(PembayaranSPP spp) {
     if (outFile.is_open()) {
         outFile << fixed << setprecision(2)
                 << spp.id_tagihan << ","
-                << spp.id_student << "," 
-                << spp.nominal << "," 
+                << spp.id_student << ","
+                << spp.nominal << ","
                 << current_time << endl;
         outFile.close();
     } else {

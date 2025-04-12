@@ -1,15 +1,15 @@
-#include <unordered_map>
-#include <string>
-#include <sstream>
-#include <menu.hpp>
-#include <iostream>
-#include <iomanip>
-#include <functional>
-#include <fstream>
-#include <file_utils.hpp>
-#include <file_path.hpp>
-#include <data.hpp>
 #include <color.hpp>
+#include <data.hpp>
+#include <file_path.hpp>
+#include <file_utils.hpp>
+#include <fstream>
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <menu.hpp>
+#include <sstream>
+#include <string>
+#include <unordered_map>
 using namespace std;
 
 namespace {
@@ -39,7 +39,6 @@ void save_certificate(size_t hash_key, const string& data) {
         cout << RED << "Gagal menyimpan sertifikat." << endl;
     }
 }
-
 
 void split_by_comma(string line, vector<string>& tokens) {
     stringstream ss(line);
@@ -83,12 +82,11 @@ void write_certificate() {
         found = true;
     }
 
-
     if (!found) {
         cout << RED << "ID SPP tidak ditemukan." << endl;
         pause_input();
         return;
-    } 
+    }
 
     cout << "Membuat sertifikat untuk ID SPP: " << spp.id_tagihan << endl;
     cout << "Siswa ID: " << spp.id_student << endl;

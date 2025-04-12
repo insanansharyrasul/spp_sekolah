@@ -1,14 +1,14 @@
+#include <certificate.hpp>
+#include <color.hpp>
+#include <file_path.hpp>
+#include <file_utils.hpp>
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <limits>
-#include <payment.hpp>
 #include <menu.hpp>
+#include <payment.hpp>
 #include <siswa.hpp>
-#include <file_path.hpp>
-#include <certificate.hpp>
-#include <file_utils.hpp>
-#include <color.hpp>
+#include <sstream>
 using namespace std;
 
 int verify_siswa(string& student_name) {

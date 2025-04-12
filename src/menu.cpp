@@ -1,10 +1,10 @@
-#include <menu.hpp>
-#include <siswa.hpp>
 #include <admin.hpp>
+#include <color.hpp>
 #include <iostream>
 #include <limits>
+#include <menu.hpp>
 #include <payment.hpp>
-#include <color.hpp>
+#include <siswa.hpp>
 
 using namespace std;
 
