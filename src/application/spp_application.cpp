@@ -14,12 +14,26 @@ SppApplication::SppApplication()
 
 void SppApplication::initialize() {
     UI::clrscr();
-    std::cout << UI::Color::CYAN << "==================================" << UI::Color::RESET << std::endl;
-    std::cout << UI::Color::CYAN << "=== SISTEM PEMBAYARAN SEKOLAH ===" << UI::Color::RESET << std::endl;
-    std::cout << UI::Color::CYAN << "==================================" << UI::Color::RESET << std::endl;
+    std::cout << UI::Color::YELLOW << "███████╗██████╗ ██████╗  ██████╗███████╗███╗   ██╗████████╗███████╗██████╗ " << std::endl;
+    std::cout << UI::Color::YELLOW << "██╔════ ██╔══██╗██╔══██╗██╔════╝██╔════╝████╗  ██║╚══██╔══╝██╔════╝██╔══██╗" << std::endl;
+    std::cout << UI::Color::YELLOW << "███████ ██████╔╝██████╔╝██║     █████╗  ██╔██╗ ██║   ██║   █████╗  ██████╔╝" << std::endl;
+    std::cout << UI::Color::YELLOW << "╚════██ ██╔═══╝ ██╔═══╝ ██║     ██╔══╝  ██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗" << std::endl;
+    std::cout << UI::Color::YELLOW << "███████ ██║     ██║     ╚██████╗███████╗██║ ╚████║   ██║   ███████╗██║  ██║" << std::endl;
+    std::cout << UI::Color::YELLOW << "╚══════╝╚═╝     ╚═╝     ╚═════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ " << std::endl;
     std::cout << std::endl;
-
     std::cout << "Memuat data..." << std::endl;
+
+    // Load data from files
+    if (!studentRepo.loadFromFile()) {
+        std::cerr << UI::Color::RED << "Gagal memuat data siswa!" << UI::Color::RESET << std::endl;
+        UI::pause_input();
+        exit(1);
+    }
+    if (!paymentRepo.loadFromFile()) {
+        std::cerr << UI::Color::RED << "Gagal memuat data pembayaran!" << UI::Color::RESET << std::endl;
+        UI::pause_input();
+        exit(1);
+    }
 
     std::cout << UI::Color::GREEN << "Data berhasil dimuat!" << UI::Color::RESET << std::endl;
     UI::pause_input();
@@ -44,11 +58,11 @@ void SppApplication::run() {
 
 void SppApplication::showLoginMenu() {
     UI::clrscr();
-    std::cout << UI::Color::CYAN << "=== LOGIN ===" << UI::Color::RESET << std::endl
-              << std::endl;
-    std::cout << "1. Login as Admin" << std::endl;
-    std::cout << "2. Login as Student" << std::endl;
-    std::cout << "0. Exit" << std::endl;
+    UI::display_header("LOGIN MENU");
+    std::cout << UI::Color::CYAN
+              << "1. Login as Admin" << std::endl
+              << "2. Login as Student" << std::endl
+              << "0. Exit" << std::endl;
 
     int choice;
     std::cout << "\nPilihan: ";

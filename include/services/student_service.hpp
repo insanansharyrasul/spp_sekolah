@@ -12,4 +12,5 @@ public:
     Student* getStudentById(int id);
     std::vector<Student> getAllStudents();
     bool updateStudent(int id, const std::string& name, int classId);
+    std::string getStudentName(int id);
 };
