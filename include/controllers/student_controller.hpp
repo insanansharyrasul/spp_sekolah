@@ -2,7 +2,7 @@
 #include <services/student_service.hpp>
 class StudentController {
    private:
-    StudentService& studentRepo;
+    StudentService& studentService;
     PaymentService& paymentService;
 
    public:

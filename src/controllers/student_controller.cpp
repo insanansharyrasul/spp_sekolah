@@ -3,7 +3,7 @@
 #include <utils/ui_helpers.hpp>
 
 StudentController::StudentController(StudentService& studentService,
-                                     PaymentService& paymentService) : studentRepo(studentService),
+                                     PaymentService& paymentService) : studentService(studentService),
                                                                       paymentService(paymentService) {}
 
 void StudentController::showDashboard(int studentId) {
@@ -41,8 +41,19 @@ void StudentController::viewProfile(int studentId) {
     std::cout << UI::Color::CYAN << "=== MY PROFILE ===" << UI::Color::RESET << std::endl
               << std::endl;
 
-    // For now, just show it's working
-    std::cout << UI::Color::YELLOW << "Feature coming soon!" << UI::Color::RESET << std::endl;
+    // Get student details from repository via service
+    Student* student = studentService.getStudentById(studentId);
+    if (student->getId() == 0) {
+        std::cout << UI::Color::RED << "Student not found!" << UI::Color::RESET << std::endl;
+        UI::pause_input();
+        return;
+    }
+
+    std::cout << "ID: " << student->getId() << std::endl;
+    std::cout << "Name: " << student->getName() << std::endl;
+    std::cout << "Year Registered: " << student->getYearRegistered() << std::endl;
+    std::cout << "Class ID: " << student->getClassId() << std::endl;
+
     UI::pause_input();
 }
 
