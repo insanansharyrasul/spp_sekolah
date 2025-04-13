@@ -7,8 +7,10 @@ UserSession::UserSession() : isAuthenticated(false), isAdmin(false), isStudent(f
 SppApplication::SppApplication()
     : studentRepo("../data/students.txt"),
       paymentRepo("../data/payments.txt"),
+      certificateRepo("../data/certificates.txt"),
       paymentService(paymentRepo, studentRepo),
       studentService(studentRepo),
+      certService(paymentRepo, certificateRepo, studentRepo),
       adminController(studentService, paymentService),
       studentController(studentService, paymentService) {}
 

@@ -1,11 +1,13 @@
 #include <string>
-class Certificate {
-   private:
-    int hash;
-    std::string encrypted_data;
+#include <utils/encryption.hpp>
+#include <models/certificate.hpp>
 
-   public:
-    Certificate(int hash, const std::string& data) : hash(hash), encrypted_data(data) {}
-    int getHash() const { return hash; }
-    std::string getEncryptedData() const { return encrypted_data; }
-};
+Certificate::Certificate(size_t hash, const std::string& data) : hash(hash), data(data) {}
+
+size_t Certificate::getHash() const {
+    return hash;
+}
+
+std::string Certificate::getEncryptedData() const {
+    return data;
+}

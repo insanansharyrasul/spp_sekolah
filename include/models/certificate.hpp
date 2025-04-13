@@ -2,11 +2,11 @@
 #include <string>
 class Certificate {
    private:
-    int hash;
-    std::string encrypted_data;
+    size_t hash;
+    std::string data;
 
    public:
-    Certificate(int hash, const std::string& data);
-    int getHash() const;
+    Certificate(size_t hash = 0, const std::string& data = "");
+    size_t getHash() const;
     std::string getEncryptedData() const;
 };

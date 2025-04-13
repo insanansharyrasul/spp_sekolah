@@ -1,3 +1,4 @@
+#pragma once
 #include <services/payment_service.hpp>
 #include <services/student_service.hpp>
 class StudentController {

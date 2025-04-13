@@ -1,3 +1,4 @@
+#pragma once
 #include <repositories/student_repository.hpp>
 #include <services/certificate_service.hpp>
 #include <services/payment_service.hpp>

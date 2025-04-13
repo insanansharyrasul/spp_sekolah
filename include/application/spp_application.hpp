@@ -1,3 +1,4 @@
+#pragma once
 #include <controllers/admin_controller.hpp>
 #include <controllers/student_controller.hpp>
 #include <repositories/student_repository.hpp>
@@ -22,19 +23,17 @@ class SppApplication {
     // Repositories
     StudentRepository studentRepo;
     PaymentRepository paymentRepo;
+    CertificateRepository certificateRepo;
 
     // Services
     StudentService studentService;
     PaymentService paymentService;
-    // CertificateService certService;
+    CertificateService certService;
 
     // Controllers
     AdminController adminController;
     StudentController studentController;
 
-    // State
-    // bool isAuthenticated;
-    // bool isAdmin;
 
    public:
     SppApplication();
