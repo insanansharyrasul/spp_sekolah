@@ -83,13 +83,31 @@ void AdminController::viewAllStudents() {
         return;
     }
 
-    for (const auto& student : studentList) {
-        std::cout << std::setw(9) << "ID: " << student.getId() << ", "
-                  << "Name: " << student.getName() << ", "
-                  << "Year Enrolled: " << student.getYearRegistered() << ", "
-                  << "Class ID: " << student.getClassId() << std::endl;
-    }
-    std::cout << std::endl;
+    std::vector<std::string> headers = {"ID", "Name", "Year", "Class ID"};
+    std::vector<int> column_widths = {6, 20, 10, 10};
+    auto row_formater = [](const Student& student, const std::vector<int>& column_widths) {
+        std::cout << "| " << std::setw(column_widths[0] + 1) << std::left << student.getId()
+                  << "| " << std::setw(column_widths[1] + 1) << std::left << student.getName()
+                  << "| " << std::setw(column_widths[2] + 1) << std::left << student.getYearRegistered()
+                  << "| " << std::setw(column_widths[3] + 1) << std::left << student.getClassId()
+                  << "|" << std::endl;
+    };
+    std::vector<std::function<bool(const Student&, const Student&)>> sort_functions = {
+        [](const Student& a, const Student& b) { return a.getId() < b.getId(); },
+        [](const Student& a, const Student& b) { return a.getName() < b.getName(); },
+        [](const Student& a, const Student& b) { return a.getYearRegistered() < b.getYearRegistered(); },
+        [](const Student& a, const Student& b) { return a.getClassId() < b.getClassId(); }};
+    std::vector<std::string> sort_labels = {
+        "Sort by ID",
+        "Sort by Name",
+        "Sort by Year",
+        "Sort by Class ID"};
+    UI::display_sortable_table<Student>(studentList,
+                                        headers,
+                                        column_widths,
+                                        row_formater,
+                                        sort_functions,
+                                        sort_labels);
 
     UI::pause_input();
 }
@@ -113,13 +131,25 @@ void AdminController::viewAllPayments() {
     auto row_formater = [](const Payment& payment, const std::vector<int>& column_widths) {
         time_t timestamp = payment.getTimestamp();
         time_t deadline = payment.getDeadline();
+
+        std::string timestamp_str = std::ctime(&timestamp);
+        std::string deadline_str = std::ctime(&deadline);
+
+        if (!timestamp_str.empty() && timestamp_str.back() == '\n')
+            timestamp_str.pop_back();
+        if (!deadline_str.empty() && deadline_str.back() == '\n')
+            deadline_str.pop_back();
+
+        std::string status = payment.getIsPaid()
+                                 ? UI::Color::GREEN + "Paid" + UI::Color::RESET
+                                 : UI::Color::RED + "Unpaid" + UI::Color::RESET;
+
         std::cout << "| " << std::setw(column_widths[0]) << std::left << payment.getId()
                   << "| " << std::setw(column_widths[1]) << std::left << payment.getStudentId()
                   << "| " << std::setw(column_widths[2]) << std::left << payment.getAmount()
-                  << "| " << std::setw(column_widths[3]) << std::left << std::ctime(&timestamp)
-                  << "| " << std::setw(column_widths[4]) << std::left << std::ctime(&deadline)
-                  << "| " << std::setw(column_widths[5]) << std::left
-                  << (payment.getIsPaid() ? "Paid" : "Unpaid")
+                  << "| " << std::setw(column_widths[3]) << std::left << timestamp_str
+                  << "| " << std::setw(column_widths[4]) << std::left << deadline_str
+                  << "| " << std::setw(column_widths[5]) << std::left << status
                   << "|" << std::endl;
     };
 
