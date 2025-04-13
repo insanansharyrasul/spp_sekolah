@@ -13,9 +13,9 @@ void AdminController::showDashboard() {
         UI::display_header("ADMIN DASHBOARD");
         std::cout << "1. Register New Student" << std::endl;
         std::cout << "2. View All Students" << std::endl;
-        std::cout << "4. View All Payments" << std::endl;
-        std::cout << "3. Process Payment" << std::endl;
-        std::cout << "4. View Payment History" << std::endl;
+        std::cout << "3. View All Payments" << std::endl;
+        std::cout << "4. Process Payment" << std::endl;
+        std::cout << "5. View Payment History" << std::endl;
         std::cout << "0. Logout" << std::endl;
 
         int choice;
