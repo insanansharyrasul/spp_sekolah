@@ -33,3 +33,11 @@ bool StudentService::updateStudent(int id, const std::string& name, int classId)
     }
     return false;  // Student not found
 }
+
+std::string StudentService::getStudentName(int id) {
+    Student* student = studentRepo.findById(id);
+    if (student) {
+        return student->getName();
+    }
+    return "";
+}

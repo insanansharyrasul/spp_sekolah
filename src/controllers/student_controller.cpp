@@ -4,13 +4,18 @@
 
 StudentController::StudentController(StudentService& studentService,
                                      PaymentService& paymentService) : studentService(studentService),
-                                                                      paymentService(paymentService) {}
+                                                                       paymentService(paymentService) {}
 
 void StudentController::showDashboard(int studentId) {
     while (true) {
         UI::clrscr();
-        std::cout << UI::Color::CYAN << "=== STUDENT DASHBOARD ===" << UI::Color::RESET << std::endl
-                  << std::endl;
+        std::cout << UI::Color::CYAN << "=== STUDENT DASHBOARD ===" << UI::Color::RESET << std::endl;
+        std::cout << std::endl;
+        std::cout << UI::Color::GREEN << "Halo, "
+                  << studentService.getStudentName(studentId)
+                  << "! Apakah ada yang ingin lakukan?"
+                  << UI::Color::RESET << std::endl;
+        std::cout << std::endl;
         std::cout << "1. View My Profile" << std::endl;
         std::cout << "2. View My Payments" << std::endl;
         std::cout << "0. Logout" << std::endl;
