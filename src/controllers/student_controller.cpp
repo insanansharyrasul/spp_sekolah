@@ -49,10 +49,8 @@ void StudentController::viewProfile(int studentId) {
         return;
     }
 
-    std::cout << "ID: " << student->getId() << std::endl;
-    std::cout << "Name: " << student->getName() << std::endl;
-    std::cout << "Year Registered: " << student->getYearRegistered() << std::endl;
-    std::cout << "Class ID: " << student->getClassId() << std::endl;
+    // Display student details
+    UI::draw_card("Student Details", *student);
 
     UI::pause_input();
 }

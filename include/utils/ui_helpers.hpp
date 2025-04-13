@@ -3,6 +3,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <iomanip>
 
 namespace UI {
 // Color constants
@@ -83,6 +84,29 @@ void display_sortable_table(
             pause_input();
         }
     }
+}
+
+// Card Utility
+
+
+template <typename T>
+void draw_card(const std::string& title, const T& content) {
+    int width = 50;
+
+    draw_table_separator({width});
+    std::cout << "| " << std::setw(width) << std::left << title << " |" << std::endl;
+    draw_table_separator({width});
+
+    // Body
+    std::stringstream ss;
+    ss << content;  
+    std::string line;
+    while (std::getline(ss, line)) {
+        std::cout << "| " << std::setw(width) << std::left << line << " |" << std::endl;
+    }
+
+    draw_table_separator({width});
+
 }
 
 }  // namespace UI

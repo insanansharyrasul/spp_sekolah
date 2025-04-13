@@ -5,6 +5,7 @@
 #include <functional>
 #include <models/student.hpp> 
 #include <models/payment.hpp> 
+#include <iomanip>
 
 namespace UI {
 // ANSI color code definitions
@@ -17,8 +18,9 @@ const std::string MAGENTA = "\033[35m";
 const std::string CYAN = "\033[36m";
 const std::string WHITE = "\033[37m";
 const std::string RESET = "\033[0m";
-}  // namespace Color
+}
 
+// Other UI utility functions
 void clrscr() {
     system("clear");  // Or system("cls") with Windows detection
 }
@@ -40,6 +42,7 @@ void display_footer() {
               << Color::CYAN << "=====================" << Color::RESET << std::endl;
 }
 
+// Table Utility
 void draw_table_separator(const std::vector<int>& column_widths) {
     for (const auto& width : column_widths) {
         std::cout << "+";
