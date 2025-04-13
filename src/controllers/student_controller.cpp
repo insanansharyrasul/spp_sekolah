@@ -4,7 +4,7 @@
 
 StudentController::StudentController(StudentService& studentService,
                                      PaymentService& paymentService) : studentService(studentService),
-                                                                       paymentService(paymentService) {}
+                                                                      paymentService(paymentService) {}
 
 void StudentController::showDashboard(int studentId) {
     while (true) {
