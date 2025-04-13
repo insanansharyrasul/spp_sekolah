@@ -23,7 +23,6 @@ void SppApplication::initialize() {
     std::cout << std::endl;
     std::cout << "Memuat data..." << std::endl;
 
-    // Load data from files
     if (!studentRepo.loadFromFile()) {
         std::cerr << UI::Color::RED << "Gagal memuat data siswa!" << UI::Color::RESET << std::endl;
         UI::pause_input();
