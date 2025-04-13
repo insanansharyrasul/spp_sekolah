@@ -1,5 +1,6 @@
-#include <repositories/payment_repository.hpp>
 #include <fstream>
+#include <iostream>
+#include <repositories/payment_repository.hpp>
 #include <sstream>
 
 PaymentRepository::PaymentRepository(const std::string& filePath) : dataFilePath(filePath) {
@@ -8,10 +9,12 @@ PaymentRepository::PaymentRepository(const std::string& filePath) : dataFilePath
 
 // CRUD operations
 bool PaymentRepository::add(const Payment& payment) {
+    std::cout << "Adding payment: " << payment.getId() << std::endl;
     if (payments.find(payment.getId()) != payments.end()) {
-        return false;  
+        return false;  // Payment already exist
     }
-    payments[payment.getId()] = payment;
+    // payments[payment.getId()] = payment;  // ! ERROR : PROBLEM OCCUR HERE
+    payments.emplace(payment.getId(), payment);
     studentPaymentIndex.insert({payment.getStudentId(), payment.getId()});
     return saveToFile();
 };
@@ -21,7 +24,7 @@ Payment* PaymentRepository::findById(const std::string& id) {
     if (it != payments.end()) {
         return &it->second;
     }
-    return nullptr;  
+    return nullptr;
 };
 
 std::vector<Payment> PaymentRepository::findByStudentId(int studentId) {
@@ -64,7 +67,6 @@ std::vector<Payment> PaymentRepository::findPaymentsByMonth(int year, int month)
         }
     }
     return result;
-
 };
 
 // Persistence
@@ -78,23 +80,37 @@ bool PaymentRepository::loadFromFile() {
     studentPaymentIndex.clear();
     std::string line;
     while (std::getline(inFile, line)) {
+        std::string temp;
         std::istringstream ss(line);
         std::string id;
         int studentId;
         double amount;
+        time_t timestamp;
         time_t deadline;
+        bool isPaid;
 
-        ss >> id;
-        ss.ignore();  
-        ss >> studentId;
-        ss.ignore();  
-        ss >> amount;
-        ss.ignore();  
-        ss >> deadline;
+        std::getline(ss, temp, ',');
+        id = temp;
 
-        Payment payment(id, studentId, amount);
-        payment.setDeadline(deadline);
-        payments[id] = payment;
+        std::getline(ss, temp, ',');
+        studentId = std::stoi(temp);
+
+        std::getline(ss, temp, ',');
+        amount = std::stod(temp);
+
+        std::getline(ss, temp, ',');
+        timestamp = std::stoll(temp);
+
+        std::getline(ss, temp, ',');
+        deadline = std::stoll(temp);
+
+        std::getline(ss, temp, ',');
+        isPaid = (temp == "1" || temp == "true");
+
+        Payment payment(id, studentId, amount, deadline, timestamp, isPaid);
+
+        // payments[id] = payment;
+        payments.emplace(id, payment);
         studentPaymentIndex.insert({studentId, id});
     }
     inFile.close();
@@ -116,5 +132,4 @@ bool PaymentRepository::saveToFile() {
     }
     outFile.close();
     return true;
-
 };

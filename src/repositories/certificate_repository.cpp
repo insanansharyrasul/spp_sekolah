@@ -8,7 +8,7 @@ CertificateRepository::CertificateRepository(const std::string& filePath) : data
 
 // CRUD
 
-bool CertificateRepository::addCertificate(Certificate certificate) {
+bool CertificateRepository::addCertificate(const Certificate& certificate) {
     if (certificates.find(certificate.getHash()) != certificates.end()) {
         return false;
     }

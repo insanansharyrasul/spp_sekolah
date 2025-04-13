@@ -5,8 +5,10 @@
 #include "utils/ui_helpers.hpp"
 
 AdminController::AdminController(StudentService& studentService,
-                                 PaymentService& paymentService) : studentService(studentService),
-                                                                   paymentService(paymentService) {}
+                                 PaymentService& paymentService,
+                                 CertificateService& certService) : studentService(studentService),
+                                                                    paymentService(paymentService),
+                                                                    certService(certService) {}
 
 void AdminController::showDashboard() {
     while (true) {
@@ -15,7 +17,7 @@ void AdminController::showDashboard() {
         std::cout << "2. View All Students" << std::endl;
         std::cout << "3. View All Payments" << std::endl;
         std::cout << "4. Process Payment" << std::endl;
-        std::cout << "5. View Payment History" << std::endl;
+        std::cout << "5. Generate Certificate" << std::endl;
         std::cout << "0. Logout" << std::endl;
 
         int choice;
@@ -33,7 +35,10 @@ void AdminController::showDashboard() {
                 viewAllPayments();
                 break;
             case 4:
-                processPayment();
+                setPayment();
+                break;
+            case 5:
+                makeCertificate();
                 break;
             case 0:
                 return;
@@ -126,7 +131,7 @@ void AdminController::viewAllPayments() {
     }
 
     std::vector<std::string> headers = {"ID", "Student ID", "Amount", "Timestamp", "Deadline", "Status"};
-    std::vector<int> column_widths = {6, 12, 8, 20, 20, 10};
+    std::vector<int> column_widths = {15, 12, 8, 25, 25, 10};
 
     auto row_formater = [](const Payment& payment, const std::vector<int>& column_widths) {
         time_t timestamp = payment.getTimestamp();
@@ -141,15 +146,17 @@ void AdminController::viewAllPayments() {
             deadline_str.pop_back();
 
         std::string status = payment.getIsPaid()
-                                 ? UI::Color::GREEN + "Paid" + UI::Color::RESET
-                                 : UI::Color::RED + "Unpaid" + UI::Color::RESET;
+                                 ? "Paid"
+                                 : "Unpaid";
 
-        std::cout << "| " << std::setw(column_widths[0]) << std::left << payment.getId()
-                  << "| " << std::setw(column_widths[1]) << std::left << payment.getStudentId()
-                  << "| " << std::setw(column_widths[2]) << std::left << payment.getAmount()
-                  << "| " << std::setw(column_widths[3]) << std::left << timestamp_str
-                  << "| " << std::setw(column_widths[4]) << std::left << deadline_str
-                  << "| " << std::setw(column_widths[5]) << std::left << status
+        std::string paidColor = payment.getIsPaid() ? UI::Color::GREEN : UI::Color::RED;
+
+        std::cout << "| " << std::setw(column_widths[0] + 1) << std::left << payment.getId()
+                  << "| " << std::setw(column_widths[1] + 1) << std::left << payment.getStudentId()
+                  << "| " << std::setw(column_widths[2] + 1) << std::left << payment.getAmount()
+                  << "| " << std::setw(column_widths[3] + 1) << std::left << timestamp_str
+                  << "| " << std::setw(column_widths[4] + 1) << std::left << deadline_str
+                  << "| " << paidColor << std::setw(column_widths[5] + 1) << std::left << status << UI::Color::RESET
                   << "|" << std::endl;
     };
 
@@ -179,14 +186,38 @@ void AdminController::viewAllPayments() {
     UI::pause_input();
 }
 
-void AdminController::processPayment() {
+void AdminController::setPayment() {
     UI::clrscr();
     std::cout << UI::Color::CYAN << "=== PROCESS PAYMENT ===" << UI::Color::RESET << std::endl
               << std::endl;
 
+    int studentId;
+    double amount;
+    std::cout << "Student ID: ";
+    std::cin >> studentId;
+    std::cout << "Amount: ";
+    std::cin >> amount;
+    time_t deadline = time(0) + (30 * 24) * (60 * 60);  // 30 days from now
+    std::cout << "Payment Deadline: " << std::ctime(&deadline) << std::endl;
+
+    paymentService.setPayment(studentId, amount, deadline);
+    std::cout << UI::Color::GREEN << "Payment has been set!" << UI::Color::RESET << std::endl;
+
+    UI::pause_input();
+}
+
+void AdminController::makeCertificate() {
+    UI::clrscr();
+    std::cout << UI::Color::CYAN << "=== MAKE CERTIFICATE ===" << UI::Color::RESET << std::endl
+              << std::endl;
+
+    std::cout << "Input payment ID: ";
+    std::string paymentId;
+    std::cin >> paymentId;
+
     // Get all payments from repository via service
-    // For now, just show it's working
-    std::cout << UI::Color::YELLOW << "Feature coming soon!" << UI::Color::RESET << std::endl;
+    certService.generateCertificate(paymentId);
+    std::cout << UI::Color::GREEN << "Certificate generated!" << UI::Color::RESET << std::endl;
     UI::pause_input();
 }
 

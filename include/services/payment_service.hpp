@@ -17,7 +17,7 @@ class PaymentService {
     PaymentService(PaymentRepository& paymentRepo, StudentRepository& studentRepo);
 
     // Business operations
-    bool processPayment(int studentId, double amount, time_t deadline);
+    bool setPayment(int studentId, double amount, time_t deadline);
     bool verifyPaymentStatus(int studentId, int year, int month);
     std::vector<Payment> getStudentPaymentHistory(int studentId);
 

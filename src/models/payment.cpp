@@ -5,11 +5,13 @@ Payment::Payment(const std::string& id,
                  int studentId,
                  double amount,
                  time_t deadline,
+                 time_t timestamp,
                  bool isPaid) : id(id),
                                 studentId(studentId),
                                 amount(amount),
-                                deadline(0),
-                                isPaid(false) {};
+                                deadline(deadline),
+                                timestamp(timestamp),
+                                isPaid(isPaid) {};
 
 // Getter
 std::string Payment::getId() const {

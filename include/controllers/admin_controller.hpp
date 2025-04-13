@@ -7,12 +7,12 @@ class AdminController {
    private:
     StudentService& studentService;
     PaymentService& paymentService;
-    // CertificateService& certService;
+    CertificateService& certService;
 
    public:
     AdminController(StudentService& studentService,
-                    PaymentService& paymentService
-                    // CertificateService& certService
+                    PaymentService& paymentService,
+                    CertificateService& certService
                    );
 
     // UI handling methods
@@ -20,5 +20,6 @@ class AdminController {
     void registerNewStudent();
     void viewAllStudents();
     void viewAllPayments();
-    void processPayment();
+    void setPayment();
+    void makeCertificate();
 };

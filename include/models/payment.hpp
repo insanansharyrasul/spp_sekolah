@@ -15,6 +15,7 @@ class Payment {
             int studentId = 0,
             double amount = 0,
             time_t deadline = 0,
+            time_t timestamp = 0,
             bool isPaid = false);
 
     // Getter
