@@ -23,7 +23,7 @@ Untuk membangun proyek ini dari sumbernya, ikuti langkah-langkah berikut:
    Clone repository ini ke direktori lokal Anda:
 
    ```sh
-   git clone https://github.com/username/spp_sekolah.git
+   git clone https://github.com/insanansharyrasul/spp_sekolah.git
    cd spp_sekolah
    ```
 
