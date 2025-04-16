@@ -1,9 +1,10 @@
 #pragma once
 
 #include <functional>
+#include <iomanip>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iomanip>
 
 namespace UI {
 // Color constants
@@ -23,6 +24,8 @@ void clrscr();
 void pause_input();
 void display_header(const std::string& title);
 void display_footer();
+std::string display_date(const time_t date);
+std::string display_currency(double currency);
 
 // Table Utility
 
@@ -88,7 +91,6 @@ void display_sortable_table(
 
 // Card Utility
 
-
 template <typename T>
 void draw_card(const std::string& title, const T& content) {
     int width = 50;
@@ -99,14 +101,28 @@ void draw_card(const std::string& title, const T& content) {
 
     // Body
     std::stringstream ss;
-    ss << content;  
+    ss << content;
     std::string line;
     while (std::getline(ss, line)) {
-        std::cout << "| " << std::setw(width) << std::left << line << " |" << std::endl;
+        std::string clean_line = line;
+        size_t pos = 0;
+        while ((pos = clean_line.find("\033[", pos)) != std::string::npos) {
+            size_t end_pos = clean_line.find("m", pos);
+            if (end_pos != std::string::npos) {
+                clean_line.erase(pos, end_pos - pos + 1);
+            } else {
+                break;
+            }
+        }
+
+        // Calculate and apply padding manually
+        int padding = width - clean_line.length();
+        if (padding < 0) padding = 0;
+
+        std::cout << "| " << line << std::string(padding, ' ') << " |" << std::endl;
     }
 
     draw_table_separator({width});
-
 }
 
 }  // namespace UI

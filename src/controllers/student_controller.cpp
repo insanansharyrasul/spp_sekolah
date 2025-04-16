@@ -1,10 +1,11 @@
 #include <controllers/student_controller.hpp>
+#include <iomanip>
 #include <iostream>
 #include <utils/ui_helpers.hpp>
 
 StudentController::StudentController(StudentService& studentService,
                                      PaymentService& paymentService) : studentService(studentService),
-                                                                      paymentService(paymentService) {}
+                                                                       paymentService(paymentService) {}
 
 void StudentController::showDashboard(int studentId) {
     while (true) {
@@ -65,7 +66,19 @@ void StudentController::viewPayments(int studentId) {
     std::cout << UI::Color::CYAN << "=== MY PAYMENTS ===" << UI::Color::RESET << std::endl
               << std::endl;
 
-    // For now, just show it's working
-    std::cout << UI::Color::YELLOW << "Feature coming soon!" << UI::Color::RESET << std::endl;
+    // Get payment details from repository via service
+    std::vector<Payment> payment = paymentService.getStudentPaymentHistory(studentId);
+    if (payment.empty()) {
+        std::cout << UI::Color::RED << "No payment history found!" << UI::Color::RESET << std::endl;
+        UI::pause_input();
+        return;
+    }
+
+    // Display payment details
+    std::cout << UI::Color::YELLOW << "Payment History:" << UI::Color::RESET << std::endl;
+    for (const auto& p : payment) {
+        UI::draw_card("Payment Details", p);
+    }
+
     UI::pause_input();
 }

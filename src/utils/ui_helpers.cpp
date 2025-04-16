@@ -22,7 +22,11 @@ namespace Color {
 
 // Other UI utility functions
 void clrscr() {
-    system("clear");  // Or system("cls") with Windows detection
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");  // Or system("cls") with Windows detection
+    #endif
 }
 
 void pause_input() {
@@ -41,6 +45,20 @@ void display_footer() {
     std::cout << std::endl
               << Color::CYAN << "=====================" << Color::RESET << std::endl;
 }
+
+std::string display_date(const time_t date) {
+    return ctime(&date);
+}
+
+std::string display_currency(double currency) {
+    std::ostringstream oss;
+
+    oss.imbue(std::locale("id_ID.UTF-8"));
+
+    oss << std::fixed << std::setprecision(2) << currency;
+    return oss.str();
+}
+
 
 // Table Utility
 void draw_table_separator(const std::vector<int>& column_widths) {
