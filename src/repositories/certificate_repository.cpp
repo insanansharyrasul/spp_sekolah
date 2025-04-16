@@ -8,12 +8,13 @@ CertificateRepository::CertificateRepository(const std::string& filePath) : data
 
 // CRUD
 
-bool CertificateRepository::addCertificate(const Certificate& certificate) {
+std::string CertificateRepository::addCertificate(const Certificate& certificate) {
     if (certificates.find(certificate.getHash()) != certificates.end()) {
-        return false;
+        return "";
     }
     certificates[certificate.getHash()] = certificate;
-    return saveToFile();
+    saveToFile();
+    return std::to_string(certificate.getHash());
 }
 
 Certificate* CertificateRepository::getCertificate(Certificate certificate) {

@@ -12,10 +12,13 @@ PaymentService::PaymentService(PaymentRepository& paymentRepo, StudentRepository
     : paymentRepo(paymentRepo), studentRepo(studentRepo) {}
 
 // Business operations
-bool PaymentService::setPayment(int studentId, double amount, time_t deadline) {
+std::string PaymentService::setPayment(int studentId, double amount, time_t deadline) {
     std::string id = generatePaymentId(studentId); 
     Payment payment(id, studentId, amount, deadline);
-    return paymentRepo.add(payment);
+    if (paymentRepo.add(payment)) {
+        return id;
+    }
+    return "";  // Empty string indicates failure
 }
 
 bool PaymentService::verifyPaymentStatus(int studentId, int year, int month) {
@@ -49,4 +52,14 @@ std::vector<Payment> PaymentService::getOverduePayments() {
 
 std::vector<Payment> PaymentService::getAllPayments() {
     return paymentRepo.findAll();
+}
+
+bool PaymentService::deletePayment(const std::string& paymentId) {
+    Payment* payment = paymentRepo.findById(paymentId);
+    if (!payment) {
+        return false;
+    }
+
+    paymentRepo.remove(paymentId);
+    return true;
 }

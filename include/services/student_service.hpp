@@ -13,4 +13,5 @@ public:
     std::vector<Student> getAllStudents();
     bool updateStudent(int id, const std::string& name, int classId);
     std::string getStudentName(int id);
+    bool deleteStudent(int id);  // New method for undo support
 };

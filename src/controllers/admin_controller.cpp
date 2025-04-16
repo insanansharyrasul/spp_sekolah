@@ -13,11 +13,12 @@ AdminController::AdminController(StudentService& studentService,
 void AdminController::showDashboard() {
     while (true) {
         UI::display_header("ADMIN DASHBOARD");
-        std::cout << "1. Register New Student" << std::endl;
-        std::cout << "2. View All Students" << std::endl;
-        std::cout << "3. View All Payments" << std::endl;
-        std::cout << "4. Process Payment" << std::endl;
+        std::cout << "1. View All Students" << std::endl;
+        std::cout << "2. View All Payments" << std::endl;
+        std::cout << "3. Register New Student" << std::endl;
+        std::cout << "4. Set Payment" << std::endl;
         std::cout << "5. Generate Certificate" << std::endl;
+        std::cout << "6. Undo Last Action" << std::endl;  // New option
         std::cout << "0. Logout" << std::endl;
 
         int choice;
@@ -26,19 +27,22 @@ void AdminController::showDashboard() {
 
         switch (choice) {
             case 1:
-                registerNewStudent();
-                break;
-            case 2:
                 viewAllStudents();
                 break;
-            case 3:
+            case 2:
                 viewAllPayments();
+                break;
+            case 3:
+                registerNewStudent();
                 break;
             case 4:
                 setPayment();
                 break;
             case 5:
                 makeCertificate();
+                break;
+            case 6:
+                undoLastAction();  // New case
                 break;
             case 0:
                 return;
@@ -67,6 +71,24 @@ void AdminController::registerNewStudent() {
 
     if (studentService.registerStudent(name, year, classId)) {
         std::cout << UI::Color::GREEN << "Siswa berhasil didaftarkan!" << UI::Color::RESET << std::endl;
+        
+        // Get the highest ID (assuming it's the one we just added)
+        int studentId = 0;
+        for (const auto& student : studentService.getAllStudents()) {
+            if (student.getId() > studentId) {
+                studentId = student.getId();
+            }
+        }
+        
+        // Create an undo action
+        auto undoFunc = [this, studentId]() {
+            return this->studentService.deleteStudent(studentId);
+        };
+        
+        actionStack.push(AdminAction(AdminAction::REGISTER_STUDENT, 
+                                    std::to_string(studentId), 
+                                    undoFunc));
+        
     } else {
         std::cout << UI::Color::RED << "Gagal mendaftarkan siswa." << UI::Color::RESET << std::endl;
     }
@@ -200,8 +222,21 @@ void AdminController::setPayment() {
     time_t deadline = time(0) + (30 * 24) * (60 * 60);  // 30 days from now
     std::cout << "Payment Deadline: " << std::ctime(&deadline) << std::endl;
 
-    paymentService.setPayment(studentId, amount, deadline);
-    std::cout << UI::Color::GREEN << "Payment has been set!" << UI::Color::RESET << std::endl;
+    std::string paymentId = paymentService.setPayment(studentId, amount, deadline);
+    if (!paymentId.empty()) {
+        std::cout << UI::Color::GREEN << "Payment has been set with ID: " << paymentId << UI::Color::RESET << std::endl;
+        
+        // Create an undo action
+        auto undoFunc = [this, paymentId]() {
+            return this->paymentService.deletePayment(paymentId);
+        };
+        
+        actionStack.push(AdminAction(AdminAction::PROCESS_PAYMENT, 
+                                    paymentId, 
+                                    undoFunc));
+    } else {
+        std::cout << UI::Color::RED << "Failed to set payment." << UI::Color::RESET << std::endl;
+    }
 
     UI::pause_input();
 }
@@ -215,9 +250,47 @@ void AdminController::makeCertificate() {
     std::string paymentId;
     std::cin >> paymentId;
 
-    // Get all payments from repository via service
-    certService.generateCertificate(paymentId);
-    std::cout << UI::Color::GREEN << "Certificate generated!" << UI::Color::RESET << std::endl;
+    std::string certId = certService.generateCertificate(paymentId);
+    if (!certId.empty()) {
+        std::cout << UI::Color::GREEN << "Certificate generated with ID: " << certId << UI::Color::RESET << std::endl;
+        
+        // Create an undo action
+        auto undoFunc = [this, certId]() {
+            return this->certService.deleteCertificate(certId);
+        };
+        
+        actionStack.push(AdminAction(AdminAction::GENERATE_CERTIFICATE, 
+                                    certId, 
+                                    undoFunc));
+    } else {
+        std::cout << UI::Color::RED << "Failed to generate certificate." << UI::Color::RESET << std::endl;
+    }
+    
+    UI::pause_input();
+}
+
+void AdminController::undoLastAction() {
+    UI::clrscr();
+    std::cout << UI::Color::CYAN << "=== UNDO LAST ACTION ===" << UI::Color::RESET << std::endl
+              << std::endl;
+    
+    if (actionStack.isEmpty()) {
+        std::cout << UI::Color::YELLOW << "No actions to undo." << UI::Color::RESET << std::endl;
+        UI::pause_input();
+        return;
+    }
+    
+    AdminAction lastAction = actionStack.pop();
+    
+    std::cout << "Undoing: " << lastAction.getActionName() 
+              << " (ID: " << lastAction.getId() << ")" << std::endl;
+    
+    if (lastAction.undo()) {
+        std::cout << UI::Color::GREEN << "Successfully undid the action!" << UI::Color::RESET << std::endl;
+    } else {
+        std::cout << UI::Color::RED << "Failed to undo the action." << UI::Color::RESET << std::endl;
+    }
+    
     UI::pause_input();
 }
 

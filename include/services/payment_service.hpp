@@ -17,9 +17,10 @@ class PaymentService {
     PaymentService(PaymentRepository& paymentRepo, StudentRepository& studentRepo);
 
     // Business operations
-    bool setPayment(int studentId, double amount, time_t deadline);
+    std::string setPayment(int studentId, double amount, time_t deadline);  // Returns payment ID
     bool verifyPaymentStatus(int studentId, int year, int month);
     std::vector<Payment> getStudentPaymentHistory(int studentId);
+    bool deletePayment(const std::string& paymentId);  // New method for undo support
 
     // Reporting functionality
     double calculateTotalPayments(int year, int month);

@@ -19,6 +19,7 @@ class CertificateService {
                        StudentRepository& studentRepo);
 
     // Certificate operations
-    bool generateCertificate(const std::string& paymentId);
+    std::string generateCertificate(const std::string& paymentId);
     bool validateCertificate(size_t signature);
+    bool deleteCertificate(const std::string& certId);
 };

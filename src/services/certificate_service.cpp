@@ -20,14 +20,25 @@ size_t CertificateService::generateSignature(const std::string& data) {
     return Encryption::hash(data);
 }
 
-bool CertificateService::generateCertificate(const std::string& paymentId) {
+bool CertificateService::validateCertificate(size_t signature) {
+    Certificate* certificate = certificateRepo.getCertificate(Certificate(signature, ""));
+    if (certificate == nullptr) {
+        return false;
+    }
+
+    std::string decryptedData = encryptData(certificate->getEncryptedData());
+    size_t generatedSignature = generateSignature(decryptedData);
+    return generatedSignature == signature;
+}
+
+std::string CertificateService::generateCertificate(const std::string& paymentId) {
     Payment* payment = paymentRepo.findById(paymentId);
     if (payment->getId() == "") {
-        return false;
+        return "";
     }
     Student* student = studentRepo.findById(payment->getStudentId());
     if (student->getId() == 0) {
-        return false;
+        return "";
     }
 
     std::string data = paymentId + "," +
@@ -41,13 +52,7 @@ bool CertificateService::generateCertificate(const std::string& paymentId) {
     return certificateRepo.addCertificate(certificate);
 }
 
-bool CertificateService::validateCertificate(size_t signature) {
-    Certificate* certificate = certificateRepo.getCertificate(Certificate(signature, ""));
-    if (certificate == nullptr) {
-        return false;
-    }
-
-    std::string decryptedData = encryptData(certificate->getEncryptedData());
-    size_t generatedSignature = generateSignature(decryptedData);
-    return generatedSignature == signature;
+bool CertificateService::deleteCertificate(const std::string& certId) {
+    certificateRepo.removeCertificate(Certificate(std::stoull(certId), ""));
+    return true;
 }

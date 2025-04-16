@@ -44,6 +44,23 @@ std::vector<Payment> PaymentRepository::findAll() {
     return result;
 };
 
+bool PaymentRepository::remove(std::string id) {
+    auto it = payments.find(id);
+    if (it != payments.end()) {
+        payments.erase(it);
+        // Remove from studentPaymentIndex
+        for (auto range = studentPaymentIndex.equal_range(it->second.getStudentId());
+             range.first != range.second; ++range.first) {
+            if (range.first->second == id) {
+                studentPaymentIndex.erase(range.first);
+                break;
+            }
+        }
+        return saveToFile();
+    }
+    return false;
+};
+
 // Specialized queries
 std::vector<Payment> PaymentRepository::findOverduePayments() {
     std::vector<Payment> result;

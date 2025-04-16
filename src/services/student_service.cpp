@@ -41,3 +41,7 @@ std::string StudentService::getStudentName(int id) {
     }
     return "";
 }
+
+bool StudentService::deleteStudent(int id) {
+    return studentRepo.remove(id);
+}

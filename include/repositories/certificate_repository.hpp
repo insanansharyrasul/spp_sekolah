@@ -10,7 +10,7 @@ class CertificateRepository {
     CertificateRepository(const std::string& filePath);
 
     // CRUD
-    bool addCertificate(const Certificate& certificate);
+    std::string addCertificate(const Certificate& certificate);
     Certificate* getCertificate(Certificate certificate);
     bool removeCertificate(Certificate certificate);
 

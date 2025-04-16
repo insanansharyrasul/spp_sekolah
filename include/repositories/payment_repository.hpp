@@ -20,6 +20,7 @@ class PaymentRepository {
     Payment* findById(const std::string& id);
     std::vector<Payment> findByStudentId(int studentId);
     std::vector<Payment> findAll();
+    bool remove(std::string);
 
     // Specialized queries
     std::vector<Payment> findOverduePayments();
