@@ -62,23 +62,60 @@ void StudentController::viewProfile(int studentId) {
 }
 
 void StudentController::viewPayments(int studentId) {
-    UI::clrscr();
-    std::cout << UI::Color::CYAN << "=== MY PAYMENTS ===" << UI::Color::RESET << std::endl
-              << std::endl;
+    while (true) {
+        UI::clrscr();
+        std::cout << UI::Color::CYAN << "=== MY PAYMENTS ===" << UI::Color::RESET << std::endl
+                << std::endl;
 
-    // Get payment details from repository via service
-    std::vector<Payment> payment = paymentService.getStudentPaymentHistory(studentId);
-    if (payment.empty()) {
-        std::cout << UI::Color::RED << "No payment history found!" << UI::Color::RESET << std::endl;
-        UI::pause_input();
-        return;
+        // Get payment details from repository via service
+        std::vector<Payment> payments = paymentService.getStudentPaymentHistory(studentId);
+        if (payments.empty()) {
+            std::cout << UI::Color::RED << "No payment history found!" << UI::Color::RESET << std::endl;
+            UI::pause_input();
+            return;
+        }
+
+        // Display latest payment by default
+        std::cout << UI::Color::YELLOW << "Latest Payment:" << UI::Color::RESET << std::endl;
+        UI::draw_card("Payment Details", payments[0]);  // Assuming first entry is the latest
+        
+        // Menu options
+        std::cout << "\n1. View Payment by Month/Year" << std::endl;
+        std::cout << "0. Back to Dashboard" << std::endl;
+        
+        int choice;
+        std::cout << "\nPilihan: ";
+        std::cin >> choice;
+        
+        if (choice == 0) {
+            return;
+        } else if (choice == 1) {
+            int month, year;
+            std::cout << "Enter Month (1-12): ";
+            std::cin >> month;
+            std::cout << "Enter Year: ";
+            std::cin >> year;
+            
+            UI::clrscr();
+            std::cout << UI::Color::CYAN << "=== PAYMENTS FOR " << month << "/" << year << " ===" << UI::Color::RESET << std::endl << std::endl;
+            
+            bool found = false;
+            for (const auto& p : payments) {
+                // Assuming Payment has month and year getters or can be extracted from date
+                if (p.getMonth() == month && p.getYear() == year) {
+                    UI::draw_card("Payment Details", p);
+                    found = true;
+                }
+            }
+            
+            if (!found) {
+                std::cout << UI::Color::RED << "No payments found for the specified month and year." << UI::Color::RESET << std::endl;
+            }
+            
+            UI::pause_input();
+        } else {
+            std::cout << UI::Color::RED << "Invalid choice!" << UI::Color::RESET << std::endl;
+            UI::pause_input();
+        }
     }
-
-    // Display payment details
-    std::cout << UI::Color::YELLOW << "Payment History:" << UI::Color::RESET << std::endl;
-    for (const auto& p : payment) {
-        UI::draw_card("Payment Details", p);
-    }
-
-    UI::pause_input();
 }

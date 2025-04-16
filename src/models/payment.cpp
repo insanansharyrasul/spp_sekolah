@@ -32,6 +32,17 @@ time_t Payment::getDeadline() const {
 bool Payment::getIsPaid() const {
     return isPaid;
 }
+int Payment::getMonth() const {
+    if (timestamp == 0) return 0;
+    tm* timeinfo = localtime(&timestamp);
+    return timeinfo->tm_mon + 1;  // Months are 0-11 in tm struct
+}
+
+int Payment::getYear() const {
+    if (timestamp == 0) return 0;
+    tm* timeinfo = localtime(&timestamp);
+    return timeinfo->tm_year + 1900;  // Years since 1900
+}
 
 // Setter
 void Payment::setId(const std::string& id) {
