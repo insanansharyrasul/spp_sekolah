@@ -1,6 +1,8 @@
 #pragma once
 #include <ctime>
+#include <iomanip>
 #include <string>
+#include <utils/ui_helpers.hpp>
 class Payment {
    private:
     std::string id;
@@ -39,4 +41,15 @@ class Payment {
     // Method
     bool isOverdue() const;
     int daysRemaining() const;
+
+    friend std::ostream& operator<<(std::ostream& os, const Payment& payment) {
+        std::string statusText = payment.isPaid ? "Paid" : "Unpaid";
+        std::string statusColor = payment.isPaid ? UI::Color::GREEN : UI::Color::RED;
+        os << std::setw(20) << std::left << "Payment ID" << ": " << payment.id << "\n"
+           << std::setw(20) << std::left << "Amount" << ": " << UI::display_currency(payment.amount) << "\n"
+           << std::setw(20) << std::left << "Deadline" << ": " << payment.deadline << "\n"
+           << std::setw(20) << std::left << "Is It Paid?" << ": " << statusColor << statusText << UI::Color::RESET;
+        ;
+        return os;
+    }
 };
