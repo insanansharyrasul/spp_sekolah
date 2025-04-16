@@ -1,5 +1,5 @@
-#include  <services/payment_service.hpp>
 #include <iostream>
+#include <services/payment_service.hpp>
 
 // Helper method to generate a unique payment ID
 std::string PaymentService::generatePaymentId(int studentId) {
@@ -13,7 +13,7 @@ PaymentService::PaymentService(PaymentRepository& paymentRepo, StudentRepository
 
 // Business operations
 std::string PaymentService::setPayment(int studentId, double amount, time_t deadline) {
-    std::string id = generatePaymentId(studentId); 
+    std::string id = generatePaymentId(studentId);
     Payment payment(id, studentId, amount, deadline);
     if (paymentRepo.add(payment)) {
         return id;

@@ -65,7 +65,7 @@ void StudentController::viewPayments(int studentId) {
     while (true) {
         UI::clrscr();
         std::cout << UI::Color::CYAN << "=== MY PAYMENTS ===" << UI::Color::RESET << std::endl
-                << std::endl;
+                  << std::endl;
 
         // Get payment details from repository via service
         std::vector<Payment> payments = paymentService.getStudentPaymentHistory(studentId);
@@ -78,15 +78,15 @@ void StudentController::viewPayments(int studentId) {
         // Display latest payment by default
         std::cout << UI::Color::YELLOW << "Latest Payment:" << UI::Color::RESET << std::endl;
         UI::draw_card("Payment Details", payments[0]);  // Assuming first entry is the latest
-        
+
         // Menu options
         std::cout << "\n1. View Payment by Month/Year" << std::endl;
         std::cout << "0. Back to Dashboard" << std::endl;
-        
+
         int choice;
         std::cout << "\nPilihan: ";
         std::cin >> choice;
-        
+
         if (choice == 0) {
             return;
         } else if (choice == 1) {
@@ -95,10 +95,11 @@ void StudentController::viewPayments(int studentId) {
             std::cin >> month;
             std::cout << "Enter Year: ";
             std::cin >> year;
-            
+
             UI::clrscr();
-            std::cout << UI::Color::CYAN << "=== PAYMENTS FOR " << month << "/" << year << " ===" << UI::Color::RESET << std::endl << std::endl;
-            
+            std::cout << UI::Color::CYAN << "=== PAYMENTS FOR " << month << "/" << year << " ===" << UI::Color::RESET << std::endl
+                      << std::endl;
+
             bool found = false;
             for (const auto& p : payments) {
                 // Assuming Payment has month and year getters or can be extracted from date
@@ -107,11 +108,11 @@ void StudentController::viewPayments(int studentId) {
                     found = true;
                 }
             }
-            
+
             if (!found) {
                 std::cout << UI::Color::RED << "No payments found for the specified month and year." << UI::Color::RESET << std::endl;
             }
-            
+
             UI::pause_input();
         } else {
             std::cout << UI::Color::RED << "Invalid choice!" << UI::Color::RESET << std::endl;

@@ -2,16 +2,16 @@
 #include <repositories/student_repository.hpp>
 
 class StudentService {
-private:
+   private:
     StudentRepository& studentRepo;
-    
-public:
+
+   public:
     StudentService(StudentRepository& repo);
-    
+
     bool registerStudent(const std::string& name, int yearEnrolled, int classId);
     Student* getStudentById(int id);
     std::vector<Student> getAllStudents();
     bool updateStudent(int id, const std::string& name, int classId);
     std::string getStudentName(int id);
-    bool deleteStudent(int id);  // New method for undo support
+    bool deleteStudent(int id);
 };

@@ -1,32 +1,32 @@
+#include <functional>
+#include <iomanip>
 #include <iostream>
 #include <limits>
+#include <models/payment.hpp>
+#include <models/student.hpp>
 #include <utils/ui_helpers.hpp>
 #include <vector>
-#include <functional>
-#include <models/student.hpp> 
-#include <models/payment.hpp> 
-#include <iomanip>
 
 namespace UI {
 // ANSI color code definitions
 namespace Color {
-    const std::string RED = "\033[1;31m";      
-    const std::string GREEN = "\033[1;32m";    
-    const std::string YELLOW = "\033[1;33m";   
-    const std::string BLUE = "\033[1;34m";     
-    const std::string MAGENTA = "\033[1;35m";  
-    const std::string CYAN = "\033[1;36m";     
-    const std::string WHITE = "\033[1;37m";    
-    const std::string RESET = "\033[0m";
-}
+const std::string RED = "\033[1;31m";
+const std::string GREEN = "\033[1;32m";
+const std::string YELLOW = "\033[1;33m";
+const std::string BLUE = "\033[1;34m";
+const std::string MAGENTA = "\033[1;35m";
+const std::string CYAN = "\033[1;36m";
+const std::string WHITE = "\033[1;37m";
+const std::string RESET = "\033[0m";
+}  // namespace Color
 
 // Other UI utility functions
 void clrscr() {
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");  // Or system("cls") with Windows detection
-    #endif
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");  
+#endif
 }
 
 void pause_input() {
@@ -58,7 +58,6 @@ std::string display_currency(double currency) {
     oss << std::fixed << std::setprecision(2) << currency;
     return oss.str();
 }
-
 
 // Table Utility
 void draw_table_separator(const std::vector<int>& column_widths) {

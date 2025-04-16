@@ -9,7 +9,7 @@ StudentRepository::StudentRepository(const std::string& filePath) : dataFilePath
 bool StudentRepository::loadFromFile() {
     std::ifstream inFile(dataFilePath);
     if (!inFile.is_open()) {
-        return false;  // Failed to open file
+        return false;  
     }
 
     students.clear();
@@ -20,11 +20,11 @@ bool StudentRepository::loadFromFile() {
         std::string name;
 
         ss >> id;
-        ss.ignore();  
+        ss.ignore();
         ss >> yearRegistered;
-        ss.ignore();  
+        ss.ignore();
         ss >> classId;
-        ss.ignore();  
+        ss.ignore();
         std::getline(ss, name);
 
         students[id] = Student(id, name, yearRegistered, classId);
@@ -36,7 +36,7 @@ bool StudentRepository::loadFromFile() {
 bool StudentRepository::saveToFile() {
     std::ofstream outFile(dataFilePath);
     if (!outFile.is_open()) {
-        return false;  // Failed to open file
+        return false;  
     }
 
     for (const auto& pair : students) {
@@ -52,7 +52,7 @@ bool StudentRepository::saveToFile() {
 
 bool StudentRepository::add(const Student& student) {
     if (students.find(student.getId()) != students.end()) {
-        return false;  // Student already exists
+        return false;  
     }
     students[student.getId()] = student;
     return saveToFile();
@@ -63,7 +63,7 @@ Student* StudentRepository::findById(int id) {
     if (it != students.end()) {
         return &it->second;
     }
-    return nullptr;  // Student not found
+    return nullptr;  
 }
 
 std::vector<Student> StudentRepository::findAll() {
@@ -77,7 +77,7 @@ std::vector<Student> StudentRepository::findAll() {
 bool StudentRepository::update(const Student& student) {
     auto it = students.find(student.getId());
     if (it == students.end()) {
-        return false;  // Student not found
+        return false;  
     }
     it->second = student;
     return saveToFile();
@@ -86,7 +86,7 @@ bool StudentRepository::update(const Student& student) {
 bool StudentRepository::remove(int id) {
     auto it = students.find(id);
     if (it == students.end()) {
-        return false;  // Student not found
+        return false;  
     }
     students.erase(it);
     return saveToFile();

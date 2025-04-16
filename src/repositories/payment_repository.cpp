@@ -11,9 +11,8 @@ PaymentRepository::PaymentRepository(const std::string& filePath) : dataFilePath
 bool PaymentRepository::add(const Payment& payment) {
     std::cout << "Adding payment: " << payment.getId() << std::endl;
     if (payments.find(payment.getId()) != payments.end()) {
-        return false;  // Payment already exist
+        return false;
     }
-    // payments[payment.getId()] = payment;  // ! ERROR : PROBLEM OCCUR HERE
     payments.emplace(payment.getId(), payment);
     studentPaymentIndex.insert({payment.getStudentId(), payment.getId()});
     return saveToFile();
@@ -48,7 +47,6 @@ bool PaymentRepository::remove(std::string id) {
     auto it = payments.find(id);
     if (it != payments.end()) {
         payments.erase(it);
-        // Remove from studentPaymentIndex
         for (auto range = studentPaymentIndex.equal_range(it->second.getStudentId());
              range.first != range.second; ++range.first) {
             if (range.first->second == id) {
@@ -90,7 +88,7 @@ std::vector<Payment> PaymentRepository::findPaymentsByMonth(int year, int month)
 bool PaymentRepository::loadFromFile() {
     std::ifstream inFile(dataFilePath);
     if (!inFile.is_open()) {
-        return false;  // Failed to open file
+        return false;
     }
 
     payments.clear();
@@ -126,7 +124,6 @@ bool PaymentRepository::loadFromFile() {
 
         Payment payment(id, studentId, amount, deadline, timestamp, isPaid);
 
-        // payments[id] = payment;
         payments.emplace(id, payment);
         studentPaymentIndex.insert({studentId, id});
     }
@@ -137,7 +134,7 @@ bool PaymentRepository::loadFromFile() {
 bool PaymentRepository::saveToFile() {
     std::ofstream outFile(dataFilePath);
     if (!outFile.is_open()) {
-        return false;  // Failed to open file
+        return false;
     }
 
     for (const auto& pair : payments) {

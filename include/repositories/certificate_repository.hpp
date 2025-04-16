@@ -1,11 +1,12 @@
 #pragma once
-#include <unordered_map>
-#include <string>
 #include <models/certificate.hpp>
+#include <string>
+#include <unordered_map>
 class CertificateRepository {
    private:
-    std::unordered_map<size_t, Certificate> certificates;  
-    std::string dataFilePath;  
+    std::unordered_map<size_t, Certificate> certificates;
+    std::string dataFilePath;
+
    public:
     CertificateRepository(const std::string& filePath);
 

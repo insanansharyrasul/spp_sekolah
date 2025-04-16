@@ -38,7 +38,7 @@ bool CertificateRepository::removeCertificate(Certificate certificate) {
 bool CertificateRepository::loadFromFile() {
     std::ifstream inFile(dataFilePath);
     if (!inFile.is_open()) {
-        return false;  // Failed to open file
+        return false;  
     }
 
     certificates.clear();
@@ -62,7 +62,7 @@ bool CertificateRepository::loadFromFile() {
 bool CertificateRepository::saveToFile() {
     std::ofstream outFile(dataFilePath);
     if (!outFile.is_open()) {
-        return false;  // Failed to open file
+        return false;  
     }
 
     for (const auto& pair : certificates) {

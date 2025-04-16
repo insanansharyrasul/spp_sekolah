@@ -5,18 +5,17 @@
 #include <services/payment_service.hpp>
 
 class UserSession {
-    public:
-        bool isAuthenticated;
-        bool isAdmin;
-        bool isStudent;
-        int currentStudentId;
-    
+   public:
+    bool isAuthenticated;
+    bool isAdmin;
+    bool isStudent;
+    int currentStudentId;
+
     UserSession();
 };
 
 class SppApplication {
    private:
-
     // User session
     UserSession session;
 
@@ -33,7 +32,6 @@ class SppApplication {
     // Controllers
     AdminController adminController;
     StudentController studentController;
-
 
    public:
     SppApplication();

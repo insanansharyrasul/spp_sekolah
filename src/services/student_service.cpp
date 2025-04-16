@@ -1,4 +1,5 @@
 #include "services/student_service.hpp"
+
 #include <ctime>
 
 StudentService::StudentService(StudentRepository& repo) : studentRepo(repo) {}
@@ -9,10 +10,10 @@ bool StudentService::registerStudent(const std::string& name, int yearEnrolled, 
     for (const auto& student : studentRepo.findAll()) {
         if (student.getId() > highestId) highestId = student.getId();
     }
-    
+
     int newId = highestId + 1;
     Student newStudent(newId, name, yearEnrolled, classId);
-    
+
     return studentRepo.add(newStudent);
 }
 
@@ -31,7 +32,7 @@ bool StudentService::updateStudent(int id, const std::string& name, int classId)
         student->setClassId(classId);
         return studentRepo.update(*student);
     }
-    return false;  // Student not found
+    return false;  
 }
 
 std::string StudentService::getStudentName(int id) {
