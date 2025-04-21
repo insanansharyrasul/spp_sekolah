@@ -14,7 +14,8 @@ PaymentService::PaymentService(PaymentRepository& paymentRepo, StudentRepository
 // Business operations
 std::string PaymentService::setPayment(int studentId, double amount, time_t deadline) {
     std::string id = generatePaymentId(studentId);
-    Payment payment(id, studentId, amount, deadline);
+    time_t timestamp = time(0);
+    Payment payment(id, studentId, amount, timestamp, deadline, false);
     if (paymentRepo.add(payment)) {
         return id;
     }
