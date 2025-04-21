@@ -142,7 +142,9 @@ bool PaymentRepository::saveToFile() {
         outFile << payment.getId() << ","
                 << payment.getStudentId() << ","
                 << payment.getAmount() << ","
-                << payment.getDeadline() << "\n";
+                << payment.getTimestamp() << ","
+                << payment.getDeadline() << ","
+                << payment.getIsPaid() << "\n";
     }
     outFile.close();
     return true;

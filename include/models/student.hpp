@@ -26,9 +26,9 @@ class Student {
     // Friend function for stream insertion
     friend std::ostream& operator<<(std::ostream& os, const Student& student) {
         os << std::setw(20) << std::left << "ID" << ": " << student.id << "\n"
-           << std::setw(20) << std::left << "Name" << ": " << student.name << "\n"
-           << std::setw(20) << std::left << "Year Registered" << ": " << student.yearRegistered << "\n"
-           << std::setw(20) << std::left << "Class ID" << ": " << student.classId;
+           << std::setw(20) << std::left << "Nama" << ": " << student.name << "\n"
+           << std::setw(20) << std::left << "Tahun Terdaftar" << ": " << student.yearRegistered << "\n"
+           << std::setw(20) << std::left << "ID Kelas" << ": " << student.classId;
         return os;
     }
 };

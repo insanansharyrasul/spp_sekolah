@@ -71,11 +71,11 @@ void display_sortable_table(
         for (size_t i = 0; i < sort_descriptions.size(); ++i) {
             std::cout << (i + 1) << ". " << sort_descriptions[i] << std::endl;
         }
-        std::cout << "0. Return to previous menu" << std::endl;
+        std::cout << "0. Kembali" << std::endl;
 
         int choice;
         std::cout << std::endl
-                  << "Select sort option: ";
+                  << "Pilih metode pengurutan: ";
         std::cin >> choice;
 
         if (choice == 0) {
@@ -83,7 +83,7 @@ void display_sortable_table(
         } else if (choice > 0 && choice <= static_cast<int>(sort_functions.size())) {
             std::sort(data.begin(), data.end(), sort_functions[choice - 1]);
         } else {
-            std::cout << Color::RED << "Invalid option!" << Color::RESET << std::endl;
+            std::cout << Color::RED << "Opsi tidak ada!" << Color::RESET << std::endl;
             pause_input();
         }
     }
@@ -125,4 +125,4 @@ void draw_card(const std::string& title, const T& content) {
     draw_table_separator({width});
 }
 
-}  // namespace UI
+}  

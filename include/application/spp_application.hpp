@@ -2,7 +2,11 @@
 #include <controllers/admin_controller.hpp>
 #include <controllers/student_controller.hpp>
 #include <repositories/student_repository.hpp>
+#include <repositories/payment_repository.hpp>
+#include <repositories/certificate_repository.hpp>
+#include <repositories/question_repository.hpp>
 #include <services/payment_service.hpp>
+#include <services/qna_service.hpp>
 
 class UserSession {
    public:
@@ -23,11 +27,13 @@ class SppApplication {
     StudentRepository studentRepo;
     PaymentRepository paymentRepo;
     CertificateRepository certificateRepo;
+    QuestionRepository questionRepo;
 
     // Services
     StudentService studentService;
     PaymentService paymentService;
     CertificateService certService;
+    QnAService qnaService;
 
     // Controllers
     AdminController adminController;
