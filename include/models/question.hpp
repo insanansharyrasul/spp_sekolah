@@ -37,4 +37,9 @@ public:
         answer = answerText;
         isAnswered = true;
     }
+    
+    // New setter for timestamp (used during loading from file)
+    void setTimestamp(time_t ts) {
+        timestamp = ts;
+    }
 };

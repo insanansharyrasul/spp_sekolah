@@ -8,9 +8,11 @@ SppApplication::SppApplication()
     : studentRepo("../data/students.txt"),
       paymentRepo("../data/payments.txt"),
       certificateRepo("../data/certificates.txt"),
+      questionRepo("../data/questions.txt"),
       paymentService(paymentRepo, studentRepo),
       studentService(studentRepo),
       certService(paymentRepo, certificateRepo, studentRepo),
+      qnaService(questionRepo),
       adminController(studentService, paymentService, certService, qnaService),
       studentController(studentService, paymentService, qnaService) {}
 
@@ -26,14 +28,17 @@ void SppApplication::initialize() {
     std::cout << "Memuat data..." << std::endl;
 
     if (!studentRepo.loadFromFile()) {
-        std::cerr << UI::Color::RED << "Gagal memuat data siswa!" << UI::Color::RESET << std::endl;
+        std::cerr << UI::Color::RED << "Gagal memuat data siswa! Mencoba membuat file baru..." << UI::Color::RESET << std::endl;
         UI::pause_input();
         exit(1);
     }
     if (!paymentRepo.loadFromFile()) {
-        std::cerr << UI::Color::RED << "Gagal memuat data pembayaran!" << UI::Color::RESET << std::endl;
+        std::cerr << UI::Color::RED << "Gagal memuat data pembayaran! Mencoba membuat file baru..." << UI::Color::RESET << std::endl;
         UI::pause_input();
         exit(1);
+    }
+    if (!questionRepo.loadFromFile()) {
+        std::cerr << UI::Color::YELLOW << "Gagal memuat data pertanyaan! Mencoba membuat file baru..." << UI::Color::RESET << std::endl;
     }
 
     std::cout << UI::Color::GREEN << "Data berhasil dimuat!" << UI::Color::RESET << std::endl;

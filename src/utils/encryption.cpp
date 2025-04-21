@@ -17,6 +17,6 @@ std::string decrypt(const std::string &data, const std::string &key) {
 
 size_t hash(const std::string &data) {
     return std::hash<std::string>{}(data);
-}  // namespace Encryption
+}  
 
 }
