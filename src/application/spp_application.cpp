@@ -66,8 +66,8 @@ void SppApplication::showLoginMenu() {
     UI::clrscr();
     UI::display_header("LOGIN MENU");
     std::cout << UI::Color::CYAN
-              << "1. Login as Admin" << std::endl
-              << "2. Login as Student" << std::endl
+              << "1. Login sebagai Admin" << std::endl
+              << "2. Login sebagai Siswa" << std::endl
               << "0. Exit" << std::endl;
 
     int choice;
