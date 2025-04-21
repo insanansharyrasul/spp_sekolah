@@ -3,6 +3,7 @@
 #include <controllers/student_controller.hpp>
 #include <repositories/student_repository.hpp>
 #include <services/payment_service.hpp>
+#include <services/qna_service.hpp>
 
 class UserSession {
    public:
@@ -28,6 +29,7 @@ class SppApplication {
     StudentService studentService;
     PaymentService paymentService;
     CertificateService certService;
+    QnAService qnaService;
 
     // Controllers
     AdminController adminController;

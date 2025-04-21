@@ -6,19 +6,30 @@
 
 AdminController::AdminController(StudentService& studentService,
                                  PaymentService& paymentService,
-                                 CertificateService& certService) : studentService(studentService),
-                                                                    paymentService(paymentService),
-                                                                    certService(certService) {}
+                                 CertificateService& certService,
+                                 QnAService& qnaService) : studentService(studentService),
+                                                          paymentService(paymentService),
+                                                          certService(certService),
+                                                          qnaService(qnaService) {}
 
 void AdminController::showDashboard() {
     while (true) {
         UI::display_header("ADMIN DASHBOARD");
+        
+        // Show notification if questions are pending
+        int pendingQuestions = qnaService.getQueueSize();
+        if (pendingQuestions > 0) {
+            std::cout << UI::Color::YELLOW << "You have " << pendingQuestions 
+                      << " pending question(s) to answer!" << UI::Color::RESET << std::endl << std::endl;
+        }
+        
         std::cout << "1. View All Students" << std::endl;
         std::cout << "2. View All Payments" << std::endl;
         std::cout << "3. Register New Student" << std::endl;
         std::cout << "4. Set Payment" << std::endl;
         std::cout << "5. Generate Certificate" << std::endl;
-        std::cout << "6. Undo Last Action" << std::endl;  // New option
+        std::cout << "6. Undo Last Action" << std::endl;
+        std::cout << "7. Answer Student Questions" << std::endl;  // New option
         std::cout << "0. Logout" << std::endl;
 
         int choice;
@@ -42,7 +53,10 @@ void AdminController::showDashboard() {
                 makeCertificate();
                 break;
             case 6:
-                undoLastAction();  // New case
+                undoLastAction();
+                break;
+            case 7:
+                answerQuestions();
                 break;
             case 0:
                 return;
@@ -292,6 +306,58 @@ void AdminController::undoLastAction() {
     }
     
     UI::pause_input();
+}
+
+void AdminController::answerQuestions() {
+    while (true) {
+        UI::clrscr();
+        std::cout << UI::Color::CYAN << "=== ANSWER STUDENT QUESTIONS ===" << UI::Color::RESET << std::endl
+                << std::endl;
+        
+        if (!qnaService.hasQuestionsToAnswer()) {
+            std::cout << UI::Color::YELLOW << "There are no pending questions to answer." << UI::Color::RESET << std::endl;
+            UI::pause_input();
+            return;
+        }
+        
+        Question question = qnaService.getNextQuestion();
+        time_t question_timestamp = question.getTimestamp();
+        std::string timestamp_str = std::ctime(&question_timestamp);
+        if (!timestamp_str.empty() && timestamp_str.back() == '\n')
+            timestamp_str.pop_back();
+            
+        std::cout << "Question ID: " << question.getId() << std::endl;
+        std::cout << "From: " << question.getStudentName() << " (ID: " << question.getStudentId() << ")" << std::endl;
+        std::cout << "Date: " << timestamp_str << std::endl;
+        std::cout << UI::Color::CYAN << "Question: " << question.getQuestionText() << UI::Color::RESET << std::endl;
+        std::cout << std::endl;
+        
+        std::cout << "Type your answer below (or type 'skip' to come back later):" << std::endl;
+        std::string answer;
+        std::cin.ignore();
+        std::getline(std::cin, answer);
+        
+        if (answer == "skip") {
+            break;
+        }
+        
+        if (answer.empty()) {
+            std::cout << UI::Color::YELLOW << "Answer cannot be empty. Please try again." << UI::Color::RESET << std::endl;
+            UI::pause_input();
+            continue;
+        }
+        
+        qnaService.answerQuestion(answer);
+        
+        std::cout << UI::Color::GREEN << "Answer submitted successfully!" << UI::Color::RESET << std::endl;
+        
+        std::cout << "\nDo you want to answer another question? (Y/N): ";
+        char choice;
+        std::cin >> choice;
+        if (toupper(choice) != 'Y') {
+            break;
+        }
+    }
 }
 
 // Implement other controller methods

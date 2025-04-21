@@ -4,8 +4,10 @@
 #include <utils/ui_helpers.hpp>
 
 StudentController::StudentController(StudentService& studentService,
-                                     PaymentService& paymentService) : studentService(studentService),
-                                                                       paymentService(paymentService) {}
+                                     PaymentService& paymentService,
+                                     QnAService& qnaService) : studentService(studentService),
+                                                              paymentService(paymentService),
+                                                              qnaService(qnaService) {}
 
 void StudentController::showDashboard(int studentId) {
     while (true) {
@@ -19,6 +21,8 @@ void StudentController::showDashboard(int studentId) {
         std::cout << std::endl;
         std::cout << "1. View My Profile" << std::endl;
         std::cout << "2. View My Payments" << std::endl;
+        std::cout << "3. Ask a Question" << std::endl;
+        std::cout << "4. View Answered Questions" << std::endl;
         std::cout << "0. Logout" << std::endl;
 
         int choice;
@@ -31,6 +35,12 @@ void StudentController::showDashboard(int studentId) {
                 break;
             case 2:
                 viewPayments(studentId);
+                break;
+            case 3:
+                askQuestion(studentId);
+                break;
+            case 4:
+                viewAnsweredQuestions(studentId);
                 break;
             case 0:
                 return;  // Return to main menu/logout
@@ -119,4 +129,58 @@ void StudentController::viewPayments(int studentId) {
             UI::pause_input();
         }
     }
+}
+
+void StudentController::askQuestion(int studentId) {
+    UI::clrscr();
+    std::cout << UI::Color::CYAN << "=== ASK A QUESTION ===" << UI::Color::RESET << std::endl
+              << std::endl;
+
+    std::string studentName = studentService.getStudentName(studentId);
+    std::string question;
+    
+    std::cout << "Type your question below (press Enter when done):" << std::endl;
+    std::cin.ignore();
+    std::getline(std::cin, question);
+    
+    if (question.empty()) {
+        std::cout << UI::Color::YELLOW << "Question cannot be empty." << UI::Color::RESET << std::endl;
+        UI::pause_input();
+        return;
+    }
+    
+    int questionId = qnaService.submitQuestion(studentId, studentName, question);
+    
+    std::cout << UI::Color::GREEN << "Your question has been submitted with ID: " << questionId << UI::Color::RESET << std::endl;
+    std::cout << "An admin will answer your question soon." << std::endl;
+    UI::pause_input();
+}
+
+void StudentController::viewAnsweredQuestions(int studentId) {
+    UI::clrscr();
+    std::cout << UI::Color::CYAN << "=== MY ANSWERED QUESTIONS ===" << UI::Color::RESET << std::endl
+              << std::endl;
+    
+    auto answeredQuestions = qnaService.getAnsweredQuestionsForStudent(studentId);
+    
+    if (answeredQuestions.empty()) {
+        std::cout << UI::Color::YELLOW << "You have no answered questions yet." << UI::Color::RESET << std::endl;
+        UI::pause_input();
+        return;
+    }
+    
+    for (const auto& question : answeredQuestions) {
+        time_t question_timestamp = question.getTimestamp();
+        std::string timestamp_str = std::ctime(&question_timestamp);
+        if (!timestamp_str.empty() && timestamp_str.back() == '\n')
+            timestamp_str.pop_back();
+            
+        std::cout << UI::Color::YELLOW << "Question ID: " << question.getId() << UI::Color::RESET << std::endl;
+        std::cout << "Date: " << timestamp_str << std::endl;
+        std::cout << UI::Color::CYAN << "Q: " << question.getQuestionText() << UI::Color::RESET << std::endl;
+        std::cout << UI::Color::GREEN << "A: " << question.getAnswer() << UI::Color::RESET << std::endl;
+        std::cout << "----------------------------------------" << std::endl;
+    }
+    
+    UI::pause_input();
 }

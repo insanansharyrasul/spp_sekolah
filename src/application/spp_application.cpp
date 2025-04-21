@@ -11,8 +11,8 @@ SppApplication::SppApplication()
       paymentService(paymentRepo, studentRepo),
       studentService(studentRepo),
       certService(paymentRepo, certificateRepo, studentRepo),
-      adminController(studentService, paymentService, certService),
-      studentController(studentService, paymentService) {}
+      adminController(studentService, paymentService, certService, qnaService),
+      studentController(studentService, paymentService, qnaService) {}
 
 void SppApplication::initialize() {
     UI::clrscr();
