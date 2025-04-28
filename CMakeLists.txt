@@ -24,6 +24,12 @@ include_directories(
 set(GUI_FILES
     "include/gui/main_window.hpp"
     "src/gui/main_window.cpp"
+    "include/gui/login_view.hpp"
+    "src/gui/login_view.cpp"
+    "include/gui/admin_view.hpp"
+    "src/gui/admin_view.cpp"
+    "include/gui/student_view.hpp"
+    "src/gui/student_view.cpp"
 )
 
 # Other source files

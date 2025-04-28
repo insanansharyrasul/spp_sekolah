@@ -6,7 +6,7 @@
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QString>
-#include <QTabWidget>
+#include <QStackedWidget>
 #include <controllers/admin_controller.hpp>
 #include <controllers/student_controller.hpp>
 #include <repositories/certificate_repository.hpp>
@@ -15,6 +15,20 @@
 #include <repositories/student_repository.hpp>
 #include <services/payment_service.hpp>
 #include <services/qna_service.hpp>
+#include "gui/login_view.hpp"
+#include "gui/admin_view.hpp"
+#include "gui/student_view.hpp"
+
+// User session to manage authentication state
+class UserSession {
+public:
+    bool isAuthenticated;
+    bool isAdmin;
+    bool isStudent;
+    int currentStudentId;
+
+    UserSession() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1) {}
+};
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -23,10 +37,21 @@ class MainWindow : public QMainWindow {
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+   private slots:
+    void showLoginScreen();
+    void adminLogin(const QString& username, const QString& password);
+    void studentLogin(int studentId);
+    void logout();
+    void showAdminDashboard();
+    void showStudentDashboard();
+
    private:
     void setupUi();
     void createMenus();
     void createActions();
+
+    // Session management
+    UserSession session;
 
     // Repositories
     StudentRepository studentRepo;
@@ -45,10 +70,14 @@ class MainWindow : public QMainWindow {
     StudentController studentController;
 
     // UI elements
-    QTabWidget *tabWidget;
+    QStackedWidget *stackedWidget;
+    LoginView *loginView;
+    AdminView *adminView;
+    StudentView *studentView;
     QMenu *fileMenu;
     QMenu *helpMenu;
     QAction *exitAction;
     QAction *aboutAction;
+    QAction *logoutAction;
     QStatusBar *statusBar;
 };

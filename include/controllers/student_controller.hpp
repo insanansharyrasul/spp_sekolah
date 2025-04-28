@@ -22,4 +22,8 @@ class StudentController {
     // QnA methods
     void askQuestion(int studentId);
     void viewAnsweredQuestions(int studentId);
+    
+    // Accessor methods
+    StudentService& getStudentService() const;
+    bool submitQuestion(int studentId, const std::string& question);
 };

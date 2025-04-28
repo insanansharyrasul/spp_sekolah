@@ -8,20 +8,20 @@
 #include <services/payment_service.hpp>
 #include <services/qna_service.hpp>
 
-class UserSession {
+class UserSessionCLI {
    public:
     bool isAuthenticated;
     bool isAdmin;
     bool isStudent;
     int currentStudentId;
 
-    UserSession();
+    UserSessionCLI();
 };
 
 class SppApplication {
    private:
     // User session
-    UserSession session;
+    UserSessionCLI session;
 
     // Repositories
     StudentRepository studentRepo;

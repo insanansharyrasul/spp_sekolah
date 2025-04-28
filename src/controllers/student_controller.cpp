@@ -184,3 +184,21 @@ void StudentController::viewAnsweredQuestions(int studentId) {
     
     UI::pause_input();
 }
+
+// Returns a reference to the student service
+StudentService& StudentController::getStudentService() const {
+    return studentService;
+}
+
+// Submits a question from a student to the QnA service
+bool StudentController::submitQuestion(int studentId, const std::string& question) {
+    if (question.empty()) {
+        return false;
+    }
+    
+    std::string studentName = studentService.getStudentName(studentId);
+    int questionId = qnaService.submitQuestion(studentId, studentName, question);
+    
+    // If questionId > 0, the question was successfully submitted
+    return questionId > 0;
+}

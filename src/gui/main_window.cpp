@@ -1,9 +1,17 @@
-#include "gui/main_window.hpp"
+#include <gui/main_window.hpp>
+#include <gui/login_view.hpp>
+#include <gui/admin_view.hpp>
+#include <gui/student_view.hpp>
 
 #include <QApplication>
 #include <QLabel>
 #include <QMessageBox>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QFont>
+#include <QTextEdit>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -17,44 +25,139 @@ MainWindow::MainWindow(QWidget *parent)
       qnaService(questionRepo),
       adminController(studentService, paymentService, certService, qnaService),
       studentController(studentService, paymentService, qnaService) {
+    
+    // Initialize repositories
+    if (!studentRepo.loadFromFile()) {
+        QMessageBox::critical(this, "Error", "Failed to load student data! Trying to create a new file...");
+    }
+    if (!paymentRepo.loadFromFile()) {
+        QMessageBox::critical(this, "Error", "Failed to load payment data! Trying to create a new file...");
+    }
+    if (!questionRepo.loadFromFile()) {
+        QMessageBox::warning(this, "Warning", "Failed to load question data! Trying to create a new file...");
+    }
+    
     setupUi();
     createActions();
     createMenus();
 
     setWindowTitle("School Payment Management System");
     resize(800, 600);
+    
+    // Start with login screen
+    showLoginScreen();
 }
 
 MainWindow::~MainWindow() {}
 
 void MainWindow::setupUi() {
-    // Create central widget with tab structure
-    tabWidget = new QTabWidget(this);
-    setCentralWidget(tabWidget);
-
-    // Add tabs for different functions
-    QWidget *studentTab = new QWidget();
-    QWidget *paymentTab = new QWidget();
-    QWidget *adminTab = new QWidget();
-
-    tabWidget->addTab(studentTab, "Students");
-    tabWidget->addTab(paymentTab, "Payments");
-    tabWidget->addTab(adminTab, "Administration");
-
-    // Create basic layouts for tabs
-    QVBoxLayout *studentLayout = new QVBoxLayout(studentTab);
-    studentLayout->addWidget(new QLabel("Student Management Interface"));
-
-    QVBoxLayout *paymentLayout = new QVBoxLayout(paymentTab);
-    paymentLayout->addWidget(new QLabel("Payment Management Interface"));
-
-    QVBoxLayout *adminLayout = new QVBoxLayout(adminTab);
-    adminLayout->addWidget(new QLabel("Admin Interface"));
-
+    // Create stacked widget to switch between login, admin, and student views
+    stackedWidget = new QStackedWidget(this);
+    setCentralWidget(stackedWidget);
+    
+    // Create login, admin, and student views
+    loginView = new LoginView();
+    adminView = new AdminView(adminController);
+    studentView = new StudentView(studentController);
+    
+    // Add widgets to stacked widget
+    stackedWidget->addWidget(loginView);
+    stackedWidget->addWidget(adminView);
+    stackedWidget->addWidget(studentView);
+    
     // Create status bar
     statusBar = new QStatusBar(this);
     setStatusBar(statusBar);
-    statusBar->showMessage("Ready");
+    statusBar->showMessage("Please log in");
+    
+    // Set up login view callbacks
+    loginView->setAdminLoginCallback([this](const QString& username, const QString& password) {
+        adminLogin(username, password);
+    });
+    
+    loginView->setStudentLoginCallback([this](int studentId) {
+        studentLogin(studentId);
+    });
+    
+    loginView->setCancelCallback([this]() {
+        close();
+    });
+}
+
+void MainWindow::adminLogin(const QString& username, const QString& password) {
+    // Simple admin authentication
+    if (username == "admin" && password == "admin123") {
+        session.isAuthenticated = true;
+        session.isAdmin = true;
+        session.isStudent = false;
+        
+        QMessageBox::information(this, "Success", "Login successful!");
+        showAdminDashboard();
+    } else {
+        QMessageBox::warning(this, "Login Failed", "Invalid username or password!");
+    }
+}
+
+void MainWindow::studentLogin(int studentId) {
+    // Check if student exists using the repository
+    Student* student = studentRepo.findById(studentId);
+    if (student) {
+        session.isAuthenticated = true;
+        session.isAdmin = false;
+        session.isStudent = true;
+        session.currentStudentId = studentId;
+        
+        QMessageBox::information(this, "Success", "Login successful! Welcome, " + QString::fromStdString(student->getName()) + "!");
+        showStudentDashboard();
+    } else {
+        QMessageBox::warning(this, "Login Failed", "Student not found!");
+    }
+}
+
+void MainWindow::showLoginScreen() {
+    // Clear session
+    session.isAuthenticated = false;
+    session.isAdmin = false;
+    session.isStudent = false;
+    session.currentStudentId = -1;
+    
+    loginView->resetInputs();
+    loginView->showLoginTypeSelection();
+    stackedWidget->setCurrentWidget(loginView);
+    statusBar->showMessage("Please log in");
+}
+
+void MainWindow::logout() {
+    showLoginScreen();
+}
+
+void MainWindow::showAdminDashboard() {
+    if (!session.isAuthenticated || !session.isAdmin) {
+        return;
+    }
+    
+    // Set up admin dashboard
+    adminView->setupDashboard();
+    
+    // Show the admin interface
+    stackedWidget->setCurrentWidget(adminView);
+    statusBar->showMessage("Logged in as Administrator");
+}
+
+void MainWindow::showStudentDashboard() {
+    if (!session.isAuthenticated || !session.isStudent) {
+        return;
+    }
+    
+    // Set up student dashboard with the current student ID
+    studentView->setupDashboard(session.currentStudentId);
+    
+    // Show the student interface
+    stackedWidget->setCurrentWidget(studentView);
+    
+    // Get student name for status bar
+    Student* student = studentRepo.findById(session.currentStudentId);
+    statusBar->showMessage("Logged in as Student: " + QString::fromStdString(student ? student->getName() : ""));
 }
 
 void MainWindow::createActions() {
@@ -67,10 +170,15 @@ void MainWindow::createActions() {
                            "School Payment Management System\n"
                            "Version 0.1.0");
     });
+    
+    logoutAction = new QAction("&Logout", this);
+    connect(logoutAction, &QAction::triggered, this, &MainWindow::logout);
 }
 
 void MainWindow::createMenus() {
-    fileMenu = menuBar()->addMenu("&File");
+    fileMenu = menuBar()->addMenu("&Session");
+    fileMenu->addAction(logoutAction);
+    fileMenu->addSeparator();
     fileMenu->addAction(exitAction);
 
     helpMenu = menuBar()->addMenu("&Help");

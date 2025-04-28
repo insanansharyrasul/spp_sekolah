@@ -2,7 +2,7 @@
 #include <iostream>
 #include <utils/ui_helpers.hpp>
 
-UserSession::UserSession() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1) {}
+UserSessionCLI::UserSessionCLI() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1) {}
 
 SppApplication::SppApplication()
     : studentRepo("../data/students.txt"),
