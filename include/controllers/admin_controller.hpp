@@ -73,6 +73,7 @@ class AdminController {
     // QnA methods
     void answerQuestions();
 
-    // Service
+    // Service accessors
     StudentService& getStudentService();
+    PaymentService& getPaymentService();
 };

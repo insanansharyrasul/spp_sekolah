@@ -1,6 +1,7 @@
 #include "gui/admin_view.hpp"
 
 #include <QHeaderView>
+#include <QInputDialog>
 #include <QLabel>
 #include <QMessageBox>
 #include <QTableWidget>
@@ -99,19 +100,186 @@ void AdminView::setupStudentTab() {
 
 void AdminView::setupPaymentTab() {
     QVBoxLayout *paymentLayout = new QVBoxLayout(paymentTab);
-
+    
+    // Create table widget for payments
+    QTableWidget *paymentTable = new QTableWidget();
+    paymentTable->setSortingEnabled(true);
+    paymentTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    paymentTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    paymentTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    paymentTable->setAlternatingRowColors(true);
+    
+    QStringList headers = {"ID", "Student ID", "Amount", "Timestamp", "Deadline", "Status"};
+    paymentTable->setColumnCount(headers.size());
+    paymentTable->setHorizontalHeaderLabels(headers);
+    paymentTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    
     QPushButton *viewPaymentsBtn = new QPushButton("View All Payments");
     QPushButton *setPaymentBtn = new QPushButton("Set New Payment");
-
+    
+    paymentLayout->addWidget(paymentTable);
     paymentLayout->addWidget(viewPaymentsBtn);
     paymentLayout->addWidget(setPaymentBtn);
-
-    connect(viewPaymentsBtn, &QPushButton::clicked, [this]() {
-        QMessageBox::information(this, "Information", "View Payments functionality to be implemented");
+    
+    // Load payments data into the table
+    connect(viewPaymentsBtn, &QPushButton::clicked, [this, paymentTable]() {
+        paymentTable->setRowCount(0);
+        
+        std::vector<Payment> paymentList = adminController.getPaymentService().getAllPayments();
+        
+        if (paymentList.empty()) {
+            QMessageBox::information(this, "Information", "No payments found.");
+            return;
+        }
+        
+        paymentTable->setRowCount(paymentList.size());
+        int row = 0;
+        
+        for (const auto &payment : paymentList) {
+            // Payment ID
+            QTableWidgetItem *idItem = new QTableWidgetItem(QString::fromStdString(payment.getId()));
+            
+            // Student ID
+            QTableWidgetItem *studentIdItem = new QTableWidgetItem(QString::number(payment.getStudentId()));
+            
+            // Amount
+            QTableWidgetItem *amountItem = new QTableWidgetItem();
+            amountItem->setData(Qt::DisplayRole, payment.getAmount());
+            amountItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+            
+            // Timestamp
+            time_t timestamp = payment.getTimestamp();
+            std::string timestamp_str = std::ctime(&timestamp);
+            if (!timestamp_str.empty() && timestamp_str.back() == '\n')
+                timestamp_str.pop_back();
+            QTableWidgetItem *timestampItem = new QTableWidgetItem(QString::fromStdString(timestamp_str));
+            
+            // Deadline
+            time_t deadline = payment.getDeadline();
+            std::string deadline_str = std::ctime(&deadline);
+            if (!deadline_str.empty() && deadline_str.back() == '\n')
+                deadline_str.pop_back();
+            QTableWidgetItem *deadlineItem = new QTableWidgetItem(QString::fromStdString(deadline_str));
+            
+            // Status
+            QString status = payment.getIsPaid() ? "Paid" : "Unpaid";
+            QTableWidgetItem *statusItem = new QTableWidgetItem(status);
+            
+            // Set color based on payment status
+            if (payment.getIsPaid()) {
+                statusItem->setForeground(QBrush(QColor(0, 170, 0))); // Green for paid
+            } else {
+                statusItem->setForeground(QBrush(QColor(255, 0, 0))); // Red for unpaid
+            }
+            
+            paymentTable->setItem(row, 0, idItem);
+            paymentTable->setItem(row, 1, studentIdItem);
+            paymentTable->setItem(row, 2, amountItem);
+            paymentTable->setItem(row, 3, timestampItem);
+            paymentTable->setItem(row, 4, deadlineItem);
+            paymentTable->setItem(row, 5, statusItem);
+            
+            row++;
+        }
+        
+        paymentTable->sortByColumn(0, Qt::AscendingOrder);
     });
-
-    connect(setPaymentBtn, &QPushButton::clicked, [this]() {
-        QMessageBox::information(this, "Information", "Set Payment functionality to be implemented");
+    
+    // Handle set payment button click
+    connect(setPaymentBtn, &QPushButton::clicked, [this, paymentTable]() {
+        bool ok;
+        int studentId = QInputDialog::getInt(this, "Set Payment", "Student ID:", 1, 1, 999999, 1, &ok);
+        
+        if (!ok) return;
+        
+        double amount = QInputDialog::getDouble(this, "Set Payment", "Amount:", 0.0, 0.01, 1000000.0, 2, &ok);
+        
+        if (!ok) return;
+        
+        // Set deadline to 30 days from now
+        time_t deadline = time(0) + (30 * 24) * (60 * 60);
+        std::string deadline_str = std::ctime(&deadline);
+        if (!deadline_str.empty() && deadline_str.back() == '\n')
+            deadline_str.pop_back();
+            
+        // Show confirmation dialog with deadline information
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Confirm Payment Setup");
+        msgBox.setText(QString("Setting up payment for:\nStudent ID: %1\nAmount: %2\nDeadline: %3")
+                      .arg(studentId)
+                      .arg(amount)
+                      .arg(QString::fromStdString(deadline_str)));
+        msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        int ret = msgBox.exec();
+        
+        if (ret == QMessageBox::Ok) {
+            std::string paymentId = adminController.getPaymentService().setPayment(studentId, amount, deadline);
+            
+            if (!paymentId.empty()) {
+                QMessageBox::information(this, "Success", QString("Payment has been set with ID: %1")
+                                        .arg(QString::fromStdString(paymentId)));
+                
+                // Refresh the table to show the new payment
+                paymentTable->setRowCount(0);
+                std::vector<Payment> paymentList = adminController.getPaymentService().getAllPayments();
+                
+                if (!paymentList.empty()) {
+                    paymentTable->setRowCount(paymentList.size());
+                    int row = 0;
+                    
+                    for (const auto &payment : paymentList) {
+                        // Payment ID
+                        QTableWidgetItem *idItem = new QTableWidgetItem(QString::fromStdString(payment.getId()));
+                        
+                        // Student ID
+                        QTableWidgetItem *studentIdItem = new QTableWidgetItem(QString::number(payment.getStudentId()));
+                        
+                        // Amount
+                        QTableWidgetItem *amountItem = new QTableWidgetItem();
+                        amountItem->setData(Qt::DisplayRole, payment.getAmount());
+                        amountItem->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+                        
+                        // Timestamp
+                        time_t timestamp = payment.getTimestamp();
+                        std::string timestamp_str = std::ctime(&timestamp);
+                        if (!timestamp_str.empty() && timestamp_str.back() == '\n')
+                            timestamp_str.pop_back();
+                        QTableWidgetItem *timestampItem = new QTableWidgetItem(QString::fromStdString(timestamp_str));
+                        
+                        // Deadline
+                        time_t deadline = payment.getDeadline();
+                        std::string deadline_str = std::ctime(&deadline);
+                        if (!deadline_str.empty() && deadline_str.back() == '\n')
+                            deadline_str.pop_back();
+                        QTableWidgetItem *deadlineItem = new QTableWidgetItem(QString::fromStdString(deadline_str));
+                        
+                        // Status
+                        QString status = payment.getIsPaid() ? "Paid" : "Unpaid";
+                        QTableWidgetItem *statusItem = new QTableWidgetItem(status);
+                        
+                        // Set color based on payment status
+                        if (payment.getIsPaid()) {
+                            statusItem->setForeground(QBrush(QColor(0, 170, 0))); // Green for paid
+                        } else {
+                            statusItem->setForeground(QBrush(QColor(255, 0, 0))); // Red for unpaid
+                        }
+                        
+                        paymentTable->setItem(row, 0, idItem);
+                        paymentTable->setItem(row, 1, studentIdItem);
+                        paymentTable->setItem(row, 2, amountItem);
+                        paymentTable->setItem(row, 3, timestampItem);
+                        paymentTable->setItem(row, 4, deadlineItem);
+                        paymentTable->setItem(row, 5, statusItem);
+                        
+                        row++;
+                    }
+                    
+                    paymentTable->sortByColumn(0, Qt::AscendingOrder);
+                }
+            } else {
+                QMessageBox::critical(this, "Error", "Failed to set payment. Please check if the student ID exists.");
+            }
+        }
     });
 }
 

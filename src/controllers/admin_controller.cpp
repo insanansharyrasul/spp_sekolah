@@ -364,3 +364,7 @@ void AdminController::answerQuestions() {
 StudentService& AdminController::getStudentService() {
     return studentService;
 }
+
+PaymentService& AdminController::getPaymentService() {
+    return paymentService;
+}
