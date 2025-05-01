@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent)
       adminController(studentService, paymentService, certService, qnaService),
       studentController(studentService, paymentService, qnaService) {
     
-    // Initialize repositories
     if (!studentRepo.loadFromFile()) {
         QMessageBox::critical(this, "Error", "Failed to load student data! Trying to create a new file...");
     }
@@ -44,33 +43,27 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("School Payment Management System");
     resize(800, 600);
     
-    // Start with login screen
     showLoginScreen();
 }
 
 MainWindow::~MainWindow() {}
 
 void MainWindow::setupUi() {
-    // Create stacked widget to switch between login, admin, and student views
     stackedWidget = new QStackedWidget(this);
     setCentralWidget(stackedWidget);
     
-    // Create login, admin, and student views
     loginView = new LoginView();
     adminView = new AdminView(adminController);
     studentView = new StudentView(studentController);
     
-    // Add widgets to stacked widget
     stackedWidget->addWidget(loginView);
     stackedWidget->addWidget(adminView);
     stackedWidget->addWidget(studentView);
     
-    // Create status bar
     statusBar = new QStatusBar(this);
     setStatusBar(statusBar);
     statusBar->showMessage("Please log in");
     
-    // Set up login view callbacks
     loginView->setAdminLoginCallback([this](const QString& username, const QString& password) {
         adminLogin(username, password);
     });
@@ -85,7 +78,6 @@ void MainWindow::setupUi() {
 }
 
 void MainWindow::adminLogin(const QString& username, const QString& password) {
-    // Simple admin authentication
     if (username == "admin" && password == "admin123") {
         session.isAuthenticated = true;
         session.isAdmin = true;
@@ -99,7 +91,6 @@ void MainWindow::adminLogin(const QString& username, const QString& password) {
 }
 
 void MainWindow::studentLogin(int studentId) {
-    // Check if student exists using the repository
     Student* student = studentRepo.findById(studentId);
     if (student) {
         session.isAuthenticated = true;
@@ -115,7 +106,6 @@ void MainWindow::studentLogin(int studentId) {
 }
 
 void MainWindow::showLoginScreen() {
-    // Clear session
     session.isAuthenticated = false;
     session.isAdmin = false;
     session.isStudent = false;
@@ -136,10 +126,8 @@ void MainWindow::showAdminDashboard() {
         return;
     }
     
-    // Set up admin dashboard
     adminView->setupDashboard();
     
-    // Show the admin interface
     stackedWidget->setCurrentWidget(adminView);
     statusBar->showMessage("Logged in as Administrator");
 }
@@ -149,13 +137,10 @@ void MainWindow::showStudentDashboard() {
         return;
     }
     
-    // Set up student dashboard with the current student ID
     studentView->setupDashboard(session.currentStudentId);
     
-    // Show the student interface
     stackedWidget->setCurrentWidget(studentView);
     
-    // Get student name for status bar
     Student* student = studentRepo.findById(session.currentStudentId);
     statusBar->showMessage("Logged in as Student: " + QString::fromStdString(student ? student->getName() : ""));
 }

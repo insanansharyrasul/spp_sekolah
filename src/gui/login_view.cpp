@@ -16,7 +16,6 @@ void LoginView::setupUi() {
     QVBoxLayout *mainLoginLayout = new QVBoxLayout(this);
     loginStackedWidget = new QStackedWidget();
     
-    // Create title label
     QLabel *titleLabel = new QLabel("SCHOOL PAYMENT MANAGEMENT SYSTEM");
     QFont titleFont = titleLabel->font();
     titleFont.setPointSize(18);
@@ -24,7 +23,6 @@ void LoginView::setupUi() {
     titleLabel->setFont(titleFont);
     titleLabel->setAlignment(Qt::AlignCenter);
     
-    // Create login type selection widget
     QWidget *loginTypeWidget = new QWidget();
     QVBoxLayout *loginTypeLayout = new QVBoxLayout(loginTypeWidget);
     
@@ -41,7 +39,6 @@ void LoginView::setupUi() {
     loginTypeLayout->addWidget(loginCancelBtn);
     loginTypeLayout->setContentsMargins(100, 20, 100, 20);
     
-    // Create admin login widget
     adminLoginWidget = new QWidget();
     QGridLayout *adminLoginLayout = new QGridLayout(adminLoginWidget);
     
@@ -70,7 +67,6 @@ void LoginView::setupUi() {
     adminLoginLayout->addWidget(adminBackBtn, 3, 1);
     adminLoginLayout->setContentsMargins(100, 20, 100, 20);
     
-    // Create student login widget
     studentLoginWidget = new QWidget();
     QGridLayout *studentLoginLayout = new QGridLayout(studentLoginWidget);
     
@@ -94,7 +90,6 @@ void LoginView::setupUi() {
     studentLoginLayout->addWidget(studentBackBtn, 2, 1);
     studentLoginLayout->setContentsMargins(100, 20, 100, 20);
     
-    // Add login widgets to stacked widget
     loginStackedWidget->addWidget(loginTypeWidget);
     loginStackedWidget->addWidget(adminLoginWidget);
     loginStackedWidget->addWidget(studentLoginWidget);
@@ -102,7 +97,6 @@ void LoginView::setupUi() {
     mainLoginLayout->addWidget(titleLabel);
     mainLoginLayout->addWidget(loginStackedWidget);
     
-    // Connect signals and slots
     connect(adminLoginBtn, &QPushButton::clicked, [this]() {
         usernameInput->clear();
         passwordInput->clear();
@@ -141,11 +135,11 @@ void LoginView::setupUi() {
     });
     
     connect(adminBackBtn, &QPushButton::clicked, [this]() {
-        loginStackedWidget->setCurrentWidget(loginStackedWidget->widget(0)); // Back to login type
+        loginStackedWidget->setCurrentWidget(loginStackedWidget->widget(0)); 
     });
     
     connect(studentBackBtn, &QPushButton::clicked, [this]() {
-        loginStackedWidget->setCurrentWidget(loginStackedWidget->widget(0)); // Back to login type
+        loginStackedWidget->setCurrentWidget(loginStackedWidget->widget(0)); 
     });
 }
 
@@ -168,5 +162,5 @@ void LoginView::resetInputs() {
 }
 
 void LoginView::showLoginTypeSelection() {
-    loginStackedWidget->setCurrentIndex(0); // Show login type selection
+    loginStackedWidget->setCurrentIndex(0); 
 }

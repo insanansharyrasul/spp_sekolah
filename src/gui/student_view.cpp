@@ -13,7 +13,6 @@ StudentView::StudentView(StudentController& controller, QWidget *parent)
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(tabWidget);
     
-    // Create tabs
     infoTab = new QWidget();
     paymentTab = new QWidget();
     certTab = new QWidget();
@@ -25,10 +24,8 @@ StudentView::~StudentView() {}
 void StudentView::setupDashboard(int studentId) {
     currentStudentId = studentId;
     
-    // Clear existing tabs
     tabWidget->clear();
     
-    // Get student data
     Student* student = studentController.getStudentService().getStudentById(studentId);
     
     if (!student) {
@@ -36,13 +33,11 @@ void StudentView::setupDashboard(int studentId) {
         return;
     }
     
-    // Set up each tab
     setupInfoTab(student);
     setupPaymentTab();
     setupCertificateTab();
     setupQnaTab();
     
-    // Add tabs to widget
     tabWidget->addTab(infoTab, "My Information");
     tabWidget->addTab(paymentTab, "My Payments");
     tabWidget->addTab(certTab, "My Certificates");
@@ -52,7 +47,6 @@ void StudentView::setupDashboard(int studentId) {
 void StudentView::setupInfoTab(Student* student) {
     QVBoxLayout *infoLayout = new QVBoxLayout(infoTab);
     
-    // Display student info
     QGroupBox *infoBox = new QGroupBox("Student Information");
     QGridLayout *infoBoxLayout = new QGridLayout(infoBox);
     
@@ -77,9 +71,7 @@ void StudentView::setupPaymentTab() {
     QPushButton *viewPaymentsBtn = new QPushButton("View My Payments");
     paymentLayout->addWidget(viewPaymentsBtn);
     
-    // Connect button signals
     connect(viewPaymentsBtn, &QPushButton::clicked, [this]() {
-        // Implement view payments functionality using studentController
         QMessageBox::information(this, "Information", "View Payments functionality to be implemented");
     });
 }
@@ -90,9 +82,7 @@ void StudentView::setupCertificateTab() {
     QPushButton *viewCertBtn = new QPushButton("View My Certificates");
     certLayout->addWidget(viewCertBtn);
     
-    // Connect button signals
     connect(viewCertBtn, &QPushButton::clicked, [this]() {
-        // Implement view certificate functionality using studentController
         QMessageBox::information(this, "Information", "View Certificate functionality to be implemented");
     });
 }
@@ -107,7 +97,6 @@ void StudentView::setupQnaTab() {
     qnaLayout->addWidget(questionEdit);
     qnaLayout->addWidget(askQuestionBtn);
     
-    // Connect button signals
     connect(askQuestionBtn, &QPushButton::clicked, [this]() {
         QString question = questionEdit->toPlainText();
         if (question.isEmpty()) {
@@ -115,7 +104,6 @@ void StudentView::setupQnaTab() {
             return;
         }
         
-        // Submit question using studentController
         bool success = studentController.submitQuestion(currentStudentId, question.toStdString());
         
         if (success) {

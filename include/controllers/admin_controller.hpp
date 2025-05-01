@@ -4,8 +4,8 @@
 #include <repositories/student_repository.hpp>
 #include <services/certificate_service.hpp>
 #include <services/payment_service.hpp>
-#include <services/student_service.hpp>
 #include <services/qna_service.hpp>
+#include <services/student_service.hpp>
 #include <string>
 
 // Action class to represent operations that can be undone
@@ -69,7 +69,10 @@ class AdminController {
     void setPayment();
     void makeCertificate();
     void undoLastAction();  // New method for undoing actions
-    
+
     // QnA methods
     void answerQuestions();
+
+    // Service
+    StudentService& getStudentService();
 };

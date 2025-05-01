@@ -360,3 +360,7 @@ void AdminController::answerQuestions() {
         }
     }
 }
+
+StudentService& AdminController::getStudentService() {
+    return studentService;
+}
