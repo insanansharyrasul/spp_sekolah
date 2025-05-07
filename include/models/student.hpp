@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <ostream>
 #include <string>
+// The constructor is must be in id, name, yearRegistered, classId order
 class Student {
    private:
     int id;

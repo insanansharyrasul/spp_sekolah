@@ -1,9 +1,10 @@
 #pragma once
-#include <string>
 #include <ctime>
+#include <string>
 
+// The constructor is must be in id, studentId, studentName, questionText order
 class Question {
-private:
+   private:
     int id;
     int studentId;
     std::string studentName;
@@ -12,17 +13,19 @@ private:
     time_t timestamp;
     bool isAnswered;
 
-public:
-    Question(int id, int studentId, const std::string& studentName, 
+   public:
+    Question(int id,
+             int studentId,
+             const std::string& studentName,
              const std::string& questionText)
-        : id(id), 
-          studentId(studentId), 
+        : id(id),
+          studentId(studentId),
           studentName(studentName),
-          questionText(questionText), 
-          answer(""), 
-          timestamp(time(0)), 
+          questionText(questionText),
+          answer(""),
+          timestamp(time(0)),
           isAnswered(false) {}
-    
+
     // Getters
     int getId() const { return id; }
     int getStudentId() const { return studentId; }
@@ -31,13 +34,13 @@ public:
     std::string getAnswer() const { return answer; }
     time_t getTimestamp() const { return timestamp; }
     bool getIsAnswered() const { return isAnswered; }
-    
+
     // Setters
     void setAnswer(const std::string& answerText) {
         answer = answerText;
         isAnswered = true;
     }
-    
+
     // New setter for timestamp (used during loading from file)
     void setTimestamp(time_t ts) {
         timestamp = ts;
