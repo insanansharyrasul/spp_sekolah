@@ -7,6 +7,7 @@
 #include <QTextEdit>
 #include <QSpinBox>
 #include <QLabel>
+#include <QLineEdit>
 #include <controllers/student_controller.hpp>
 #include <models/student.hpp>
 
@@ -37,6 +38,9 @@ private:
     QPushButton *showByDateBtn;
     QPushButton *showLatestBtn;
     QTextEdit *paymentDisplay;
+    QLineEdit *certIdLineEdit;
+    QTextEdit *certDisplay;
+    QPushButton *viewCertBtn;
 
     // Controller reference
     StudentController& studentController;

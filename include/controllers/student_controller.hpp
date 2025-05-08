@@ -30,6 +30,8 @@ class StudentController {
     
     // Certificate methods
     void verifyCertificate(int studentId);
+    // Retrieve certificate details formatted for display (returns empty string if invalid)
+    std::string getCertificateDetails(int studentId, const std::string& certificateId);
     
     // Accessor methods
     StudentService& getStudentService() const;

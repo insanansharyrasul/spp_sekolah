@@ -134,12 +134,34 @@ void StudentView::setupPaymentTab() {
 
 void StudentView::setupCertificateTab() {
     QVBoxLayout *certLayout = new QVBoxLayout(certTab);
-    
-    QPushButton *viewCertBtn = new QPushButton("View My Certificates");
-    certLayout->addWidget(viewCertBtn);
-    
+    // Input row: certificate ID and button
+    QHBoxLayout *inputLayout = new QHBoxLayout();
+    inputLayout->addWidget(new QLabel("Certificate ID:"));
+    certIdLineEdit = new QLineEdit();
+    inputLayout->addWidget(certIdLineEdit);
+    viewCertBtn = new QPushButton("View Certificate");
+    inputLayout->addWidget(viewCertBtn);
+    certLayout->addLayout(inputLayout);
+
+    // Display area
+    certDisplay = new QTextEdit();
+    certDisplay->setReadOnly(true);
+    certLayout->addWidget(certDisplay);
+
     connect(viewCertBtn, &QPushButton::clicked, [this]() {
-        QMessageBox::information(this, "Information", "View Certificate functionality to be implemented");
+        QString certId = certIdLineEdit->text();
+        if (certId.isEmpty()) {
+            QMessageBox::warning(this, "Warning", "Please enter a certificate ID!");
+            return;
+        }
+        // Fetch formatted certificate details
+        std::string details = studentController.getCertificateDetails(currentStudentId, certId.toStdString());
+        if (details.empty()) {
+            certDisplay->clear();
+            certDisplay->setHtml("<i>Certificate invalid or not found.</i>");
+        } else {
+            certDisplay->setHtml(QString::fromStdString(details));
+        }
     });
 }
 

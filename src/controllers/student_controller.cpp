@@ -276,3 +276,35 @@ std::vector<Payment> StudentController::getPaymentHistory(int studentId) {
     });
     return payments;
 }
+
+// Format and return certificate details (empty on failure)
+std::string StudentController::getCertificateDetails(int studentId, const std::string& certificateId) {
+    try {
+        if (!paymentService.verifyCertificate(certificateId, studentId, certificateService)) {
+            return "";
+        }
+        size_t certHash = std::stoull(certificateId);
+        std::string decoded = certificateService.decodeCertificate(certHash);
+        std::istringstream ss(decoded);
+        std::string paymentId, sid, amountStr, deadlineStr;
+        std::getline(ss, paymentId, ',');
+        std::getline(ss, sid, ',');
+        std::getline(ss, amountStr, ',');
+        std::getline(ss, deadlineStr, ',');
+        std::string studentName = studentService.getStudentName(std::stoi(sid));
+        time_t deadline = std::stol(deadlineStr);
+        std::string dl = std::ctime(&deadline);
+        if (!dl.empty() && dl.back() == '\n') dl.pop_back();
+        std::ostringstream oss;
+        oss << "<pre>";
+        oss << "<b>Certificate ID:</b> " << certificateId << "\n";
+        oss << "<b>Payment ID:</b> " << paymentId << "\n";
+        oss << "<b>Student Name:</b> " << studentName << "\n";
+        oss << "<b>Amount:</b> " << UI::display_currency(std::stod(amountStr)) << "\n";
+        oss << "<b>Deadline:</b> " << dl << "\n";
+        oss << "</pre>";
+        return oss.str();
+    } catch (...) {
+        return "";
+    }
+}
