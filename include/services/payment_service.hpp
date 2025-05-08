@@ -26,6 +26,10 @@ class PaymentService {
     bool deletePayment(const std::string& paymentId);
     bool verifyCertificate(const std::string& certId, int studentId, CertificateService& certService);
 
+    // New methods to mark payment status
+    bool markPaymentPaid(const std::string& paymentId);
+    bool markPaymentUnpaid(const std::string& paymentId);
+
     // Reporting functionality
     double calculateTotalPayments(int year, int month);
     std::vector<Payment> getOverduePayments();

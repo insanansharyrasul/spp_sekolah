@@ -31,6 +31,7 @@ void AdminController::showDashboard() {
         std::cout << "5. Buat Sertifikat" << std::endl;
         std::cout << "6. Batalkan Tindakan Terakhir" << std::endl;
         std::cout << "7. Jawab Pertanyaan Siswa" << std::endl;
+        std::cout << "8. Tandai Pembayaran Lunas" << std::endl;
         std::cout << "0. Keluar" << std::endl;
 
         int choice;
@@ -58,6 +59,9 @@ void AdminController::showDashboard() {
                 break;
             case 7:
                 answerQuestions();
+                break;
+            case 8:
+                markPaymentPaid();
                 break;
             case 0:
                 return;
@@ -227,7 +231,6 @@ void AdminController::setPayment() {
     UI::clrscr();
     std::cout << UI::Color::CYAN << "=== PROSES PEMBAYARAN ===" << UI::Color::RESET << std::endl
               << std::endl;
-
     int studentId;
     double amount;
     std::cout << "ID Siswa: ";
@@ -253,6 +256,27 @@ void AdminController::setPayment() {
         std::cout << UI::Color::RED << "Gagal mengatur pembayaran." << UI::Color::RESET << std::endl;
     }
 
+    UI::pause_input();
+}
+
+void AdminController::markPaymentPaid() {
+    UI::clrscr();
+    std::cout << UI::Color::CYAN << "=== TANDAI PEMBAYARAN LUNAS ===" << UI::Color::RESET << std::endl
+              << std::endl;
+    std::cout << "Masukkan ID pembayaran: ";
+    std::string paymentId;
+    std::cin >> paymentId;
+    bool result = paymentService.markPaymentPaid(paymentId);
+    if (result) {
+        std::cout << UI::Color::GREEN << "Pembayaran berhasil ditandai sebagai lunas (Paid)!" << UI::Color::RESET << std::endl;
+        // Create undo action
+        auto undoFunc = [this, paymentId]() {
+            return this->paymentService.markPaymentUnpaid(paymentId);
+        };
+        actionStack.push(AdminAction(AdminAction::PROCESS_PAYMENT, paymentId, undoFunc));
+    } else {
+        std::cout << UI::Color::RED << "Gagal menandai pembayaran. Periksa ID pembayaran." << UI::Color::RESET << std::endl;
+    }
     UI::pause_input();
 }
 

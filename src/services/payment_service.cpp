@@ -105,3 +105,21 @@ bool PaymentService::verifyCertificate(const std::string& certId, int studentId,
         return false;
     }
 }
+
+bool PaymentService::markPaymentPaid(const std::string& paymentId) {
+    Payment* payment = paymentRepo.findById(paymentId);
+    if (!payment) {
+        return false;
+    }
+    payment->setIsPaid(true);
+    return paymentRepo.saveToFile();
+}
+
+bool PaymentService::markPaymentUnpaid(const std::string& paymentId) {
+    Payment* payment = paymentRepo.findById(paymentId);
+    if (!payment) {
+        return false;
+    }
+    payment->setIsUnpaid();
+    return paymentRepo.saveToFile();
+}

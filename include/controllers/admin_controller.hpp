@@ -69,6 +69,8 @@ class AdminController {
     void viewAllStudents();
     void viewAllPayments();
     void setPayment();
+    // CLI method to mark a payment as paid
+    void markPaymentPaid();
     void makeCertificate();
     void undoLastAction();  // New method for undoing actions
 
