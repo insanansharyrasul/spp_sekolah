@@ -95,9 +95,48 @@ void AdminView::setupStudentTab() {
         studentTable->sortByColumn(0, Qt::AscendingOrder);
     });
 
-    connect(registerStudentBtn, &QPushButton::clicked, [this]() {
-        QMessageBox::information(this, "Information", "Register Student functionality to be implemented");
-    });
+    connect(registerStudentBtn, &QPushButton::clicked, [this, studentTable]() {
+        bool ok;
+        QString name = QInputDialog::getText(this,
+                              "Register New Student",
+                              "Student Name:",
+                              QLineEdit::Normal,
+                              QString(),
+                              &ok);
+        if (!ok || name.trimmed().isEmpty()) return;
+        int year = QInputDialog::getInt(this,
+                            "Register New Student",
+                            "Year Enrolled:",
+                            QDate::currentDate().year(),
+                            1900, QDate::currentDate().year(),
+                            1, &ok);
+        if (!ok) return;
+        int classId = QInputDialog::getInt(this,
+                             "Register New Student",
+                             "Class ID:",
+                             1,
+                             1, 9999,
+                             1, &ok);
+        if (!ok) return;
+        std::string newId = adminController.createStudent(name.toStdString(), year, classId);
+        if (!newId.empty()) {
+            QMessageBox::information(this,
+                "Success",
+                QString("Student registered with ID: %1").arg(QString::fromStdString(newId)));
+            // Refresh table
+            QList<QPushButton*> btns = this->findChildren<QPushButton*>();
+            for (auto b : btns) {
+                if (b->text() == "View All Students") {
+                    b->click();
+                    break;
+                }
+            }
+        } else {
+            QMessageBox::critical(this,
+                "Error",
+                "Failed to register student. Please try again.");
+        }
+     });
 }
 
 void AdminView::setupPaymentTab() {

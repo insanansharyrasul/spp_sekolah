@@ -388,3 +388,21 @@ std::string AdminController::generateCertificate(const std::string& paymentId) {
     }
     return certId;
 }
+
+std::string AdminController::createStudent(const std::string& name, int year, int classId) {
+    if (!studentService.registerStudent(name, year, classId)) {
+        return std::string();
+    }
+    // Find the newly added student ID (highest ID)
+    int newId = 0;
+    for (const auto& student : studentService.getAllStudents()) {
+        if (student.getId() > newId) newId = student.getId();
+    }
+    std::string idStr = std::to_string(newId);
+    // Push undo action
+    auto undoFunc = [this, newId]() {
+        return this->studentService.deleteStudent(newId);
+    };
+    actionStack.push(AdminAction(AdminAction::REGISTER_STUDENT, idStr, undoFunc));
+    return idStr;
+}

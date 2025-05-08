@@ -85,4 +85,7 @@ class AdminController {
 
     // GUI access: generate a certificate by payment ID, returns certificate ID or empty on failure
     std::string generateCertificate(const std::string& paymentId);
+
+    // GUI access: register a new student, returns new student ID or empty on failure
+    std::string createStudent(const std::string& name, int year, int classId);
 };
