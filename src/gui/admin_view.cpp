@@ -157,11 +157,13 @@ void AdminView::setupPaymentTab() {
     
     QPushButton *viewPaymentsBtn = new QPushButton("View All Payments");
     QPushButton *setPaymentBtn = new QPushButton("Set New Payment");
+    QPushButton *markPaidBtn = new QPushButton("Mark as Paid");
     
     paymentLayout->addWidget(paymentTable);
     paymentLayout->addWidget(viewPaymentsBtn);
     paymentLayout->addWidget(setPaymentBtn);
-    
+    paymentLayout->addWidget(markPaidBtn);
+
     // Load payments data into the table
     connect(viewPaymentsBtn, &QPushButton::clicked, [this, paymentTable]() {
         paymentTable->setRowCount(0);
@@ -320,6 +322,23 @@ void AdminView::setupPaymentTab() {
             } else {
                 QMessageBox::critical(this, "Error", "Failed to set payment. Please check if the student ID exists.");
             }
+        }
+    });
+    
+    // Handle 'Mark as Paid' button click
+    connect(markPaidBtn, &QPushButton::clicked, [this, paymentTable, viewPaymentsBtn]() {
+        int row = paymentTable->currentRow();
+        if (row < 0) {
+            QMessageBox::warning(this, "Warning", "Select a payment first.");
+            return;
+        }
+        QString idStr = paymentTable->item(row, 0)->text();
+        bool ok = adminController.getPaymentService().markPaymentPaid(idStr.toStdString());
+        if (ok) {
+            QMessageBox::information(this, "Success", "Payment marked as paid.");
+            viewPaymentsBtn->click();
+        } else {
+            QMessageBox::critical(this, "Error", "Failed to mark payment as paid.");
         }
     });
 }
