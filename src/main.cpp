@@ -19,7 +19,9 @@ int main(int argc, char *argv[]) {
         app.run();
         return 0;
     } else if (choice == 2) {
-        qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("wayland"));
+        #ifdef Q_OS_LINUX
+            qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("wayland"));
+        #endif
         QApplication app(argc, argv);
         MainWindow mainWindow;
         mainWindow.show();
