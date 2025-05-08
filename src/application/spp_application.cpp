@@ -2,7 +2,7 @@
 #include <iostream>
 #include <utils/ui_helpers.hpp>
 
-UserSession::UserSession() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1) {}
+UserSessionCLI::UserSessionCLI() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1) {}
 
 SppApplication::SppApplication()
     : studentRepo("../data/students.txt"),
@@ -14,7 +14,7 @@ SppApplication::SppApplication()
       certService(paymentRepo, certificateRepo, studentRepo),
       qnaService(questionRepo),
       adminController(studentService, paymentService, certService, qnaService),
-      studentController(studentService, paymentService, qnaService) {}
+      studentController(studentService, paymentService, qnaService, certService) {}
 
 void SppApplication::initialize() {
     UI::clrscr();

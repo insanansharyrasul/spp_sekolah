@@ -122,7 +122,7 @@ bool PaymentRepository::loadFromFile() {
         std::getline(ss, temp, ',');
         isPaid = (temp == "1" || temp == "true");
 
-        Payment payment(id, studentId, amount, deadline, timestamp, isPaid);
+        Payment payment(id, studentId, amount, timestamp, deadline, isPaid);
 
         payments.emplace(id, payment);
         studentPaymentIndex.insert({studentId, id});

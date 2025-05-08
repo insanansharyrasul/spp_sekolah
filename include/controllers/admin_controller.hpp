@@ -4,9 +4,11 @@
 #include <repositories/student_repository.hpp>
 #include <services/certificate_service.hpp>
 #include <services/payment_service.hpp>
-#include <services/student_service.hpp>
 #include <services/qna_service.hpp>
+#include <services/student_service.hpp>
 #include <string>
+#include <models/question.hpp>
+#include <vector>
 
 // Action class to represent operations that can be undone
 class AdminAction {
@@ -67,9 +69,25 @@ class AdminController {
     void viewAllStudents();
     void viewAllPayments();
     void setPayment();
+    // CLI method to mark a payment as paid
+    void markPaymentPaid();
     void makeCertificate();
     void undoLastAction();  // New method for undoing actions
-    
+
     // QnA methods
     void answerQuestions();
+
+    // QnA accessors for GUI
+    std::vector<Question> getPendingQuestions();
+    bool answerQuestionById(int questionId, const std::string& answerText);
+
+    // Service accessors
+    StudentService& getStudentService();
+    PaymentService& getPaymentService();
+
+    // GUI access: generate a certificate by payment ID, returns certificate ID or empty on failure
+    std::string generateCertificate(const std::string& paymentId);
+
+    // GUI access: register a new student, returns new student ID or empty on failure
+    std::string createStudent(const std::string& name, int year, int classId);
 };

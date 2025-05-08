@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <string>
 #include <utils/ui_helpers.hpp>
+// The constructor is must be in id, studentId, amount, timestamp, deadline, isPaid order
 class Payment {
    private:
     std::string id;
@@ -16,8 +17,8 @@ class Payment {
     Payment(const std::string& id = 0,
             int studentId = 0,
             double amount = 0,
-            time_t deadline = 0,
             time_t timestamp = 0,
+            time_t deadline = 0,
             bool isPaid = false);
 
     // Getter
@@ -44,6 +45,9 @@ class Payment {
     bool isOverdue() const;
     int daysRemaining() const;
 
+    // HTML representation for Qt display
+    std::string toHtml() const;
+
     friend std::ostream& operator<<(std::ostream& os, const Payment& payment) {
         std::string statusText = payment.isPaid ? "Paid" : "Unpaid";
         std::string statusColor = payment.isPaid ? UI::Color::GREEN : UI::Color::RED;
@@ -51,8 +55,8 @@ class Payment {
         time_t deadline = payment.deadline;
         os << std::setw(20) << std::left << "ID Pembayaran: " << payment.id << "\n"
            << std::setw(20) << std::left << "Jumlah: " << UI::display_currency(payment.amount) << "\n"
-           << std::setw(20) << std::left << "Deadline: " << ctime(&deadline) 
            << std::setw(20) << std::left << "Timestamp: " << ctime(&timestamp)
+           << std::setw(20) << std::left << "Deadline: " << ctime(&deadline)
            << std::setw(20) << std::left << "Sudah dibayar? " << statusColor << statusText << UI::Color::RESET;
         ;
         return os;

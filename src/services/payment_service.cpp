@@ -1,5 +1,7 @@
 #include <iostream>
+#include <services/certificate_service.hpp>
 #include <services/payment_service.hpp>
+#include <sstream>
 
 // Helper method to generate a unique payment ID
 std::string PaymentService::generatePaymentId(int studentId) {
@@ -63,4 +65,61 @@ bool PaymentService::deletePayment(const std::string& paymentId) {
 
     paymentRepo.remove(paymentId);
     return true;
+}
+
+bool PaymentService::verifyCertificate(const std::string& certId, int studentId, CertificateService& certService) {
+    if (certId.empty()) {
+        return false;
+    }
+
+    try {
+        size_t certificateHash = std::stoull(certId);
+        std::string decodedData = certService.decodeCertificate(certificateHash);
+
+        if (decodedData.empty()) {
+            return false;  // Certificate not found or invalid
+        }
+
+        // Parse the decoded data (format: paymentId,studentId,amount,deadline)
+        std::istringstream ss(decodedData);
+        std::string paymentId;
+        std::string studentIdStr;
+        std::string amountStr;
+        std::string deadlineStr;
+
+        std::getline(ss, paymentId, ',');
+        std::getline(ss, studentIdStr, ',');
+        std::getline(ss, amountStr, ',');
+        std::getline(ss, deadlineStr, ',');
+
+        int certStudentId = std::stoi(studentIdStr);
+
+        // Verify this certificate belongs to the requesting student
+        if (certStudentId != studentId) {
+            return false;
+        }
+
+        return true;
+    } catch (const std::exception& e) {
+        // Handle conversion errors or other exceptions
+        return false;
+    }
+}
+
+bool PaymentService::markPaymentPaid(const std::string& paymentId) {
+    Payment* payment = paymentRepo.findById(paymentId);
+    if (!payment) {
+        return false;
+    }
+    payment->setIsPaid(true);
+    return paymentRepo.saveToFile();
+}
+
+bool PaymentService::markPaymentUnpaid(const std::string& paymentId) {
+    Payment* payment = paymentRepo.findById(paymentId);
+    if (!payment) {
+        return false;
+    }
+    payment->setIsUnpaid();
+    return paymentRepo.saveToFile();
 }

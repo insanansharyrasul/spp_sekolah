@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 
+// Forward declaration
+class CertificateService;
+
 class PaymentService {
    private:
     PaymentRepository& paymentRepo;
@@ -21,6 +24,11 @@ class PaymentService {
     bool verifyPaymentStatus(int studentId, int year, int month);
     std::vector<Payment> getStudentPaymentHistory(int studentId);
     bool deletePayment(const std::string& paymentId);
+    bool verifyCertificate(const std::string& certId, int studentId, CertificateService& certService);
+
+    // New methods to mark payment status
+    bool markPaymentPaid(const std::string& paymentId);
+    bool markPaymentUnpaid(const std::string& paymentId);
 
     // Reporting functionality
     double calculateTotalPayments(int year, int month);

@@ -31,6 +31,7 @@ void AdminController::showDashboard() {
         std::cout << "5. Buat Sertifikat" << std::endl;
         std::cout << "6. Batalkan Tindakan Terakhir" << std::endl;
         std::cout << "7. Jawab Pertanyaan Siswa" << std::endl;
+        std::cout << "8. Tandai Pembayaran Lunas" << std::endl;
         std::cout << "0. Keluar" << std::endl;
 
         int choice;
@@ -58,6 +59,9 @@ void AdminController::showDashboard() {
                 break;
             case 7:
                 answerQuestions();
+                break;
+            case 8:
+                markPaymentPaid();
                 break;
             case 0:
                 return;
@@ -227,7 +231,6 @@ void AdminController::setPayment() {
     UI::clrscr();
     std::cout << UI::Color::CYAN << "=== PROSES PEMBAYARAN ===" << UI::Color::RESET << std::endl
               << std::endl;
-
     int studentId;
     double amount;
     std::cout << "ID Siswa: ";
@@ -253,6 +256,27 @@ void AdminController::setPayment() {
         std::cout << UI::Color::RED << "Gagal mengatur pembayaran." << UI::Color::RESET << std::endl;
     }
 
+    UI::pause_input();
+}
+
+void AdminController::markPaymentPaid() {
+    UI::clrscr();
+    std::cout << UI::Color::CYAN << "=== TANDAI PEMBAYARAN LUNAS ===" << UI::Color::RESET << std::endl
+              << std::endl;
+    std::cout << "Masukkan ID pembayaran: ";
+    std::string paymentId;
+    std::cin >> paymentId;
+    bool result = paymentService.markPaymentPaid(paymentId);
+    if (result) {
+        std::cout << UI::Color::GREEN << "Pembayaran berhasil ditandai sebagai lunas (Paid)!" << UI::Color::RESET << std::endl;
+        // Create undo action
+        auto undoFunc = [this, paymentId]() {
+            return this->paymentService.markPaymentUnpaid(paymentId);
+        };
+        actionStack.push(AdminAction(AdminAction::PROCESS_PAYMENT, paymentId, undoFunc));
+    } else {
+        std::cout << UI::Color::RED << "Gagal menandai pembayaran. Periksa ID pembayaran." << UI::Color::RESET << std::endl;
+    }
     UI::pause_input();
 }
 
@@ -359,4 +383,50 @@ void AdminController::answerQuestions() {
             break;
         }
     }
+}
+
+// QnA GUI methods
+std::vector<Question> AdminController::getPendingQuestions() {
+    return qnaService.getPendingQuestions();
+}
+
+bool AdminController::answerQuestionById(int questionId, const std::string& answerText) {
+    return qnaService.answerQuestionById(questionId, answerText);
+}
+
+StudentService& AdminController::getStudentService() {
+    return studentService;
+}
+
+PaymentService& AdminController::getPaymentService() {
+    return paymentService;
+}
+
+std::string AdminController::generateCertificate(const std::string& paymentId) {
+    std::string certId = certService.generateCertificate(paymentId);
+    if (!certId.empty()) {
+        auto undoFunc = [this, certId]() {
+            return this->certService.deleteCertificate(certId);
+        };
+        actionStack.push(AdminAction(AdminAction::GENERATE_CERTIFICATE, certId, undoFunc));
+    }
+    return certId;
+}
+
+std::string AdminController::createStudent(const std::string& name, int year, int classId) {
+    if (!studentService.registerStudent(name, year, classId)) {
+        return std::string();
+    }
+    // Find the newly added student ID (highest ID)
+    int newId = 0;
+    for (const auto& student : studentService.getAllStudents()) {
+        if (student.getId() > newId) newId = student.getId();
+    }
+    std::string idStr = std::to_string(newId);
+    // Push undo action
+    auto undoFunc = [this, newId]() {
+        return this->studentService.deleteStudent(newId);
+    };
+    actionStack.push(AdminAction(AdminAction::REGISTER_STUDENT, idStr, undoFunc));
+    return idStr;
 }

@@ -31,6 +31,24 @@ bool CertificateService::validateCertificate(size_t signature) {
     return generatedSignature == signature;
 }
 
+std::string CertificateService::decodeCertificate(size_t certificateHash) {
+    Certificate* certificate = certificateRepo.getCertificate(Certificate(certificateHash, ""));
+    if (certificate == nullptr) {
+        return "";
+    }
+    
+    // Decrypt the data using the same encryption function (XOR is its own inverse)
+    std::string decryptedData = Encryption::decrypt(certificate->getEncryptedData());
+    
+    // Verify the certificate signature
+    size_t calculatedHash = generateSignature(decryptedData);
+    if (calculatedHash != certificate->getHash()) {
+        return ""; // Invalid certificate
+    }
+    
+    return decryptedData; // Format: paymentId,studentId,amount,deadline
+}
+
 std::string CertificateService::generateCertificate(const std::string& paymentId) {
     Payment* payment = paymentRepo.findById(paymentId);
     if (payment->getId() == "") {
