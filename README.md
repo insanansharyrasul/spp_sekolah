@@ -1,67 +1,37 @@
-# Struktur Data - CLI Pengelola SPP Sekolah
+# SPP Sekolah Manager
 
-## Deskripsi Proyek
-
-Proyek ini adalah sebuah aplikasi Command Line Interface (CLI) yang digunakan untuk mengelola SPP sekolah.
-Aplikasi ini memungkinkan pengguna untuk melihat menu, memasukkan pilihan, dan menangani berbagai pilihan pengguna terkait pengelolaan SPP.
-
-## Anggota Kelompok
-
-Kelompok 12:
-- Insan Anshary Rasul : G6401231132
-- Muhammad Salman Maulana : G6401231153
-- Daffa Naufal Mumtaz Heryadi : G6401231168
+SPP Sekolah Manager adalah aplikasi lintas platform (CLI + Qt GUI) untuk mengelola pembayaran uang sekolah (SPP). Aplikasi ini mendukung:
+- Registrasi dan manajemen profil siswa
+- Pengaturan pembayaran, pelacakan, dan pembaruan status
+- Pembuatan dan verifikasi sertifikat
+- Tanya Jawab Siswa (bertanya dan menjawab pertanyaan)
+- Membatalkan tindakan admin terakhir
 
 
+## Anggota
+**Kelompok 12**
 
-## Cara Build dari Source
+| Nama                        | NIM           |
+|-----------------------------|---------------|
+| Insan Anshary Rasul         | G6401231132   |
+| Muhammad Salman Maulana     | G6401231153   |
+| Daffa Naufal Mumtaz Heryadi | G6401231168   |
 
-Untuk membangun proyek ini dari sumbernya, ikuti langkah-langkah berikut:
 
-1. **Clone Repository**
+## Konfigurasi
 
-   Clone repository ini ke direktori lokal Anda:
+- Sesuaikan `CMAKE_PREFIX_PATH` ke lokasi instalasi Qt di sistem Anda.
+- Data aplikasi dibaca dan disimpan di folder `data/` relatif dari direktori eksekusi.
 
-   ```sh
-   git clone https://github.com/insanansharyrasul/spp_sekolah.git
-   cd spp_sekolah
-   ```
+## Panduan Kontribusi
 
-2. Buat Direktori Build
+1. Fork repository
+2. Buat branch fitur (`git checkout -b feature/nama-fitur`)
+3. Commit dan push perubahan
+4. Buat Pull Request
 
-    Buat direktori build dan masuk ke dalamnya:
+Ikuti gaya kode yang ada dan sertakan unit test untuk fitur baru jika memungkinkan.
 
-    ```
-    mkdir build
-    cd build
-    ```
+## Lisensi
 
-3. Jalankan CMake
-
-    Jalankan CMake untuk mengkonfigurasi proyek:
-
-    ``` 
-    cmake ..
-    ``` 
-
-4. Build Proyek
-
-    ```
-    make
-    ```
-
-5. Jalankan Aplikasi
-
-    Setelah build selesai, Anda dapat menjalankan aplikasi dengan perintah berikut:
-
-    ```
-    ./spp_sekolah
-    ```
-
-## Penggunaan
-Setelah menjalankan aplikasi, Anda akan melihat menu yang memungkinkan
-Anda untuk memilih berbagai opsi terkait pengelolaan SPP.
-Masukkan pilihan Anda dan ikuti instruksi yang diberikan oleh aplikasi.
-
-## Kontribusi
-Jika Anda ingin berkontribusi pada proyek ini, silakan buat pull request atau buka issue baru di repository ini.
+Proyek ini menggunakan lisensi GNU General Public License v3.0. Lihat berkas [LICENSE](LICENSE) untuk detail.
