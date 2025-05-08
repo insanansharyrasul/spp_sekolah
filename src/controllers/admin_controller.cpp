@@ -377,3 +377,14 @@ StudentService& AdminController::getStudentService() {
 PaymentService& AdminController::getPaymentService() {
     return paymentService;
 }
+
+std::string AdminController::generateCertificate(const std::string& paymentId) {
+    std::string certId = certService.generateCertificate(paymentId);
+    if (!certId.empty()) {
+        auto undoFunc = [this, certId]() {
+            return this->certService.deleteCertificate(certId);
+        };
+        actionStack.push(AdminAction(AdminAction::GENERATE_CERTIFICATE, certId, undoFunc));
+    }
+    return certId;
+}

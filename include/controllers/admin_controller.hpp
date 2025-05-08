@@ -82,4 +82,7 @@ class AdminController {
     // Service accessors
     StudentService& getStudentService();
     PaymentService& getPaymentService();
+
+    // GUI access: generate a certificate by payment ID, returns certificate ID or empty on failure
+    std::string generateCertificate(const std::string& paymentId);
 };

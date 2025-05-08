@@ -292,7 +292,24 @@ void AdminView::setupCertificateTab() {
     certLayout->addWidget(makeCertBtn);
 
     connect(makeCertBtn, &QPushButton::clicked, [this]() {
-        QMessageBox::information(this, "Information", "Generate Certificate functionality to be implemented");
+        bool ok;
+        QString paymentId = QInputDialog::getText(this,
+                               "Generate Certificate",
+                               "Payment ID:",
+                               QLineEdit::Normal,
+                               QString(),
+                               &ok);
+        if (!ok || paymentId.trimmed().isEmpty()) return;
+        std::string certId = adminController.generateCertificate(paymentId.toStdString());
+        if (!certId.empty()) {
+            QMessageBox::information(this,
+                "Success",
+                QString("Certificate generated with ID: %1").arg(QString::fromStdString(certId)));
+        } else {
+            QMessageBox::critical(this,
+                "Error",
+                "Failed to generate certificate. Please check payment ID.");
+        }
     });
 }
 
