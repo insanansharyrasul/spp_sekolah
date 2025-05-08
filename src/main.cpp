@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QByteArray>
 #include <application/spp_application.hpp>
 #include <gui/main_window.hpp>
 #include <utils/ui_helpers.hpp>
@@ -18,6 +19,7 @@ int main(int argc, char *argv[]) {
         app.run();
         return 0;
     } else if (choice == 2) {
+        qputenv("QT_QPA_PLATFORM", QByteArrayLiteral("wayland"));
         QApplication app(argc, argv);
         MainWindow mainWindow;
         mainWindow.show();

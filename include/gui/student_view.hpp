@@ -25,7 +25,6 @@ private:
     void setupPaymentTab();
     void setupCertificateTab();
     void setupQnaTab();
-    void setupAnsweredTab();
 
     // UI elements
     QTabWidget *tabWidget;
@@ -33,7 +32,6 @@ private:
     QWidget *paymentTab;
     QWidget *certTab;
     QWidget *qnaTab;
-    QWidget *answeredQnaTab;
     QTextEdit *questionEdit;
     QSpinBox *monthSpinBox;
     QSpinBox *yearSpinBox;
