@@ -5,6 +5,7 @@
 #include <services/certificate_service.hpp>
 #include <models/payment.hpp>
 #include <vector>
+#include <models/question.hpp>
 
 class StudentController {
    private:
@@ -30,6 +31,8 @@ class StudentController {
     
     // Certificate methods
     void verifyCertificate(int studentId);
+    // Returns answered questions for GUI display
+    std::vector<Question> getAnsweredQuestions(int studentId);
     // Retrieve certificate details formatted for display (returns empty string if invalid)
     std::string getCertificateDetails(int studentId, const std::string& certificateId);
     

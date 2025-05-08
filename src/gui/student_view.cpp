@@ -23,6 +23,7 @@ StudentView::StudentView(StudentController& controller, QWidget *parent)
     paymentTab = new QWidget();
     certTab = new QWidget();
     qnaTab = new QWidget();
+    answeredQnaTab = new QWidget();
 }
 
 StudentView::~StudentView() {}
@@ -43,11 +44,13 @@ void StudentView::setupDashboard(int studentId) {
     setupPaymentTab();
     setupCertificateTab();
     setupQnaTab();
+    setupAnsweredTab();
     
     tabWidget->addTab(infoTab, "My Information");
     tabWidget->addTab(paymentTab, "My Payments");
     tabWidget->addTab(certTab, "My Certificates");
     tabWidget->addTab(qnaTab, "Ask a Question");
+    tabWidget->addTab(answeredQnaTab, "Answered Q&A");
 }
 
 void StudentView::setupInfoTab(Student* student) {
@@ -190,5 +193,33 @@ void StudentView::setupQnaTab() {
         } else {
             QMessageBox::critical(this, "Error", "Failed to submit question. Try again later.");
         }
+    });
+}
+
+void StudentView::setupAnsweredTab() {
+    QVBoxLayout *layout = new QVBoxLayout(answeredQnaTab);
+    showAnsweredBtn = new QPushButton("Show Answered Questions");
+    answeredDisplay = new QTextEdit();
+    answeredDisplay->setReadOnly(true);
+    layout->addWidget(showAnsweredBtn);
+    layout->addWidget(answeredDisplay);
+    connect(showAnsweredBtn, &QPushButton::clicked, [this]() {
+        auto questions = studentController.getAnsweredQuestions(currentStudentId);
+        if (questions.empty()) {
+            QMessageBox::information(this, "Information", "No answered questions found.");
+            answeredDisplay->setHtml("<i>No answered questions found.</i>");
+            return;
+        }
+        std::ostringstream oss;
+        for (const auto &q : questions) {
+            // format timestamp
+            std::time_t ts = q.getTimestamp();
+            QString tstr = QLocale().toString(QDateTime::fromSecsSinceEpoch(ts), QLocale::ShortFormat);
+            oss << "<b>ID:</b> " << q.getId() << "<br>";
+            oss << "<b>Date:</b> " << tstr.toStdString() << "<br>";
+            oss << "<span style=\"color:cyan\"><b>Q:</b> " << q.getQuestionText() << "</span><br>";
+            oss << "<span style=\"color:green\"><b>A:</b> " << q.getAnswer() << "</span><hr>";
+        }
+        answeredDisplay->setHtml(QString::fromStdString(oss.str()));
     });
 }

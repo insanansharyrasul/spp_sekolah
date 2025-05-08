@@ -5,6 +5,7 @@
 #include <utils/ui_helpers.hpp>
 #include <algorithm>
 #include <models/payment.hpp>
+#include <models/question.hpp>
 
 StudentController::StudentController(StudentService& studentService,
                                      PaymentService& paymentService,
@@ -275,6 +276,16 @@ std::vector<Payment> StudentController::getPaymentHistory(int studentId) {
         return a.getTimestamp() > b.getTimestamp();
     });
     return payments;
+}
+
+// Returns answered questions for GUI display
+std::vector<Question> StudentController::getAnsweredQuestions(int studentId) {
+    auto questions = qnaService.getAnsweredQuestionsForStudent(studentId);
+    // Optionally sort by timestamp
+    std::sort(questions.begin(), questions.end(), [](const Question &a, const Question &b) {
+        return a.getTimestamp() > b.getTimestamp();
+    });
+    return questions;
 }
 
 // Format and return certificate details (empty on failure)
