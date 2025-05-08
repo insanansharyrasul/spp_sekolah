@@ -1,5 +1,6 @@
 #include <models/payment.hpp>
 #include <string>
+#include <sstream>
 
 Payment::Payment(const std::string& id,
                  int studentId,
@@ -77,4 +78,19 @@ bool Payment::isOverdue() const {
 int Payment::daysRemaining() const {
     if (deadline == 0) return 0;
     return (deadline - time(0)) / 86400;
+}
+
+// HTML representation for Qt display
+std::string Payment::toHtml() const {
+    std::ostringstream oss;
+    oss << "<pre>";
+    oss << "ID Pembayaran: " << id << "\n";
+    oss << "Jumlah: " << UI::display_currency(amount) << "\n";
+    oss << "Timestamp: " << ctime(&timestamp);
+    oss << "Deadline: " << ctime(&deadline);
+    std::string color = isPaid ? "green" : "red";
+    oss << "<span style=\"color:" << color << "\">";
+    oss << "Sudah dibayar? " << (isPaid ? "Paid" : "Unpaid") << "</span>";
+    oss << "</pre>";
+    return oss.str();
 }

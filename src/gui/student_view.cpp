@@ -103,9 +103,9 @@ void StudentView::setupPaymentTab() {
             QMessageBox::information(this, "Information", "No payments found.");
             return;
         }
-        std::stringstream ss;
-        ss << payments[0];
-        paymentDisplay->setPlainText(QString::fromStdString(ss.str()));
+        // Display HTML-formatted payment
+        QString html = QString::fromStdString(payments[0].toHtml());
+        paymentDisplay->setHtml(html);
     });
 
     connect(showByDateBtn, &QPushButton::clicked, [this]() {
@@ -119,14 +119,16 @@ void StudentView::setupPaymentTab() {
             }
         }
         if (filtered.empty()) {
-            paymentDisplay->setPlainText(QString("No payments found for %1/%2").arg(month).arg(year));
+            paymentDisplay->clear();
+            paymentDisplay->setHtml(QString("<i>No payments found for %1/%2</i>").arg(month).arg(year));
             return;
         }
-        std::stringstream ss;
+        // Build combined HTML
+        std::ostringstream oss;
         for (const auto &p : filtered) {
-            ss << p << "\n----------------\n";
+            oss << p.toHtml() << "<hr>";
         }
-        paymentDisplay->setPlainText(QString::fromStdString(ss.str()));
+        paymentDisplay->setHtml(QString::fromStdString(oss.str()));
     });
 }
 

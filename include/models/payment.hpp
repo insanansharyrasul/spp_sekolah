@@ -45,6 +45,9 @@ class Payment {
     bool isOverdue() const;
     int daysRemaining() const;
 
+    // HTML representation for Qt display
+    std::string toHtml() const;
+
     friend std::ostream& operator<<(std::ostream& os, const Payment& payment) {
         std::string statusText = payment.isPaid ? "Paid" : "Unpaid";
         std::string statusColor = payment.isPaid ? UI::Color::GREEN : UI::Color::RED;
