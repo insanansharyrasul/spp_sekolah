@@ -2,17 +2,20 @@
 #include <services/payment_service.hpp>
 #include <services/student_service.hpp>
 #include <services/qna_service.hpp>
+#include <services/certificate_service.hpp>
 
 class StudentController {
    private:
     StudentService& studentService;
     PaymentService& paymentService;
     QnAService& qnaService;
+    CertificateService& certificateService;
 
    public:
     StudentController(StudentService& studentService, 
                       PaymentService& paymentService,
-                      QnAService& qnaService);
+                      QnAService& qnaService,
+                      CertificateService& certificateService);
 
     // UI handling methods
     void showDashboard(int studentId);
@@ -22,6 +25,9 @@ class StudentController {
     // QnA methods
     void askQuestion(int studentId);
     void viewAnsweredQuestions(int studentId);
+    
+    // Certificate methods
+    void verifyCertificate(int studentId);
     
     // Accessor methods
     StudentService& getStudentService() const;

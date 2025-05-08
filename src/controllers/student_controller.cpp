@@ -1,13 +1,16 @@
 #include <controllers/student_controller.hpp>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <utils/ui_helpers.hpp>
 
 StudentController::StudentController(StudentService& studentService,
                                      PaymentService& paymentService,
-                                     QnAService& qnaService) : studentService(studentService),
+                                     QnAService& qnaService,
+                                     CertificateService& certificateService) : studentService(studentService),
                                                               paymentService(paymentService),
-                                                              qnaService(qnaService) {}
+                                                              qnaService(qnaService),
+                                                              certificateService(certificateService) {}
 
 void StudentController::showDashboard(int studentId) {
     while (true) {
@@ -23,6 +26,7 @@ void StudentController::showDashboard(int studentId) {
         std::cout << "2. Lihat Pembayaran Saya" << std::endl;
         std::cout << "3. Ajukan Pertanyaan" << std::endl;
         std::cout << "4. Lihat Pertanyaan yang Sudah Dijawab" << std::endl;
+        std::cout << "5. Verifikasi Sertifikat" << std::endl;
         std::cout << "0. Keluar" << std::endl;
 
         int choice;
@@ -41,6 +45,9 @@ void StudentController::showDashboard(int studentId) {
                 break;
             case 4:
                 viewAnsweredQuestions(studentId);
+                break;
+            case 5:
+                verifyCertificate(studentId);
                 break;
             case 0:
                 return;  // Return to main menu/logout
@@ -182,6 +189,63 @@ void StudentController::viewAnsweredQuestions(int studentId) {
         std::cout << "----------------------------------------" << std::endl;
     }
     
+    UI::pause_input();
+}
+
+void StudentController::verifyCertificate(int studentId) {
+    UI::clrscr();
+    std::cout << UI::Color::CYAN << "=== VERIFIKASI SERTIFIKAT ===" << UI::Color::RESET << std::endl
+              << std::endl;
+
+    std::string certificateId;
+    std::cout << "Masukkan ID Sertifikat: ";
+    std::cin >> certificateId;
+
+    try {
+        // Verify certificate using PaymentService
+        if (!paymentService.verifyCertificate(certificateId, studentId, certificateService)) {
+            std::cout << UI::Color::RED << "Sertifikat tidak valid atau tidak ditemukan!" << UI::Color::RESET << std::endl;
+            UI::pause_input();
+            return;
+        }
+        
+        // Certificate is valid, decode and display details
+        size_t certHash = std::stoull(certificateId);
+        std::string decodedData = certificateService.decodeCertificate(certHash);
+        
+        // Parse the decoded data (format: paymentId,studentId,amount,deadline)
+        std::istringstream ss(decodedData);
+        std::string paymentId;
+        std::string studentIdStr;
+        std::string amountStr;
+        std::string deadlineStr;
+        
+        std::getline(ss, paymentId, ',');
+        std::getline(ss, studentIdStr, ',');
+        std::getline(ss, amountStr, ',');
+        std::getline(ss, deadlineStr, ',');
+        
+        // Get student name
+        std::string studentName = studentService.getStudentName(std::stoi(studentIdStr));
+        
+        // Format deadline as readable date
+        time_t deadline = std::stol(deadlineStr);
+        std::string deadline_str = std::ctime(&deadline);
+        if (!deadline_str.empty() && deadline_str.back() == '\n')
+            deadline_str.pop_back();
+
+        // Display certificate details
+        std::cout << UI::Color::GREEN << "Sertifikat Valid!" << UI::Color::RESET << std::endl << std::endl;
+        std::cout << UI::Color::YELLOW << "ID Sertifikat: " << certificateId << UI::Color::RESET << std::endl;
+        std::cout << "ID Pembayaran: " << paymentId << std::endl;
+        std::cout << "Nama Siswa: " << studentName << std::endl;
+        std::cout << "Jumlah Pembayaran: Rp" << std::fixed << std::setprecision(2) << std::stod(amountStr) << std::endl;
+        std::cout << "Tanggal Jatuh Tempo: " << deadline_str << std::endl;
+        
+    } catch (const std::exception& e) {
+        std::cout << UI::Color::RED << "Terjadi kesalahan saat memverifikasi sertifikat!" << UI::Color::RESET << std::endl;
+    }
+
     UI::pause_input();
 }
 

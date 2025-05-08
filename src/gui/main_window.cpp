@@ -24,7 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
       certService(paymentRepo, certificateRepo, studentRepo),
       qnaService(questionRepo),
       adminController(studentService, paymentService, certService, qnaService),
-      studentController(studentService, paymentService, qnaService) {
+      studentController(studentService, paymentService, qnaService, certService) {
     
     if (!studentRepo.loadFromFile()) {
         QMessageBox::critical(this, "Error", "Failed to load student data! Trying to create a new file...");

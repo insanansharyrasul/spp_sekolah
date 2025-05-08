@@ -22,4 +22,5 @@ class CertificateService {
     std::string generateCertificate(const std::string& paymentId);
     bool validateCertificate(size_t signature);
     bool deleteCertificate(const std::string& certId);
+    std::string decodeCertificate(size_t certificateHash);
 };
