@@ -3,6 +3,8 @@
 #include <services/student_service.hpp>
 #include <services/qna_service.hpp>
 #include <services/certificate_service.hpp>
+#include <models/payment.hpp>
+#include <vector>
 
 class StudentController {
    private:
@@ -32,4 +34,5 @@ class StudentController {
     // Accessor methods
     StudentService& getStudentService() const;
     bool submitQuestion(int studentId, const std::string& question);
+    std::vector<Payment> getPaymentHistory(int studentId);
 };

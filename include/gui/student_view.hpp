@@ -5,6 +5,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QTextEdit>
+#include <QSpinBox>
+#include <QLabel>
 #include <controllers/student_controller.hpp>
 #include <models/student.hpp>
 
@@ -30,6 +32,11 @@ private:
     QWidget *certTab;
     QWidget *qnaTab;
     QTextEdit *questionEdit;
+    QSpinBox *monthSpinBox;
+    QSpinBox *yearSpinBox;
+    QPushButton *showByDateBtn;
+    QPushButton *showLatestBtn;
+    QTextEdit *paymentDisplay;
 
     // Controller reference
     StudentController& studentController;

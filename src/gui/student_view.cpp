@@ -5,6 +5,12 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QMessageBox>
+#include <QHBoxLayout>
+#include <QSpinBox>
+#include <QDate>
+#include <sstream>
+#include <models/payment.hpp>
+#include <vector>
 
 StudentView::StudentView(StudentController& controller, QWidget *parent) 
     : QWidget(parent), studentController(controller), currentStudentId(-1) {
@@ -67,12 +73,60 @@ void StudentView::setupInfoTab(Student* student) {
 
 void StudentView::setupPaymentTab() {
     QVBoxLayout *paymentLayout = new QVBoxLayout(paymentTab);
-    
-    QPushButton *viewPaymentsBtn = new QPushButton("View My Payments");
-    paymentLayout->addWidget(viewPaymentsBtn);
-    
-    connect(viewPaymentsBtn, &QPushButton::clicked, [this]() {
-        QMessageBox::information(this, "Information", "View Payments functionality to be implemented");
+    QHBoxLayout *controlsLayout = new QHBoxLayout();
+    controlsLayout->addWidget(new QLabel("Month:"));
+    monthSpinBox = new QSpinBox();
+    monthSpinBox->setRange(1, 12);
+    controlsLayout->addWidget(monthSpinBox);
+
+    controlsLayout->addWidget(new QLabel("Year:"));
+    yearSpinBox = new QSpinBox();
+    yearSpinBox->setRange(2000, 2100);
+    yearSpinBox->setValue(QDate::currentDate().year());
+    controlsLayout->addWidget(yearSpinBox);
+
+    showLatestBtn = new QPushButton("Show Latest Payment");
+    controlsLayout->addWidget(showLatestBtn);
+
+    showByDateBtn = new QPushButton("Show Payment by Month/Year");
+    controlsLayout->addWidget(showByDateBtn);
+
+    paymentLayout->addLayout(controlsLayout);
+
+    paymentDisplay = new QTextEdit();
+    paymentDisplay->setReadOnly(true);
+    paymentLayout->addWidget(paymentDisplay);
+
+    connect(showLatestBtn, &QPushButton::clicked, [this]() {
+        auto payments = studentController.getPaymentHistory(currentStudentId);
+        if (payments.empty()) {
+            QMessageBox::information(this, "Information", "No payments found.");
+            return;
+        }
+        std::stringstream ss;
+        ss << payments[0];
+        paymentDisplay->setPlainText(QString::fromStdString(ss.str()));
+    });
+
+    connect(showByDateBtn, &QPushButton::clicked, [this]() {
+        int month = monthSpinBox->value();
+        int year = yearSpinBox->value();
+        auto payments = studentController.getPaymentHistory(currentStudentId);
+        std::vector<Payment> filtered;
+        for (const auto &p : payments) {
+            if (p.getMonth() == month && p.getYear() == year) {
+                filtered.push_back(p);
+            }
+        }
+        if (filtered.empty()) {
+            paymentDisplay->setPlainText(QString("No payments found for %1/%2").arg(month).arg(year));
+            return;
+        }
+        std::stringstream ss;
+        for (const auto &p : filtered) {
+            ss << p << "\n----------------\n";
+        }
+        paymentDisplay->setPlainText(QString::fromStdString(ss.str()));
     });
 }
 

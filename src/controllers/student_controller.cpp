@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <utils/ui_helpers.hpp>
+#include <algorithm>
+#include <models/payment.hpp>
 
 StudentController::StudentController(StudentService& studentService,
                                      PaymentService& paymentService,
@@ -265,4 +267,12 @@ bool StudentController::submitQuestion(int studentId, const std::string& questio
     
     // If questionId > 0, the question was successfully submitted
     return questionId > 0;
+}
+
+std::vector<Payment> StudentController::getPaymentHistory(int studentId) {
+    auto payments = paymentService.getStudentPaymentHistory(studentId);
+    std::sort(payments.begin(), payments.end(), [](const Payment &a, const Payment &b) {
+        return a.getTimestamp() > b.getTimestamp();
+    });
+    return payments;
 }
