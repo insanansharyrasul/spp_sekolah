@@ -7,6 +7,8 @@
 #include <services/qna_service.hpp>
 #include <services/student_service.hpp>
 #include <string>
+#include <models/question.hpp>
+#include <vector>
 
 // Action class to represent operations that can be undone
 class AdminAction {
@@ -72,6 +74,10 @@ class AdminController {
 
     // QnA methods
     void answerQuestions();
+
+    // QnA accessors for GUI
+    std::vector<Question> getPendingQuestions();
+    bool answerQuestionById(int questionId, const std::string& answerText);
 
     // Service accessors
     StudentService& getStudentService();

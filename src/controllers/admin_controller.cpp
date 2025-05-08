@@ -361,6 +361,15 @@ void AdminController::answerQuestions() {
     }
 }
 
+// QnA GUI methods
+std::vector<Question> AdminController::getPendingQuestions() {
+    return qnaService.getPendingQuestions();
+}
+
+bool AdminController::answerQuestionById(int questionId, const std::string& answerText) {
+    return qnaService.answerQuestionById(questionId, answerText);
+}
+
 StudentService& AdminController::getStudentService() {
     return studentService;
 }

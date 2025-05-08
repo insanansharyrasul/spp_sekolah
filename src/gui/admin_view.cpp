@@ -1,11 +1,13 @@
 #include "gui/admin_view.hpp"
 
+#include <QDateTime>
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QLabel>
 #include <QMessageBox>
 #include <QTableWidget>
 #include <QVBoxLayout>
+#include <qtextedit.h>
 
 AdminView::AdminView(AdminController &controller, QWidget *parent)
     : QWidget(parent), adminController(controller) {
@@ -295,12 +297,72 @@ void AdminView::setupCertificateTab() {
 }
 
 void AdminView::setupQnaTab() {
-    QVBoxLayout *qnaLayout = new QVBoxLayout(qnaTab);
+    QVBoxLayout * layout = new QVBoxLayout(qnaTab);
 
-    QPushButton *answerQuestionsBtn = new QPushButton("Answer Student Questions");
-    qnaLayout->addWidget(answerQuestionsBtn);
+    // Table of pending questions
+    QTableWidget *qnaTable = new QTableWidget();
+    qnaTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    qnaTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    qnaTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    qnaTable->setAlternatingRowColors(true);
+    QStringList headers = {"ID","Student ID","Name","Timestamp","Question"};
+    qnaTable->setColumnCount(headers.size());
+    qnaTable->setHorizontalHeaderLabels(headers);
+    qnaTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    layout->addWidget(qnaTable);
 
-    connect(answerQuestionsBtn, &QPushButton::clicked, [this]() {
-        QMessageBox::information(this, "Information", "Answer Questions functionality to be implemented");
+    // Input for answer
+    layout->addWidget(new QLabel("Answer selected question:"));
+    QTextEdit *answerEdit = new QTextEdit();
+    answerEdit->setFixedHeight(100);
+    layout->addWidget(answerEdit);
+
+    // Buttons
+    QPushButton *loadBtn = new QPushButton("Load Questions");
+    QPushButton *submitBtn = new QPushButton("Submit Answer");
+    QHBoxLayout *btnLayout = new QHBoxLayout();
+    btnLayout->addWidget(loadBtn);
+    btnLayout->addWidget(submitBtn);
+    layout->addLayout(btnLayout);
+
+    // Load pending questions
+    connect(loadBtn, &QPushButton::clicked, [this, qnaTable]() {
+        qnaTable->setRowCount(0);
+        auto list = adminController.getPendingQuestions();
+        for (int i = 0; i < (int)list.size(); ++i) {
+            const auto &q = list[i];
+            qnaTable->insertRow(i);
+            qnaTable->setItem(i, 0, new QTableWidgetItem(QString::number(q.getId())));
+            qnaTable->setItem(i, 1, new QTableWidgetItem(QString::number(q.getStudentId())));
+            qnaTable->setItem(i, 2, new QTableWidgetItem(QString::fromStdString(q.getStudentName())));
+            QString tstr = QDateTime::fromSecsSinceEpoch(q.getTimestamp()).toString(QLocale().dateFormat(QLocale::ShortFormat));
+            qnaTable->setItem(i, 3, new QTableWidgetItem(tstr));
+            qnaTable->setItem(i, 4, new QTableWidgetItem(QString::fromStdString(q.getQuestionText())));
+        }
+    });
+
+    // Submit answer for selected question
+    connect(submitBtn, &QPushButton::clicked, [this, qnaTable, answerEdit, loadBtn]() {
+        int row = qnaTable->currentRow();
+        if (row < 0) {
+            QMessageBox::warning(this, "Warning", "Select a question first.");
+            return;
+        }
+        QString idStr = qnaTable->item(row, 0)->text();
+        int qid = idStr.toInt();
+        QString ans = answerEdit->toPlainText().trimmed();
+        if (ans.isEmpty()) {
+            QMessageBox::warning(this, "Warning", "Answer cannot be empty.");
+            return;
+        }
+        bool ok = adminController.answerQuestionById(qid, ans.toStdString());
+        if (ok) {
+            QMessageBox::information(this, "Success", "Answer submitted.");
+            answerEdit->clear();
+            // refresh list
+            loadBtn->click();
+        } else {
+            QMessageBox::critical(this, "Error", "Failed to submit answer.");
+        }
     });
 }
