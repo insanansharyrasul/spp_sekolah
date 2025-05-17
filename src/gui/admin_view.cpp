@@ -53,15 +53,23 @@ void AdminView::setupStudentTab() {
     studentTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     QPushButton *viewStudentsBtn = new QPushButton("View All Students");
+    QPushButton *reloadStudentsBtn = new QPushButton("Reload Data");
     QPushButton *registerStudentBtn = new QPushButton("Register New Student");
 
     studentLayout->addWidget(studentTable);
-    studentLayout->addWidget(viewStudentsBtn);
+    
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget(viewStudentsBtn);
+    buttonLayout->addWidget(reloadStudentsBtn);
+    studentLayout->addLayout(buttonLayout);
+    
     studentLayout->addWidget(registerStudentBtn);
 
-    connect(viewStudentsBtn, &QPushButton::clicked, [this, studentTable]() {
+    auto loadStudentData = [this, studentTable]() {
+        studentTable->clearContents();
         studentTable->setRowCount(0);
-
+        studentTable->setSortingEnabled(false); 
+        
         std::vector<Student> studentList = adminController.getStudentService().getAllStudents();
 
         if (studentList.empty()) {
@@ -92,10 +100,14 @@ void AdminView::setupStudentTab() {
             row++;
         }
 
+        studentTable->setSortingEnabled(true);
         studentTable->sortByColumn(0, Qt::AscendingOrder);
-    });
+    };
 
-    connect(registerStudentBtn, &QPushButton::clicked, [this, studentTable]() {
+    connect(viewStudentsBtn, &QPushButton::clicked, loadStudentData);
+    connect(reloadStudentsBtn, &QPushButton::clicked, loadStudentData);
+
+    connect(registerStudentBtn, &QPushButton::clicked, [this, studentTable, loadStudentData]() {
         bool ok;
         QString name = QInputDialog::getText(this,
                               "Register New Student",
@@ -123,14 +135,8 @@ void AdminView::setupStudentTab() {
             QMessageBox::information(this,
                 "Success",
                 QString("Student registered with ID: %1").arg(QString::fromStdString(newId)));
-            // Refresh table
-            QList<QPushButton*> btns = this->findChildren<QPushButton*>();
-            for (auto b : btns) {
-                if (b->text() == "View All Students") {
-                    b->click();
-                    break;
-                }
-            }
+            // Refresh table with the lambda function
+            loadStudentData();
         } else {
             QMessageBox::critical(this,
                 "Error",
@@ -166,7 +172,9 @@ void AdminView::setupPaymentTab() {
 
     // Load payments data into the table
     connect(viewPaymentsBtn, &QPushButton::clicked, [this, paymentTable]() {
+        paymentTable->clearContents();
         paymentTable->setRowCount(0);
+        paymentTable->setSortingEnabled(false);
         
         std::vector<Payment> paymentList = adminController.getPaymentService().getAllPayments();
         
@@ -224,7 +232,8 @@ void AdminView::setupPaymentTab() {
             
             row++;
         }
-        
+
+        paymentTable->setSortingEnabled(true);
         paymentTable->sortByColumn(0, Qt::AscendingOrder);
     });
     
