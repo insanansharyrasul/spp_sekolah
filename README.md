@@ -95,6 +95,10 @@ cmake --build .
 ./spp_sekolah.exe
 ```
 
+> [!IMPORTANT]
+> Jika anda menggunakan operasi sistem Windows, ganti versi Qt menjadi sesuai dengan apa yang anda download (Terletak di `C:\Qt\x.x.x`), Anda juga perlu menambahkan `C:\Qt\x.x.x\mingw_64\bin` pada PATH
+
+
 ## Konfigurasi
 
 - Sesuaikan `CMAKE_PREFIX_PATH` ke lokasi instalasi Qt di sistem Anda.
