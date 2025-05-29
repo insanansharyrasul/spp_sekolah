@@ -1,16 +1,66 @@
 #pragma once
 
 #include <stdexcept>
-#include <vector>
 
 template <typename T>
 class SimpleStack {
    private:
-    std::vector<T> elements;
+    struct Node {
+        T data;
+        Node* next;
+        
+        Node(const T& value) : data(value), next(nullptr) {}
+    };
+    
+    Node* top_node;
+    size_t stack_size;
 
    public:
+    SimpleStack() : top_node(nullptr), stack_size(0) {}
+    
+    ~SimpleStack() {
+        clear();
+    }
+    
+    SimpleStack(const SimpleStack& other) : top_node(nullptr), stack_size(0) {
+        if (other.top_node != nullptr) {
+            SimpleStack temp;
+            Node* current = other.top_node;
+            while (current != nullptr) {
+                temp.push(current->data);
+                current = current->next;
+            }
+            
+            while (!temp.isEmpty()) {
+                push(temp.pop());
+            }
+        }
+    }
+    
+    SimpleStack& operator=(const SimpleStack& other) {
+        if (this != &other) {
+            clear();
+            if (other.top_node != nullptr) {
+                SimpleStack temp;
+                Node* current = other.top_node;
+                while (current != nullptr) {
+                    temp.push(current->data);
+                    current = current->next;
+                }
+                
+                while (!temp.isEmpty()) {
+                    push(temp.pop());
+                }
+            }
+        }
+        return *this;
+    }
+
     void push(const T& element) {
-        elements.push_back(element);
+        Node* new_node = new Node(element);
+        new_node->next = top_node;
+        top_node = new_node;
+        stack_size++;
     }
 
     T pop() {
@@ -18,27 +68,32 @@ class SimpleStack {
             throw std::runtime_error("Cannot pop from an empty stack");
         }
 
-        T top = elements.back();
-        elements.pop_back();
-        return top;
+        Node* temp = top_node;
+        T data = temp->data;
+        top_node = top_node->next;
+        delete temp;
+        stack_size--;
+        return data;
     }
 
     T peek() const {
         if (isEmpty()) {
             throw std::runtime_error("Cannot peek at an empty stack");
         }
-        return elements.back();
+        return top_node->data;
     }
 
     bool isEmpty() const {
-        return elements.empty();
+        return top_node == nullptr;
     }
 
     size_t size() const {
-        return elements.size();
+        return stack_size;
     }
 
     void clear() {
-        elements.clear();
+        while (!isEmpty()) {
+            pop();
+        }
     }
 };
