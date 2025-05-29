@@ -1,0 +1,117 @@
+@startuml layered_architecture
+title SPP Sekolah Manager - Layered Architecture
+
+' ===== STYLING =====
+skinparam component {
+    BackgroundColor<<Presentation>> LightGray
+    BackgroundColor<<Controller>> LightPink
+    BackgroundColor<<Service>> LightCyan
+    BackgroundColor<<Repository>> LightYellow
+    BackgroundColor<<Model>> LightGreen
+    BorderColor DarkBlue
+    FontColor DarkBlue
+}
+
+skinparam package {
+    BackgroundColor White
+    BorderColor DarkBlue
+    FontColor DarkBlue
+}
+
+' ===== LAYERED ARCHITECTURE =====
+
+package "Lapisan Presentasi (Presentation Layer)" <<Presentation>> {
+    component [CLI Interface\n(Command Line)] as CLI <<Presentation>>
+    component [GUI Interface\n(Qt Widgets)] as GUI <<Presentation>>
+    
+    note right of CLI : Terminal-based\nText interface\nCross-platform
+    note right of GUI : Qt-based\nGraphical interface\nModern UI/UX
+}
+
+package "Lapisan Kontroler (Controller Layer)" <<Controller>> {
+    component [AdminController\n(Admin Operations)] as AdminCtrl <<Controller>>
+    component [StudentController\n(Student Operations)] as StudentCtrl <<Controller>>
+    
+    note right of AdminCtrl : - Student management\n- Payment processing\n- Certificate generation\n- Undo operations
+    note right of StudentCtrl : - View payments\n- Ask questions\n- View certificates
+}
+
+package "Lapisan Layanan (Service Layer)" <<Service>> {
+    component [StudentService\n(Student Business Logic)] as StudentSvc <<Service>>
+    component [PaymentService\n(Payment Business Logic)] as PaymentSvc <<Service>>
+    component [QnAService\n(Q&A Business Logic)] as QnASvc <<Service>>
+    component [CertificateService\n(Certificate Business Logic)] as CertSvc <<Service>>
+    
+    note right of StudentSvc : Student registration\nValidation rules\nBusiness constraints
+    note right of PaymentSvc : Payment processing\nStatus management\nValidation
+    note right of QnASvc : Question handling\nAnswer management\nModeration
+    note right of CertSvc : Certificate generation\nEncryption & hashing\nVerification
+}
+
+package "Lapisan Repository (Repository Layer)" <<Repository>> {
+    component [StudentRepository\n(Student Data Access)] as StudentRepo <<Repository>>
+    component [PaymentRepository\n(Payment Data Access)] as PaymentRepo <<Repository>>
+    component [QuestionRepository\n(Q&A Data Access)] as QuestionRepo <<Repository>>
+    component [CertificateRepository\n(Certificate Data Access)] as CertRepo <<Repository>>
+    
+    note right of StudentRepo : File I/O operations\nData serialization\nCRUD operations
+    note right of PaymentRepo : Payment persistence\nStatus tracking\nData integrity
+    note right of QuestionRepo : Q&A storage\nQuery operations\nData management
+    note right of CertRepo : Secure storage\nHash-based lookup\nEncryption handling
+}
+
+package "Lapisan Model (Model Layer)" <<Model>> {
+    component [Student Entity\n(Student Data)] as StudentModel <<Model>>
+    component [Payment Entity\n(Payment Data)] as PaymentModel <<Model>>
+    component [Question Entity\n(Q&A Data)] as QuestionModel <<Model>>
+    component [Certificate Entity\n(Certificate Data)] as CertModel <<Model>>
+    
+    note right of StudentModel : - ID, Name\n- Year, Class\n- Getters/Setters
+    note right of PaymentModel : - ID, Amount\n- Timestamp, Status\n- Student reference
+    note right of QuestionModel : - Question text\n- Answer text\n- Student reference
+    note right of CertModel : - Certificate data\n- Hash signature\n- Encryption
+}
+
+' ===== LAYER RELATIONSHIPS =====
+
+' Presentation to Controller
+CLI --|> AdminCtrl : "menggunakan"
+CLI --|> StudentCtrl : "menggunakan"
+GUI --|> AdminCtrl : "menggunakan"
+GUI --|> StudentCtrl : "menggunakan"
+
+' Controller to Service
+AdminCtrl --|> StudentSvc : "memanggil"
+AdminCtrl --|> PaymentSvc : "memanggil"
+AdminCtrl --|> QnASvc : "memanggil"
+AdminCtrl --|> CertSvc : "memanggil"
+
+StudentCtrl --|> StudentSvc : "memanggil"
+StudentCtrl --|> PaymentSvc : "memanggil"
+StudentCtrl --|> QnASvc : "memanggil"
+StudentCtrl --|> CertSvc : "memanggil"
+
+' Service to Repository
+StudentSvc --|> StudentRepo : "mengakses"
+PaymentSvc --|> PaymentRepo : "mengakses"
+PaymentSvc --|> StudentRepo : "mengakses"
+QnASvc --|> QuestionRepo : "mengakses"
+CertSvc --|> CertRepo : "mengakses"
+CertSvc --|> PaymentRepo : "mengakses"
+
+' Repository to Model
+StudentRepo --|> StudentModel : "mengelola"
+PaymentRepo --|> PaymentModel : "mengelola"
+QuestionRepo --|> QuestionModel : "mengelola"
+CertRepo --|> CertModel : "mengelola"
+
+' ===== LAYER SEPARATION LINES =====
+note as N1
+<b>Prinsip Arsitektur Berlapis:</b>
+• Setiap lapisan hanya berkomunikasi dengan lapisan di bawahnya
+• Separation of Concerns - setiap lapisan memiliki tanggung jawab khusus
+• Dependency Inversion - lapisan atas bergantung pada abstraksi lapisan bawah
+• Modular dan mudah di-maintain
+end note
+
+@enduml

@@ -1,0 +1,60 @@
+@startuml controller
+package "Controllers" <<Controller>> {
+    class AdminAction <<Controller>> {
+        - type: ActionType
+        - id: string
+        - undoFunction: function<bool()>
+        --
+        + AdminAction(type: ActionType, id: string, undoFunction: function<bool()>)
+        + getType(): ActionType
+        + getId(): string
+        + undo(): bool
+        + getActionName(): string
+    }
+
+    class AdminController <<Controller>> {
+        - studentService: StudentService&
+        - paymentService: PaymentService&
+        - certService: CertificateService&
+        - qnaService: QnAService&
+        - actionStack: SimpleStack<AdminAction>
+        --
+        + AdminController(studentService: StudentService&, paymentService: PaymentService&, certService: CertificateService&, qnaService: QnAService&)
+        + showDashboard(): void
+        + registerNewStudent(): void
+        + viewAllStudents(): void
+        + viewAllPayments(): void
+        + setPayment(): void
+        + markPaymentPaid(): void
+        + makeCertificate(): void
+        + undoLastAction(): void
+        + answerQuestions(): void
+        + getPendingQuestions(): vector<Question>
+        + answerQuestionById(questionId: int, answerText: string): bool
+        + getStudentService(): StudentService&
+        + getPaymentService(): PaymentService&
+        + generateCertificate(paymentId: string): string
+        + createStudent(name: string, year: int, classId: int): string
+    }
+
+    class StudentController <<Controller>> {
+        - studentService: StudentService&
+        - paymentService: PaymentService&
+        - qnaService: QnAService&
+        - certificateService: CertificateService&
+        --
+        + StudentController(studentService: StudentService&, paymentService: PaymentService&, qnaService: QnAService&, certificateService: CertificateService&)
+        + showDashboard(studentId: int): void
+        + viewProfile(studentId: int): void
+        + viewPayments(studentId: int): void
+        + askQuestion(studentId: int): void
+        + viewAnsweredQuestions(studentId: int): void
+        + verifyCertificate(studentId: int): void
+        + getAnsweredQuestions(studentId: int): vector<Question>
+        + getCertificateDetails(studentId: int, certificateId: string): string
+        + getStudentService(): StudentService&
+        + submitQuestion(studentId: int, question: string): bool
+        + getPaymentHistory(studentId: int): vector<Payment>
+    }
+}
+@enduml

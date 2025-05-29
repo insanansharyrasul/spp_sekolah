@@ -1,0 +1,26 @@
+@startuml utilities
+package "Utilities" <<Utility>> {
+    class UI <<Utility>> {
+        --
+        + clrscr(): void
+        + pause_input(): void
+        + display_header(title: string): void
+        + display_footer(): void
+        + display_date(date: time_t): string
+        + display_currency(currency: double): string
+        + draw_table_separator(column_widths: vector<int>&): void
+        + draw_table_header(headers: vector<string>&, column_widths: vector<int>&): void
+        + draw_table<T>(data: vector<T>&, headers: vector<string>&, column_widths: vector<int>&, row_formatter: function): void
+        + display_sortable_table<T>(data: vector<T>&, headers: vector<string>&, column_widths: vector<int>&, row_formatter: function, sort_functions: vector<function>, sort_descriptions: vector<string>&): void
+        + draw_card<T>(title: string&, content: T&): void
+    }
+
+    class Encryption <<Utility>> {
+        --
+        + encrypt(data: string): string
+        + decrypt(data: string): string
+        + hash(data: string): size_t
+    }
+}
+
+@enduml

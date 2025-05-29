@@ -1,0 +1,61 @@
+@startuml services
+package "Services" <<Service>> {
+    class StudentService <<Service>> {
+        - studentRepo: StudentRepository&
+        --
+        + StudentService(repo: StudentRepository&)
+        + registerStudent(name: string, yearEnrolled: int, classId: int): bool
+        + getStudentById(id: int): Student*
+        + getAllStudents(): vector<Student>
+        + updateStudent(id: int, name: string, classId: int): bool
+        + getStudentName(id: int): string
+        + deleteStudent(id: int): bool
+    }
+
+    class PaymentService <<Service>> {
+        - paymentRepo: PaymentRepository&
+        - studentRepo: StudentRepository&
+        --
+        + PaymentService(paymentRepo: PaymentRepository&, studentRepo: StudentRepository&)
+        + setPayment(studentId: int, amount: double, deadline: time_t): string
+        + verifyPaymentStatus(studentId: int, year: int, month: int): bool
+        + getStudentPaymentHistory(studentId: int): vector<Payment>
+        + deletePayment(paymentId: string): bool
+        + verifyCertificate(certId: string, studentId: int, certService: CertificateService&): bool
+        + markPaymentPaid(paymentId: string): bool
+        + markPaymentUnpaid(paymentId: string): bool
+        + calculateTotalPayments(year: int, month: int): double
+        + getOverduePayments(): vector<Payment>
+        + getAllPayments(): vector<Payment>
+        - generatePaymentId(studentId: int): string
+    }
+
+    class QnAService <<Service>> {
+        - questionRepo: QuestionRepository&
+        --
+        + QnAService(repo: QuestionRepository&)
+        + submitQuestion(studentId: int, studentName: string, questionText: string): int
+        + hasQuestionsToAnswer(): bool
+        + getNextQuestion(): Question
+        + answerQuestion(answer: string): void
+        + getPendingQuestions(): vector<Question>
+        + answerQuestionById(questionId: int, answerText: string): bool
+        + getAnsweredQuestionsForStudent(studentId: int): vector<Question>
+        + getQueueSize(): int
+    }
+
+    class CertificateService <<Service>> {
+        - paymentRepo: PaymentRepository&
+        - certificateRepo: CertificateRepository&
+        - studentRepo: StudentRepository&
+        --
+        + CertificateService(paymentRepo: PaymentRepository&, certificateRepo: CertificateRepository&, studentRepo: StudentRepository&)
+        + generateCertificate(paymentId: string): string
+        + validateCertificate(signature: size_t): bool
+        + deleteCertificate(certId: string): bool
+        + decodeCertificate(certificateHash: size_t): string
+        - encryptData(data: string): string
+        - generateSignature(data: string): size_t
+    }
+}
+@enduml

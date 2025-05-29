@@ -1,0 +1,33 @@
+@startuml application
+package "Application" <<Application>> {
+    class UserSessionCLI <<Application>> {
+        + isAuthenticated: bool
+        + isAdmin: bool
+        + isStudent: bool
+        + currentStudentId: int
+        --
+        + UserSessionCLI()
+    }
+
+    class SppApplication <<Application>> {
+        - session: UserSessionCLI
+        - studentRepo: StudentRepository
+        - paymentRepo: PaymentRepository
+        - certificateRepo: CertificateRepository
+        - questionRepo: QuestionRepository
+        - studentService: StudentService
+        - paymentService: PaymentService
+        - certService: CertificateService
+        - qnaService: QnAService
+        - adminController: AdminController
+        - studentController: StudentController
+        --
+        + SppApplication()
+        + initialize(): void
+        + run(): void
+        + showLoginMenu(): void
+    }
+}
+
+SppApplication o-- UserSessionCLI : "contains"
+@enduml

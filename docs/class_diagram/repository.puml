@@ -1,0 +1,61 @@
+@startuml repository
+package "Repositories" <<Repository>> {
+    class StudentRepository <<Repository>> {
+        - students: unordered_map<int, Student>
+        - dataFilePath: string
+        --
+        + StudentRepository(filePath: string)
+        + add(student: Student): bool
+        + findById(id: int): Student*
+        + findAll(): vector<Student>
+        + update(student: Student): bool
+        + remove(id: int): bool
+        + loadFromFile(): bool
+        + saveToFile(): bool
+    }
+
+    class PaymentRepository <<Repository>> {
+        - payments: unordered_map<string, Payment>
+        - dataFilePath: string
+        --
+        + PaymentRepository(filePath: string)
+        + add(payment: Payment): bool
+        + findById(id: string): Payment*
+        + findAll(): vector<Payment>
+        + findByStudentId(studentId: int): vector<Payment>
+        + update(payment: Payment): bool
+        + remove(id: string): bool
+        + loadFromFile(): bool
+        + saveToFile(): bool
+    }
+
+    class QuestionRepository <<Repository>> {
+        - questions: unordered_map<int, Question>
+        - nextQuestionId: int
+        - dataFilePath: string
+        --
+        + QuestionRepository(filePath: string)
+        + addQuestion(studentId: int, studentName: string, questionText: string): int
+        + getNextPendingQuestion(): Question
+        + answerQuestion(questionId: int, answer: string): bool
+        + getAllPendingQuestions(): vector<Question>
+        + getAnsweredQuestionsByStudentId(studentId: int): vector<Question>
+        + hasPendingQuestions(): bool
+        + getPendingCount(): int
+        + loadFromFile(): bool
+        + saveToFile(): bool
+    }
+
+    class CertificateRepository <<Repository>> {
+        - certificates: unordered_map<size_t, Certificate>
+        - dataFilePath: string
+        --
+        + CertificateRepository(filePath: string)
+        + addCertificate(certificate: Certificate): string
+        + getCertificate(certificate: Certificate): Certificate*
+        + removeCertificate(certificate: Certificate): bool
+        + loadFromFile(): bool
+        + saveToFile(): bool
+    }
+}
+@enduml

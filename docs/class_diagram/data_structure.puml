@@ -1,0 +1,45 @@
+@startuml data_structure
+title Data Structures - SPP Sekolah Manager
+
+
+package "DataStructures" <<DataStructure>> {
+    class "SimpleStack<T>" <<DataStructure>> {
+        - struct Node  
+        - top_node: Node*
+        - stack_size: size_t
+        --
+        + SimpleStack()
+        + SimpleStack(const SimpleStack& other)
+        + ~SimpleStack()
+        + operator=(const SimpleStack& other): SimpleStack&
+        + push(element: const T&): void
+        + pop(): T
+        + peek(): T
+        + isEmpty(): bool
+        + size(): size_t
+        + clear(): void
+    }
+
+    class "SimpleQueue<T>" <<DataStructure>> {
+        - struct Node  
+        - front: int
+        - rear: int
+        - capacity: int
+        - count: int
+        --
+        + SimpleQueue()
+        + SimpleQueue(capacity: int)
+        + SimpleQueue(const SimpleQueue& other)
+        + ~SimpleQueue()
+        + operator=(const SimpleQueue& other): SimpleQueue&
+        + enqueue(item: const T&): void
+        + dequeue(): T
+        + getFront(): T
+        + isEmpty(): bool
+        + isFull(): bool
+        + size(): int
+        + clear(): void
+        + resize(newCapacity: int): void
+    }
+}
+@enduml

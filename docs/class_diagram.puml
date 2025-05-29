@@ -1,0 +1,585 @@
+@startuml SPP_Sekolah_Manager_Class_Diagram
+
+' a !theme plain
+title SPP Sekolah Manager - Complete Class Diagram
+
+' ===== STYLING =====
+skinparam class {
+    BackgroundColor LightBlue
+    BorderColor DarkBlue
+    FontColor DarkBlue
+}
+
+skinparam class {
+    BackgroundColor<<Model>> LightGreen
+    BackgroundColor<<Repository>> LightYellow
+    BackgroundColor<<Service>> LightCyan
+    BackgroundColor<<Controller>> LightPink
+    BackgroundColor<<GUI>> LightGray
+    BackgroundColor<<DataStructure>> Orange
+    BackgroundColor<<Utility>> Wheat
+    BackgroundColor<<Application>> LightSalmon
+}
+
+' ===== MODELS =====
+package "Models" <<Model>> {
+    class Student <<Model>> {
+        - id: int
+        - name: string
+        - yearRegistered: int
+        - classId: int
+        --
+        + Student(id: int, name: string, yearRegistered: int, classId: int)
+        + getId(): int
+        + getName(): string
+        + getYearRegistered(): int
+        + getClassId(): int
+        + setName(name: string): void
+        + setYearRegistered(year: int): void
+        + setClassId(id: int): void
+        + operator<<(os: ostream&, student: Student&): ostream&
+    }
+
+    class Payment <<Model>> {
+        - id: string
+        - studentId: int
+        - amount: double
+        - timestamp: time_t
+        - deadline: time_t
+        - isPaid: bool
+        --
+        + Payment(id: string, studentId: int, amount: double, timestamp: time_t, deadline: time_t, isPaid: bool)
+        + getId(): string
+        + getStudentId(): int
+        + getAmount(): double
+        + getTimestamp(): time_t
+        + getDeadline(): time_t
+        + getIsPaid(): bool
+        + getMonth(): int
+        + getYear(): int
+        + setId(id: string): void
+        + setStudentId(studentId: int): void
+        + setAmount(amount: double): void
+        + setTimestamp(timestamp: time_t): void
+        + setDeadline(deadline: time_t): void
+        + setIsPaid(isPaid: bool): void
+        + setIsPaid(): void
+        + setIsUnpaid(): void
+        + isOverdue(): bool
+        + daysRemaining(): int
+        + toHtml(): string
+        + operator<<(os: ostream&, payment: Payment&): ostream&
+    }
+
+    class Question <<Model>> {
+        - id: int
+        - studentId: int
+        - studentName: string
+        - questionText: string
+        - answer: string
+        - timestamp: time_t
+        - isAnswered: bool
+        --
+        + Question(id: int, studentId: int, studentName: string, questionText: string)
+        + getId(): int
+        + getStudentId(): int
+        + getStudentName(): string
+        + getQuestionText(): string
+        + getAnswer(): string
+        + getTimestamp(): time_t
+        + getIsAnswered(): bool
+        + setAnswer(answerText: string): void
+        + setTimestamp(ts: time_t): void
+    }
+
+    class Certificate <<Model>> {
+        - hash: size_t
+        - data: string
+        --
+        + Certificate(hash: size_t, data: string)
+        + getHash(): size_t
+        + getEncryptedData(): string
+    }
+}
+
+' ===== REPOSITORIES =====
+package "Repositories" <<Repository>> {
+    class StudentRepository <<Repository>> {
+        - students: unordered_map<int, Student>
+        - dataFilePath: string
+        --
+        + StudentRepository(filePath: string)
+        + add(student: Student): bool
+        + findById(id: int): Student*
+        + findAll(): vector<Student>
+        + update(student: Student): bool
+        + remove(id: int): bool
+        + loadFromFile(): bool
+        + saveToFile(): bool
+    }
+
+    class PaymentRepository <<Repository>> {
+        - payments: unordered_map<string, Payment>
+        - dataFilePath: string
+        --
+        + PaymentRepository(filePath: string)
+        + add(payment: Payment): bool
+        + findById(id: string): Payment*
+        + findAll(): vector<Payment>
+        + findByStudentId(studentId: int): vector<Payment>
+        + update(payment: Payment): bool
+        + remove(id: string): bool
+        + loadFromFile(): bool
+        + saveToFile(): bool
+    }
+
+    class QuestionRepository <<Repository>> {
+        - questions: unordered_map<int, Question>
+        - nextQuestionId: int
+        - dataFilePath: string
+        --
+        + QuestionRepository(filePath: string)
+        + addQuestion(studentId: int, studentName: string, questionText: string): int
+        + getNextPendingQuestion(): Question
+        + answerQuestion(questionId: int, answer: string): bool
+        + getAllPendingQuestions(): vector<Question>
+        + getAnsweredQuestionsByStudentId(studentId: int): vector<Question>
+        + hasPendingQuestions(): bool
+        + getPendingCount(): int
+        + loadFromFile(): bool
+        + saveToFile(): bool
+    }
+
+    class CertificateRepository <<Repository>> {
+        - certificates: unordered_map<size_t, Certificate>
+        - dataFilePath: string
+        --
+        + CertificateRepository(filePath: string)
+        + addCertificate(certificate: Certificate): string
+        + getCertificate(certificate: Certificate): Certificate*
+        + removeCertificate(certificate: Certificate): bool
+        + loadFromFile(): bool
+        + saveToFile(): bool
+    }
+}
+
+' ===== SERVICES =====
+package "Services" <<Service>> {
+    class StudentService <<Service>> {
+        - studentRepo: StudentRepository&
+        --
+        + StudentService(repo: StudentRepository&)
+        + registerStudent(name: string, yearEnrolled: int, classId: int): bool
+        + getStudentById(id: int): Student*
+        + getAllStudents(): vector<Student>
+        + updateStudent(id: int, name: string, classId: int): bool
+        + getStudentName(id: int): string
+        + deleteStudent(id: int): bool
+    }
+
+    class PaymentService <<Service>> {
+        - paymentRepo: PaymentRepository&
+        - studentRepo: StudentRepository&
+        --
+        + PaymentService(paymentRepo: PaymentRepository&, studentRepo: StudentRepository&)
+        + setPayment(studentId: int, amount: double, deadline: time_t): string
+        + verifyPaymentStatus(studentId: int, year: int, month: int): bool
+        + getStudentPaymentHistory(studentId: int): vector<Payment>
+        + deletePayment(paymentId: string): bool
+        + verifyCertificate(certId: string, studentId: int, certService: CertificateService&): bool
+        + markPaymentPaid(paymentId: string): bool
+        + markPaymentUnpaid(paymentId: string): bool
+        + calculateTotalPayments(year: int, month: int): double
+        + getOverduePayments(): vector<Payment>
+        + getAllPayments(): vector<Payment>
+        - generatePaymentId(studentId: int): string
+    }
+
+    class QnAService <<Service>> {
+        - questionRepo: QuestionRepository&
+        --
+        + QnAService(repo: QuestionRepository&)
+        + submitQuestion(studentId: int, studentName: string, questionText: string): int
+        + hasQuestionsToAnswer(): bool
+        + getNextQuestion(): Question
+        + answerQuestion(answer: string): void
+        + getPendingQuestions(): vector<Question>
+        + answerQuestionById(questionId: int, answerText: string): bool
+        + getAnsweredQuestionsForStudent(studentId: int): vector<Question>
+        + getQueueSize(): int
+    }
+
+    class CertificateService <<Service>> {
+        - paymentRepo: PaymentRepository&
+        - certificateRepo: CertificateRepository&
+        - studentRepo: StudentRepository&
+        --
+        + CertificateService(paymentRepo: PaymentRepository&, certificateRepo: CertificateRepository&, studentRepo: StudentRepository&)
+        + generateCertificate(paymentId: string): string
+        + validateCertificate(signature: size_t): bool
+        + deleteCertificate(certId: string): bool
+        + decodeCertificate(certificateHash: size_t): string
+        - encryptData(data: string): string
+        - generateSignature(data: string): size_t
+    }
+}
+
+' ===== DATA STRUCTURES =====
+package "DataStructures" <<DataStructure>> {
+    class "SimpleStack<T>" <<DataStructure>> {
+        - items: T[]
+        - top: int
+        - capacity: int
+        --
+        + SimpleStack()
+        + SimpleStack(capacity: int)
+        + ~SimpleStack()
+        + push(item: T): void
+        + pop(): T
+        + peek(): T
+        + isEmpty(): bool
+        + size(): int
+        + clear(): void
+    }
+
+    class "SimpleQueue<T>" <<DataStructure>> {
+        - items: T[]
+        - front: int
+        - rear: int
+        - capacity: int
+        - count: int
+        --
+        + SimpleQueue()
+        + SimpleQueue(capacity: int)
+        + ~SimpleQueue()
+        + enqueue(item: T): void
+        + dequeue(): T
+        + front(): T
+        + isEmpty(): bool
+        + size(): int
+        + clear(): void
+    }
+}
+
+enum ActionType {
+    REGISTER_STUDENT
+    PROCESS_PAYMENT
+    GENERATE_CERTIFICATE
+}
+
+' ===== CONTROLLERS =====
+package "Controllers" <<Controller>> {
+    class AdminAction <<Controller>> {
+        - type: ActionType
+        - id: string
+        - undoFunction: function<bool()>
+        --
+        + AdminAction(type: ActionType, id: string, undoFunction: function<bool()>)
+        + getType(): ActionType
+        + getId(): string
+        + undo(): bool
+        + getActionName(): string
+    }
+
+    class AdminController <<Controller>> {
+        - studentService: StudentService&
+        - paymentService: PaymentService&
+        - certService: CertificateService&
+        - qnaService: QnAService&
+        - actionStack: SimpleStack<AdminAction>
+        --
+        + AdminController(studentService: StudentService&, paymentService: PaymentService&, certService: CertificateService&, qnaService: QnAService&)
+        + showDashboard(): void
+        + registerNewStudent(): void
+        + viewAllStudents(): void
+        + viewAllPayments(): void
+        + setPayment(): void
+        + markPaymentPaid(): void
+        + makeCertificate(): void
+        + undoLastAction(): void
+        + answerQuestions(): void
+        + getPendingQuestions(): vector<Question>
+        + answerQuestionById(questionId: int, answerText: string): bool
+        + getStudentService(): StudentService&
+        + getPaymentService(): PaymentService&
+        + generateCertificate(paymentId: string): string
+        + createStudent(name: string, year: int, classId: int): string
+    }
+
+    class StudentController <<Controller>> {
+        - studentService: StudentService&
+        - paymentService: PaymentService&
+        - qnaService: QnAService&
+        - certificateService: CertificateService&
+        --
+        + StudentController(studentService: StudentService&, paymentService: PaymentService&, qnaService: QnAService&, certificateService: CertificateService&)
+        + showDashboard(studentId: int): void
+        + viewProfile(studentId: int): void
+        + viewPayments(studentId: int): void
+        + askQuestion(studentId: int): void
+        + viewAnsweredQuestions(studentId: int): void
+        + verifyCertificate(studentId: int): void
+        + getAnsweredQuestions(studentId: int): vector<Question>
+        + getCertificateDetails(studentId: int, certificateId: string): string
+        + getStudentService(): StudentService&
+        + submitQuestion(studentId: int, question: string): bool
+        + getPaymentHistory(studentId: int): vector<Payment>
+    }
+}
+
+' ===== GUI =====
+package "GUI" <<GUI>> {
+    class UserSession <<GUI>> {
+        + isAuthenticated: bool
+        + isAdmin: bool
+        + isStudent: bool
+        + currentStudentId: int
+        --
+        + UserSession()
+    }
+
+    class MainWindow <<GUI>> {
+        - session: UserSession
+        - studentRepo: StudentRepository
+        - paymentRepo: PaymentRepository
+        - certificateRepo: CertificateRepository
+        - questionRepo: QuestionRepository
+        - studentService: StudentService
+        - paymentService: PaymentService
+        - certService: CertificateService
+        - qnaService: QnAService
+        - adminController: AdminController
+        - studentController: StudentController
+        - stackedWidget: QStackedWidget*
+        - loginView: LoginView*
+        - adminView: AdminView*
+        - studentView: StudentView*
+        - fileMenu: QMenu*
+        - helpMenu: QMenu*
+        - exitAction: QAction*
+        - aboutAction: QAction*
+        - logoutAction: QAction*
+        - statusBar: QStatusBar*
+        --
+        + MainWindow(parent: QWidget*)
+        + ~MainWindow()
+        - setupUi(): void
+        - createMenus(): void
+        - createActions(): void
+        - showLoginScreen(): void
+        - adminLogin(username: QString&, password: QString&): void
+        - studentLogin(studentId: int): void
+        - logout(): void
+        - showAdminDashboard(): void
+        - showStudentDashboard(): void
+    }
+
+    class LoginView <<GUI>> {
+        - loginStackedWidget: QStackedWidget*
+        - adminLoginBtn: QPushButton*
+        - studentLoginBtn: QPushButton*
+        - loginCancelBtn: QPushButton*
+        - usernameInput: QLineEdit*
+        - passwordInput: QLineEdit*
+        - studentIdInput: QLineEdit*
+        - adminLoginWidget: QWidget*
+        - studentLoginWidget: QWidget*
+        - onAdminLogin: function<void(QString&, QString&)>
+        - onStudentLogin: function<void(int)>
+        - onCancel: function<void()>
+        --
+        + LoginView(parent: QWidget*)
+        + ~LoginView()
+        + setAdminLoginCallback(callback: function<void(QString&, QString&)>): void
+        + setStudentLoginCallback(callback: function<void(int)>): void
+        + setCancelCallback(callback: function<void()>): void
+        + resetInputs(): void
+        + showLoginTypeSelection(): void
+        - setupUi(): void
+    }
+
+    class AdminView <<GUI>> {
+        - adminController: AdminController&
+        - tabWidget: QTabWidget*
+        - studentTab: QWidget*
+        - paymentTab: QWidget*
+        - certTab: QWidget*
+        - qnaTab: QWidget*
+        --
+        + AdminView(controller: AdminController&, parent: QWidget*)
+        + ~AdminView()
+        + setupDashboard(): void
+        - setupStudentTab(): void
+        - setupPaymentTab(): void
+        - setupCertificateTab(): void
+        - setupQnaTab(): void
+    }
+
+    class StudentView <<GUI>> {
+        - studentController: StudentController&
+        - currentStudentId: int
+        - tabWidget: QTabWidget*
+        - infoTab: QWidget*
+        - paymentTab: QWidget*
+        - certTab: QWidget*
+        - qnaTab: QWidget*
+        - questionEdit: QTextEdit*
+        - monthSpinBox: QSpinBox*
+        - yearSpinBox: QSpinBox*
+        - showByDateBtn: QPushButton*
+        - showLatestBtn: QPushButton*
+        - paymentDisplay: QTextEdit*
+        - certIdLineEdit: QLineEdit*
+        - certDisplay: QTextEdit*
+        - viewCertBtn: QPushButton*
+        - showAnsweredBtn: QPushButton*
+        - answeredDisplay: QTextEdit*
+        --
+        + StudentView(controller: StudentController&, parent: QWidget*)
+        + ~StudentView()
+        + setupDashboard(studentId: int): void
+        - setupInfoTab(student: Student*): void
+        - setupPaymentTab(): void
+        - setupCertificateTab(): void
+        - setupQnaTab(): void
+    }
+}
+
+' ===== UTILITIES =====
+package "Utilities" <<Utility>> {
+    class UI <<Utility>> {
+        --
+        + clrscr(): void
+        + pause_input(): void
+        + display_header(title: string): void
+        + display_footer(): void
+        + display_date(date: time_t): string
+        + display_currency(currency: double): string
+        + draw_table_separator(column_widths: vector<int>&): void
+        + draw_table_header(headers: vector<string>&, column_widths: vector<int>&): void
+        + draw_table<T>(data: vector<T>&, headers: vector<string>&, column_widths: vector<int>&, row_formatter: function): void
+        + display_sortable_table<T>(data: vector<T>&, headers: vector<string>&, column_widths: vector<int>&, row_formatter: function, sort_functions: vector<function>, sort_descriptions: vector<string>&): void
+        + draw_card<T>(title: string&, content: T&): void
+    }
+
+    class Encryption <<Utility>> {
+        --
+        + encrypt(data: string): string
+        + decrypt(data: string): string
+        + hash(data: string): size_t
+    }
+}
+
+' ===== APPLICATION =====
+package "Application" <<Application>> {
+    class UserSessionCLI <<Application>> {
+        + isAuthenticated: bool
+        + isAdmin: bool
+        + isStudent: bool
+        + currentStudentId: int
+        --
+        + UserSessionCLI()
+    }
+
+    class SppApplication <<Application>> {
+        - session: UserSessionCLI
+        - studentRepo: StudentRepository
+        - paymentRepo: PaymentRepository
+        - certificateRepo: CertificateRepository
+        - questionRepo: QuestionRepository
+        - studentService: StudentService
+        - paymentService: PaymentService
+        - certService: CertificateService
+        - qnaService: QnAService
+        - adminController: AdminController
+        - studentController: StudentController
+        --
+        + SppApplication()
+        + initialize(): void
+        + run(): void
+        + showLoginMenu(): void
+    }
+}
+
+' ===== RELATIONSHIPS =====
+
+' Model relationships
+Payment ||--|| Student : "belongs to"
+Question ||--|| Student : "asked by"
+
+' Repository relationships
+StudentRepository o-- Student : "manages"
+PaymentRepository o-- Payment : "manages"
+QuestionRepository o-- Question : "manages"
+CertificateRepository o-- Certificate : "manages"
+
+' Service to Repository dependencies
+StudentService --> StudentRepository : "uses"
+PaymentService --> PaymentRepository : "uses"
+PaymentService --> StudentRepository : "uses"
+QnAService --> QuestionRepository : "uses"
+CertificateService --> PaymentRepository : "uses"
+CertificateService --> CertificateRepository : "uses"
+CertificateService --> StudentRepository : "uses"
+
+' Service cross-dependencies
+PaymentService ..> CertificateService : "verifies certificates"
+CertificateService ..> Encryption : "uses"
+
+' Controller to Service dependencies
+AdminAction --> ActionType : "uses"
+AdminController --> StudentService : "uses"
+AdminController --> PaymentService : "uses"
+AdminController --> CertificateService : "uses"
+AdminController --> QnAService : "uses"
+AdminController o-- "SimpleStack<AdminAction>" : "contains"
+
+StudentController --> StudentService : "uses"
+StudentController --> PaymentService : "uses"
+StudentController --> QnAService : "uses"
+StudentController --> CertificateService : "uses"
+
+' GUI relationships
+MainWindow o-- UserSession : "contains"
+MainWindow o-- StudentRepository : "contains"
+MainWindow o-- PaymentRepository : "contains"
+MainWindow o-- CertificateRepository : "contains"
+MainWindow o-- QuestionRepository : "contains"
+MainWindow o-- StudentService : "contains"
+MainWindow o-- PaymentService : "contains"
+MainWindow o-- CertificateService : "contains"
+MainWindow o-- QnAService : "contains"
+MainWindow o-- AdminController : "contains"
+MainWindow o-- StudentController : "contains"
+MainWindow o-- LoginView : "contains"
+MainWindow o-- AdminView : "contains"
+MainWindow o-- StudentView : "contains"
+
+AdminView --> AdminController : "uses"
+StudentView --> StudentController : "uses"
+
+' Application relationships
+SppApplication o-- UserSessionCLI : "contains"
+SppApplication o-- StudentRepository : "contains"
+SppApplication o-- PaymentRepository : "contains"
+SppApplication o-- CertificateRepository : "contains"
+SppApplication o-- QuestionRepository : "contains"
+SppApplication o-- StudentService : "contains"
+SppApplication o-- PaymentService : "contains"
+SppApplication o-- CertificateService : "contains"
+SppApplication o-- QnAService : "contains"
+SppApplication o-- AdminController : "contains"
+SppApplication o-- StudentController : "contains"
+
+' Utility usage
+AdminController ..> UI : "uses"
+StudentController ..> UI : "uses"
+CertificateService ..> Encryption : "uses"
+
+' Qt inheritance (indicated with extends)
+LoginView --|> QWidget
+AdminView --|> QWidget
+StudentView --|> QWidget
+MainWindow --|> QMainWindow
+
+@enduml

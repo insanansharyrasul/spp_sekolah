@@ -1,0 +1,82 @@
+@startuml models
+package "Models" <<Model>> {
+    class Student <<Model>> {
+        - id: int
+        - name: string
+        - yearRegistered: int
+        - classId: int
+        --
+        + Student(id: int, name: string, yearRegistered: int, classId: int)
+        + getId(): int
+        + getName(): string
+        + getYearRegistered(): int
+        + getClassId(): int
+        + setName(name: string): void
+        + setYearRegistered(year: int): void
+        + setClassId(id: int): void
+        + operator<<(os: ostream&, student: Student&): ostream&
+    }
+
+    class Payment <<Model>> {
+        - id: string
+        - studentId: int
+        - amount: double
+        - timestamp: time_t
+        - deadline: time_t
+        - isPaid: bool
+        --
+        + Payment(id: string, studentId: int, amount: double, timestamp: time_t, deadline: time_t, isPaid: bool)
+        + getId(): string
+        + getStudentId(): int
+        + getAmount(): double
+        + getTimestamp(): time_t
+        + getDeadline(): time_t
+        + getIsPaid(): bool
+        + getMonth(): int
+        + getYear(): int
+        + setId(id: string): void
+        + setStudentId(studentId: int): void
+        + setAmount(amount: double): void
+        + setTimestamp(timestamp: time_t): void
+        + setDeadline(deadline: time_t): void
+        + setIsPaid(isPaid: bool): void
+        + setIsPaid(): void
+        + setIsUnpaid(): void
+        + isOverdue(): bool
+        + daysRemaining(): int
+        + toHtml(): string
+        + operator<<(os: ostream&, payment: Payment&): ostream&
+    }
+
+    class Question <<Model>> {
+        - id: int
+        - studentId: int
+        - studentName: string
+        - questionText: string
+        - answer: string
+        - timestamp: time_t
+        - isAnswered: bool
+        --
+        + Question(id: int, studentId: int, studentName: string, questionText: string)
+        + getId(): int
+        + getStudentId(): int
+        + getStudentName(): string
+        + getQuestionText(): string
+        + getAnswer(): string
+        + getTimestamp(): time_t
+        + getIsAnswered(): bool
+        + setAnswer(answerText: string): void
+        + setTimestamp(ts: time_t): void
+    }
+
+    class Certificate <<Model>> {
+        - hash: size_t
+        - data: string
+        --
+        + Certificate(hash: size_t, data: string)
+        + getHash(): size_t
+        + getEncryptedData(): string
+    }
+}
+
+@enduml
