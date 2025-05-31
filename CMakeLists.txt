@@ -7,7 +7,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
 
 include_directories(
     include 
@@ -47,4 +47,4 @@ file(GLOB OTHER_SOURCE
 set(SOURCE ${GUI_FILES} ${OTHER_SOURCE})
 
 add_executable(spp_sekolah ${SOURCE})
-target_link_libraries(spp_sekolah Qt5::Widgets)
+target_link_libraries(spp_sekolah Qt6::Widgets)

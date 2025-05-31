@@ -1,6 +1,9 @@
 #include <application/spp_application.hpp>
 #include <iostream>
 #include <utils/ui_helpers.hpp>
+#include <filesystem>
+#include <fstream>
+#include <windows.h>
 
 UserSessionCLI::UserSessionCLI() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1) {}
 
@@ -18,6 +21,8 @@ SppApplication::SppApplication()
 
 void SppApplication::initialize() {
     UI::clrscr();
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
     std::cout << UI::Color::YELLOW << "███████╗██████╗ ██████╗  ██████╗███████╗███╗   ██╗████████╗███████╗██████╗ " << std::endl;
     std::cout << UI::Color::YELLOW << "██╔════ ██╔══██╗██╔══██╗██╔════╝██╔════╝████╗  ██║╚══██╔══╝██╔════╝██╔══██╗" << std::endl;
     std::cout << UI::Color::YELLOW << "███████ ██████╔╝██████╔╝██║     █████╗  ██╔██╗ ██║   ██║   █████╗  ██████╔╝" << std::endl;
@@ -25,20 +30,32 @@ void SppApplication::initialize() {
     std::cout << UI::Color::YELLOW << "███████ ██║     ██║     ╚██████╗███████╗██║ ╚████║   ██║   ███████╗██║  ██║" << std::endl;
     std::cout << UI::Color::YELLOW << "╚══════╝╚═╝     ╚═╝     ╚═════╝╚══════╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ " << std::endl;
     std::cout << std::endl;
-    std::cout << "Memuat data..." << std::endl;
+    namespace fs = std::filesystem;
+    if (!fs::exists("../data")) {
+        fs::create_directory("../data");
+        std::cout << "Folder '../data' dibuat." << std::endl;
+    } else {
+        std::cout << "Memuat data..." << std::endl;
+    }
 
     if (!studentRepo.loadFromFile()) {
-        std::cerr << UI::Color::RED << "Gagal memuat data siswa! Mencoba membuat file baru..." << UI::Color::RESET << std::endl;
-        UI::pause_input();
-        exit(1);
+        std::cerr << UI::Color::RED << "Gagal memuat data siswa! Membuat file baru..." << UI::Color::RESET << std::endl;
+        std::ofstream("../data/students.txt").close();
     }
+
     if (!paymentRepo.loadFromFile()) {
-        std::cerr << UI::Color::RED << "Gagal memuat data pembayaran! Mencoba membuat file baru..." << UI::Color::RESET << std::endl;
-        UI::pause_input();
-        exit(1);
+        std::cerr << UI::Color::RED << "Gagal memuat data pembayaran! Membuat file baru..." << UI::Color::RESET << std::endl;
+        std::ofstream("../data/payments.txt").close();
     }
+
+    if (!certificateRepo.loadFromFile()) {
+        std::cerr << UI::Color::RED << "Gagal memuat data sertifikat! Membuat file baru..." << UI::Color::RESET << std::endl;
+        std::ofstream("../data/certificates.txt").close();
+    }
+
     if (!questionRepo.loadFromFile()) {
-        std::cerr << UI::Color::YELLOW << "Gagal memuat data pertanyaan! Mencoba membuat file baru..." << UI::Color::RESET << std::endl;
+        std::cerr << UI::Color::RED << "Gagal memuat data pertanyaan! Membuat file baru..." << UI::Color::RESET << std::endl;
+        std::ofstream("../data/questions.txt").close();
     }
 
     std::cout << UI::Color::GREEN << "Data berhasil dimuat!" << UI::Color::RESET << std::endl;
