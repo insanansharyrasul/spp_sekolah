@@ -3,7 +3,9 @@
 #include <utils/ui_helpers.hpp>
 #include <filesystem>
 #include <fstream>
+#ifdef _WIN32
 #include <windows.h>
+#endif
 
 UserSessionCLI::UserSessionCLI() : isAuthenticated(false), isAdmin(false), isStudent(false), currentStudentId(-1) {}
 
@@ -21,8 +23,10 @@ SppApplication::SppApplication()
 
 void SppApplication::initialize() {
     UI::clrscr();
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
+    #ifdef _WIN32
+        SetConsoleOutputCP(CP_UTF8);
+        SetConsoleCP(CP_UTF8);
+    #endif
     std::cout << UI::Color::YELLOW << "███████╗██████╗ ██████╗  ██████╗███████╗███╗   ██╗████████╗███████╗██████╗ " << std::endl;
     std::cout << UI::Color::YELLOW << "██╔════ ██╔══██╗██╔══██╗██╔════╝██╔════╝████╗  ██║╚══██╔══╝██╔════╝██╔══██╗" << std::endl;
     std::cout << UI::Color::YELLOW << "███████ ██████╔╝██████╔╝██║     █████╗  ██╔██╗ ██║   ██║   █████╗  ██████╔╝" << std::endl;
